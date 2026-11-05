@@ -6,5 +6,6 @@ Desktop.ini
 # Logs
 *.log
 
-# Backups
+# Backups & Archives
 *.bak
+*.zip
