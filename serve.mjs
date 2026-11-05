@@ -42,15 +42,24 @@ const server = http.createServer((req, res) => {
     const range = req.headers.range;
     if (range && (ext === '.mp4' || ext === '.webm')) {
       const parts = range.replace(/bytes=/, "").split("-");
-      const start = parseInt(parts[0], 10);
-      const end = parts[1] ? parseInt(parts[1], 10) : stats.size - 1;
+      let start = parseInt(parts[0], 10);
+      let end = parts[1] ? parseInt(parts[1], 10) : stats.size - 1;
+      if (isNaN(start)) start = 0;
+      if (isNaN(end) || end >= stats.size) end = stats.size - 1;
+      if (start >= stats.size || start > end) {
+        res.writeHead(416, { 'Content-Range': `bytes */${stats.size}` });
+        res.end();
+        return;
+      }
       res.writeHead(206, {
         'Content-Range': `bytes ${start}-${end}/${stats.size}`,
         'Accept-Ranges': 'bytes',
         'Content-Length': (end - start) + 1,
         'Content-Type': ct,
       });
-      fs.createReadStream(filePath, { start, end }).pipe(res);
+      const stream = fs.createReadStream(filePath, { start, end });
+      stream.on('error', () => { if (!res.headersSent) res.writeHead(500); res.end(); });
+      stream.pipe(res);
       return;
     }
     res.writeHead(200, { 'Content-Length': stats.size, 'Content-Type': ct });
