@@ -1500,9 +1500,8 @@ function kitchens(){const ar=AR();return [
  {key:'sofia',go:'sofia',cls:'s',img:'sofia',eyc:'color:#E5675F',eye:ar?'علامة مستقلة':'Separate brand',name:ar?'سوفيا سوشي':'Sofia’s Sushi',desc:ar?'سوشي ورولات بمنيو خاص. بيتحضّر في مطبخ لوران، وبيوصلك في الفرعين.':'Sushi and rolls with their own menu. Prepared at Louran’s kitchen, available through both branches.',pts:ar?['أورامكي ورولات وهوسو وتيماكي','١٢٢ صنف: رولات وساشيمي وكومبو وكيك سوشي','توصيل وتيك أواي من لوران']:['Uramaki, rolls, hoso and temaki','122 items: rolls, sashimi, combos and sushi cakes','Delivery and takeaway from Louran'],btn:ar?'تصفح منيو سوفيا':'Browse Sofia’s menu',btnc:'s'},
  {key:'tahia',go:'tahia',cls:'t',img:'ms_th1',eyc:'color:var(--tl,#A3CC3F)',eye:ar?'المنيو الشرقي':'Oriental menu',name:ar?'مطبخ تحية':'Tahia Kitchen',desc:ar?'أكل شرقي بيتي في الفرعين، من الشوربة للطواجن والمحاشي.':'Home-style oriental cooking at both branches, from soups to tagines and stuffed vegetables.',pts:ar?['فراخ وأرانب محمرة وفتة','محاشي وكبدة وسجق إسكندراني','شوربة وطواجن']:['Roasted chicken, rabbit, fatta','Stuffed vegetables, Alexandrian liver and sausage','Soups and tagines'],btn:ar?'اكتشف مطبخ تحية':'Explore Tahia Kitchen',btnc:'t'}]}
 function kmedia(k){const m=KMEDIA[k.key]||{};if(m.src&&/\.gif($|\?)/i.test(m.src))return `<img src="${m.src}" alt="${esc(k.name)}" loading="lazy">`;if(m.src)return `<video muted loop playsinline preload="none" ${m.poster?`poster="${m.poster}"`:''} data-src="${m.src}" aria-label="${esc(k.name)}"></video><button class="snd" data-act="snd" aria-label="Sound">🔇</button>`;const src=READY_KITCHEN_IMAGES[k.key]||IMG[k.img];return `<img class="kb-img" src="${src}" alt="${esc(k.name)}" loading="lazy">`}
-function kidsMediaSource(){const theme=THEME.get()==='dark'?'dark':'light',layout=innerWidth<=700?'port':'land',base='فيديوهات-ركن-الأطفال/';return {src:`${base}portofino-kids-${theme}_${layout}.mp4`,poster:`${base}poster-${theme}_${layout}.jpg`}}
 function vHome(){
- const T=t(),kidItem=ITEMS.find(x=>x.id==='k1'),kidMedia=kidsMediaSource(),selectedBranch=T.brs[S.branch];
+ const T=t(),kidItem=ITEMS.find(x=>x.id==='k1'),selectedBranch=T.brs[S.branch];
  const homeBranchLine=AR()?(S.branch==='lo'?`أهلاً بيكم في فرع ${selectedBranch}. التوصيل بيتم من لوران، وتقدروا تتصفحوا المنيو وتختاروا طلبكم.`:`أهلاً بيكم في فرع ${selectedBranch}. زورونا على طريق الجيش أو اطلبوا توصيل من لوران.`):(S.branch==='lo'?`Welcome to our ${selectedBranch} branch. Delivery is managed from Louran; browse the menu and choose your order.`:`Welcome to our ${selectedBranch} branch. Visit us on Army Road or order delivery from Louran.`);
  return `
  <section class="hero"><div class="wrap grid">
@@ -2154,9 +2153,8 @@ window.addEventListener('scroll',syncMenuNav,{passive:true});
 function initKidsWelcomeIntro(st){
  st=st||document.querySelector(".stage")||document.getElementById("main")||document.body;
  if(!st||document.querySelector(".kids-welcome-overlay"))return;
- const dark=THEME.get()==="dark",poster=dark?"فيديوهات-ركن-الأطفال/poster-dark_port.jpg":"فيديوهات-ركن-الأطفال/poster-light_port.jpg";
  const overlay=document.createElement("div");overlay.className="kids-welcome-overlay";overlay.setAttribute("role","dialog");overlay.setAttribute("aria-modal","true");overlay.setAttribute("aria-label",AR()?"ترحيب ركن الأطفال":"Kids corner welcome");
- overlay.innerHTML=`<img class="kids-welcome-still" src="${poster}" alt="" aria-hidden="true"><div class="kids-welcome-gate gate-a" aria-hidden="true"></div><div class="kids-welcome-gate gate-b" aria-hidden="true"></div><div class="kids-welcome-copy"><span>${AR()?"أهلاً بيكم":"WELCOME TO"}</span><strong>${AR()?"ركن الأطفال":"Kids Corner"}</strong></div><button class="kids-welcome-skip" type="button">${AR()?"دخول":"Enter"}</button>`;
+  overlay.innerHTML=`<div class="kids-welcome-gate gate-a" aria-hidden="true"></div><div class="kids-welcome-gate gate-b" aria-hidden="true"></div><div class="kids-welcome-copy"><span>${AR()?"أهلاً بيكم":"WELCOME TO"}</span><strong>${AR()?"ركن الأطفال":"Kids Corner"}</strong></div><button class="kids-welcome-skip" type="button">${AR()?"دخول":"Enter"}</button>`;
  st.appendChild(overlay);let done=false,opening=setTimeout(()=>overlay.classList.add("is-opening"),650),fallback=setTimeout(finish,1800);
  function finish(){if(done)return;done=true;clearTimeout(opening);clearTimeout(fallback);overlay.classList.add("is-closing");setTimeout(()=>overlay.remove(),550)}
  overlay.querySelector(".kids-welcome-skip").addEventListener("click",finish);const key=e=>{if(e.key==="Escape"&&!done){finish();document.removeEventListener("keydown",key)}};document.addEventListener("keydown",key);overlay.addEventListener("click",e=>{if(e.target===overlay)finish()});
@@ -2416,10 +2414,7 @@ html.paper .kidsfeature .kids-home-link:after{background:linear-gradient(180deg,
 </style>
 <style id="kids-welcome-intro">
 .kids-welcome-overlay{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;overflow:hidden;background:radial-gradient(ellipse at center,rgba(54,86,63,.18),transparent 58%),#f7f4ec;isolation:isolate;opacity:1;transition:opacity .55s ease}
-.kids-welcome-still{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;background:#f7f4ec}
-html:not(.paper) .kids-welcome-still{background:#0a111d}
 html:not(.paper) .kids-welcome-overlay{background:radial-gradient(ellipse at center,rgba(69,107,78,.2),transparent 58%),#0a111d}
-.kids-welcome-film{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;background:transparent}
 .kids-welcome-overlay:before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(4,10,18,.1),rgba(4,10,18,.24));pointer-events:none}
 .kids-welcome-gate{position:absolute;z-index:2;inset-block:0;width:50%;background:rgba(9,17,28,.66);border-color:rgba(238,193,87,.42);transition:transform 1.05s cubic-bezier(.7,0,.2,1);backdrop-filter:blur(2px)}
 .kids-welcome-gate.gate-a{inset-inline-start:0;border-inline-end:1px solid}
@@ -3202,4 +3197,4 @@ html.paper .delivery-info-card{box-shadow:0 12px 30px rgba(45,39,26,.08)}
 @media(max-width:800px){.services-overview-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.services-overview-grid{grid-template-columns:minmax(0,1fr)}.reservation-review dl{grid-template-columns:minmax(0,1fr)}.reservation-review-actions{display:grid;grid-template-columns:minmax(0,1fr)}.reservation-review-actions>*{width:100%;box-sizing:border-box}}
 @media(prefers-reduced-motion:reduce){.service-overview-card{transition:none!important}.service-overview-card:hover{transform:none!important}}
-</style></body></html>
+</style><style>.kids-welcome-still{display:none!important}.handoff-status{display:flex;justify-content:center;align-items:center;gap:9px;max-width:520px;margin:0 auto 16px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--card2);color:var(--ink);font-weight:650;line-height:1.55}</style><script id="video-download-guards">(()=>{const protect=v=>{if(!v||v.nodeType!==1||v.tagName!=='VIDEO'||v.dataset.downloadUiProtected)return;v.setAttribute('controlsList','nodownload noremoteplayback');v.setAttribute('disablepictureinpicture','');v.disablePictureInPicture=true;v.addEventListener('contextmenu',e=>e.preventDefault());v.dataset.downloadUiProtected='1'};document.querySelectorAll('video').forEach(protect);new MutationObserver(records=>records.forEach(r=>r.addedNodes.forEach(n=>{if(n.nodeType!==1)return;protect(n);n.querySelectorAll&&n.querySelectorAll('video').forEach(protect)}))).observe(document.documentElement,{childList:true,subtree:true})})();</script></body></html>
