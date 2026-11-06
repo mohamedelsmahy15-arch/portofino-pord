@@ -673,11 +673,9 @@ html.deep .totop{opacity:1;pointer-events:auto;transform:none}
 html[dir=rtl] .cn svg{transform:scaleX(-1)}
 .cc{min-width:64px;text-align:center;font:700 15px var(--body);color:#C8D2E0}
 @media(max-width:700px){
- .carnav{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:4px}
- .cn{width:46px;height:46px;border-radius:50%;border:1px solid #2C3A57;background:#122036;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
- .cn svg{width:22px;height:22px}
- html[dir=rtl] .cn svg{transform:scaleX(-1)}
- .cc{min-width:64px;text-align:center;font:700 15px var(--body);color:#C8D2E0}
+ .carnav{display:none!important}
+ .cn{display:none!important}
+ .cc{display:none!important}
  .offers.car>.cslot>.card{transition:opacity .3s,transform .3s}
  .offers.car>.cslot:not(.cur)>.card{opacity:.55;transform:scale(.96)}
  .offers.car>.cslot{flex-basis:80vw}
@@ -1237,7 +1235,7 @@ const L = {
   name:'الاسم',phone:'رقم الموبايل',area:'المنطقة',address:'العنوان بالتفصيل وأقرب علامة',notes:'ملاحظات (اختياري)',tableNo:'رقم الطاولة',pickT:'ميعاد الاستلام',branch:'الفرع',
   eName:'اكتب اسمك',ePhone:'اكتب رقم موبايل صحيح',eReq:'الحقل ده مطلوب',
   sendWA:'ابعت الطلب على واتساب',summary:'ملخص الطلب',
-   doneT:'تم استلام طلبك بنجاح!',doneS:'تم تسجيل بياناتك وتأكيد تفاصيل الحجز. اضغط بالأسفل لفتح محادثة واتساب المباشرة مع الفرع للتأكيد الفوري.',openWA:'افتح واتساب',editOrder:'ارجع للسلة وعدّل طلبك',newOrder:'ابدأ طلب جديد',
+   doneT:'تم استلام طلبك بنجاح!',doneS:'تم تسجيل بياناتك وتأكيد تفاصيل الحجز. اضغط بالأسفل لفتح محادثة واتساب المباشرة مع الفرع للتأكيد الفوري.',openWA:'افتح واتساب',editOrder:'عدّل البيانات أو أضف طلبات',newOrder:'ابدأ طلب جديد',
   resEye:'الحجوزات',resT:'اطلب طاولة',date:'التاريخ',time:'الوقت',party:'عدد الأفراد',guests:'أفراد',
   resNote:'يتم استلام وتأكيد حجزك فورًا مع مدير الصالة عبر واتساب لضمان أفضل طاولة متاحة.',sendReq:'ابعت الطلب على واتساب',
    attached:'أصناف هتطلبها مع الطاولة',statusW:'الحالة بعد الإرسال: في انتظار رد الفرع',
@@ -1293,7 +1291,7 @@ const L = {
   name:'Full name',phone:'Mobile number',area:'Area',address:'Full address and nearest landmark',notes:'Notes (optional)',tableNo:'Table number',pickT:'Pickup time',branch:'Branch',
   eName:'Please enter your name',ePhone:'Please enter a valid mobile number',eReq:'This field is required',
   sendWA:'Send Order on WhatsApp',summary:'Order summary',
-   doneT:'Ready to send',doneS:'Your order has not been sent yet. Open WhatsApp to review the prepared message and send it yourself; the branch will review it and reply.',openWA:'Open WhatsApp',editOrder:'Back to cart and edit order',newOrder:'Start a new order',
+   doneT:'Ready to send',doneS:'Your order has not been sent yet. Open WhatsApp to review the prepared message and send it yourself; the branch will review it and reply.',openWA:'Open WhatsApp',editOrder:'Edit details or add items',newOrder:'Start a new order',
   resEye:'Reservations',resT:'Request a table',date:'Date',time:'Time',party:'Party size',guests:'guests',
   resNote:'Your booking is directly verified and confirmed by our branch manager via WhatsApp to guarantee your table.',sendReq:'Send Request on WhatsApp',
   attached:'Attached order',statusW:'Status after sending: awaiting branch reply',
@@ -1451,15 +1449,15 @@ function dishDetailModal(id){
  const ready=READY_OFFER_IMAGES[it.id]||it.readyImg||(it.brand==='sofia'?SOFIA_CATEGORY_IMAGES[it.sc&&it.sc.ar]:it.brand==='cafe'?CAFE_CARD_IMAGES[it.g]:null);
  const photo=ready||(it.img?IMG[it.img]:null);
  return `<div class="dish-detail-backdrop" data-act="closedetail" style="position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(6px)">
-  <div class="card dish-detail-modal" role="dialog" aria-modal="true" aria-label="${esc(lg(it.n))}" style="max-width:480px;width:100%;max-height:90vh;overflow-y:auto;border-radius:24px;background:var(--card);border:1px solid var(--line);padding:24px;position:relative" onclick="event.stopPropagation()">
-   <button class="ctl" data-act="closedetail" aria-label="${ar?'إغلاق':'Close'}" style="position:absolute;top:16px;inset-inline-end:16px;z-index:2">${ico.x}</button>
+  <div class="card dish-detail-modal" role="dialog" aria-modal="true" aria-label="${esc(lg(it.n))}" style="max-width:480px;width:100%;max-height:90vh;overflow-y:auto;border-radius:24px;background:var(--card);border:1px solid var(--line);padding:24px;position:relative">
+   <button class="ctl" type="button" data-act="closedetail" aria-label="${ar?'إغلاق':'Close'}" style="position:absolute;top:16px;inset-inline-end:16px;z-index:10;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid var(--line)">${ico.x}</button>
    ${photo?`<div style="aspect-ratio:16/10;border-radius:18px;overflow:hidden;margin-bottom:18px;background:#101828"><img src="${photo}" alt="${esc(lg(it.n))}" style="width:100%;height:100%;object-fit:cover"></div>`:''}
    <p class="eyebrow" style="color:var(--leaf-l);margin:0 0 6px">${it.brand==='tahia'?(ar?'مطبخ تحية الشرقي':'Tahia Oriental Kitchen'):it.brand==='sofia'?'Sofia Sushi':'Portofino'}</p>
    <h2 class="disp h2" style="font-size:26px;margin:0 0 10px">${lg(it.n)}</h2>
    <p class="ds" style="color:var(--mist);font-size:15px;line-height:1.7;margin:0 0 20px">${lg(it.d)}</p>
    <div style="display:flex;align-items:center;justify-content:space-between;padding-top:16px;border-top:1px solid var(--line)">
     <span class="price" style="font-size:24px">${money(it.price)}</span>
-    <button class="btn o md" data-act="add" data-id="${it.id}">${ar?'أضف للطلب':'Add to cart'}</button>
+    <button class="btn o md add-modal-btn" type="button" data-act="add-modal" data-id="${it.id}" style="transition:transform .2s,background .2s">${ar?'أضف للطلب +':'Add to cart +'}</button>
    </div>
   </div></div>`;
 }
@@ -1684,7 +1682,8 @@ function vDone(){
     ${dt.notes?`<div style="grid-column:1/-1"><span style="color:var(--mist)">${ar?'ملاحظات':'Notes'}:</span> <i>${esc(dt.notes)}</i></div>`:''}
   </div></div></div>
   <a class="btn w lg" href="${d.link}" target="_blank" rel="noopener">${ico.wa}${T.openWA}</a>
-   <button class="btn gh" data-act="edit-order">${T.editOrder}</button></div></div>`;
+   <button class="btn gh" data-act="edit-order">${T.editOrder}</button>
+   <button class="btn gh" style="margin-top:8px;opacity:.7" data-act="restart">${T.newOrder}</button></div></div>`;
 }
 function vReserve(){
  const T=t();
@@ -1881,7 +1880,7 @@ function render(){
  applyTheme();document.documentElement.lang=S.lang;document.documentElement.dir=S.lang==='ar'?'rtl':'ltr';
  document.title=S.lang==='ar'?'بورتوفينو كافيه ومطعم':'Portofino Website';
  const views={home:vHome,kids:vKids,menu:vMenu,checkout:vCheckout,reserve:vReserve,branches:vBranches,sofia:vSofia,tahia:vTahia,cafe:vCafe,events:vEvents,contact:vContact,privacy:vPrivacy};
- const show=cartCount()>0;
+ const show=cartCount()>0&&!S.done;
  $('#app').innerHTML=`<a class="skiplink" href="#main">${AR()?'تخطي إلى المحتوى':'Skip to content'}</a>`+header()+`<main class="stage" id="main" tabindex="-1">${backHTML()}${(views[S.view]||vHome)()}</main>`+footer()+
   `${S.detailItem?dishDetailModal(S.detailItem):''}<div class="mbar ${show?'show':''}${S.bump?' bump':''}"><button data-act="cart"><span style="display:flex;align-items:center;gap:10px"><span style="min-width:26px;height:26px;border-radius:13px;background:#fff;color:var(--ember);display:inline-flex;align-items:center;justify-content:center;font-size:13px">${num(cartCount())}</span>${T.cartT}</span><b>${money(cartTotal())} ${ico.arr()}</b></button></div>`+
   `<button class="totop" data-act="top" aria-label="${AR()?'للأعلى':'Back to top'}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>`+
@@ -1927,8 +1926,22 @@ document.addEventListener('click',e=>{
  if(act==='branch'){S.branch=el.dataset.v}
  if(el.dataset.go&&cartCount()>0&&(el.matches('#services-home .svcc.hot')||el.matches('.branch-actions .order'))){if(el.matches('#services-home .svcc.hot'))S.service='delivery';S.cartOpen=true;S.menuOpen=false;S.done=null;saveState();render();return} if(el.dataset.go){ if(el.dataset.eventType)S.form.evType=el.dataset.eventType; if(el.dataset.cat!==undefined)S.cat=el.dataset.cat; if(el.dataset.ccat!==undefined){S.ccat=el.dataset.ccat;S.cq=''} if(act==='branch'){S.branch=el.dataset.v} go(el.dataset.go,el.dataset.extra!==undefined?(el.dataset.extra||null):undefined);if(el.dataset.sc){const sc=el.dataset.sc;setTimeout(()=>{const m=document.getElementById(sc);if(m){const h=(document.querySelector('.hdr')||{offsetHeight:76}).offsetHeight,st=S.view==='cafe'?(document.getElementById('stick')||{offsetHeight:0}).offsetHeight:0;scrollTo({top:Math.max(0,m.getBoundingClientRect().top+scrollY-h-st-12),behavior:'instant'})}},60)}return}
  if(act==='detail'){S.detailItem=el.dataset.id;saveState();render();return;}
- if(act==='closedetail'||el.classList.contains('dish-detail-backdrop')){S.detailItem=null;saveState();render();return;}
- if(act==='kids-welcome'){initKidsWelcomeIntro(document.querySelector('.stage'));return;}
+ if(act==='closedetail'||(e.target.classList&&e.target.classList.contains('dish-detail-backdrop'))){S.detailItem=null;saveState();render();return;}
+ if(act==='add-modal'){
+   const id=el.dataset.id;
+   const it=ITEMS.find(i=>i.id===id);
+   if(it){
+     const o=it.o?(S.opt[id]||0):0;
+     const ex=S.cart.find(c=>c.id===id&&c.o===o);
+     ex?ex.q++:S.cart.push({id,o,q:1});
+     S.bump=true;
+     el.innerHTML=(AR()?'✓ تمت الإضافة!':'✓ Added!');
+     el.style.background='var(--leaf)';
+     el.style.transform='scale(1.08)';
+     setTimeout(()=>{S.detailItem=null;saveState();render();},380);
+   }
+   return;
+ }
  if(act==='duel'){const w=el.closest('.duel');const v=el.dataset.v;w.dataset.pick=(w.dataset.pick===v)?'':v;w.querySelectorAll('.dpick').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===w.dataset.pick?'true':'false'));return}
    else if(act==='lang'){S.lang=S.lang==='ar'?'en':'ar'}
   else if(act==='theme'){THEME.set(THEME.get()==='dark'?'paper':'dark')}
@@ -1974,7 +1987,15 @@ document.addEventListener('click',e=>{
  else if(act==='undo-remove'){const r=S.lastRemoved;if(r){const existing=S.cart.find(c=>c.id===r.item.id&&c.o===r.item.o);if(existing)existing.q+=r.item.q;else S.cart.splice(Math.min(r.index,S.cart.length),0,r.item);S.lastRemoved=null;clearTimeout(S.removeUndoTimer)}}
  else if(act==='svc'){S.service=el.dataset.v}
  else if(act==='continue'){S.errors={};go(S.service==='reserve'?'reserve':'checkout');return}
-  else if(act==='edit-order'){S.done=null;S.errors={};S.cartOpen=true;S.menuOpen=false}
+  else if(act==='edit-order'){
+  const kind=S.done?.kind;
+  S.done=null;
+  S.errors={};
+  if(kind==='res'){S.view='reserve';}
+  else if(kind==='ev'){S.view='events';}
+  else{S.cartOpen=true;}
+  saveState();render();return;
+}
   else if(act==='restart'){S.cart=[];S.done=null;S.form={};S.view='home'}
  else if(act==='smenu'){e.preventDefault();render();const m=document.getElementById('menu-s');m&&m.scrollIntoView({behavior:'smooth'});return}
  else return;
