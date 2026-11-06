@@ -1330,7 +1330,7 @@ const L = {
 };
 
 /* ---------- state ---------- */
-const S = {mx:{},dtab:(new Date().getHours()<12?'bf':'lunch'),sq:'',scat:'all',tq:'',tcat:'all',ccat:'all',cq:'',lang:'ar',view:'home',branch:'cc',brDetail:null,detailItem:null,cart:[],cartOpen:false,menuOpen:false,service:'delivery',resStep:1,cat:'all',q:'',
+const S = {mx:{},dtab:(new Date().getHours()<12?'bf':'lunch'),sq:'',scat:'all',tq:'',tcat:'all',ccat:'all',cq:'',lang:'ar',view:'home',branch:'cc',brDetail:null,detailItem:null,cart:[],cartOpen:false,menuOpen:false,homeShortcutsOpen:false,upsellAccepted:false,service:'delivery',resStep:1,cat:'all',q:'',
   form:{},errors:{},done:null,party:2,opt:{},cartExpanded:false};
  try{const h=location.hash.replace('#','');if(['home','kids','menu','checkout','branches','sofia','tahia','cafe','events','services','contact','privacy','reserve'].includes(h))S.view=h}catch(e){}
 const $=(s,r=document)=>r.querySelector(s);
@@ -1369,7 +1369,7 @@ const cartTotal=()=>Math.round(S.cart.reduce((a,c)=>a+c.q*unit(ITEMS.find(i=>i.i
 const optLabel=c=>{const it=ITEMS.find(i=>i.id===c.id);return it.o?lg(it.o.v[c.o]):''};
 const toast=m=>{const el=$('#toast');if(S.cartOpen||S.menuOpen)return;el.innerHTML=`<div>${esc(m)}</div>`;clearTimeout(toast.h);toast.h=setTimeout(()=>el.innerHTML='',1800)};
 const ROUTE_HISTORY=[];
-const go=(v,extra)=>{if(S.view!==v)ROUTE_HISTORY.push(S.view);S.view=v;S.cartOpen=false;S.menuOpen=false;S.done=null;S.errors={};S.brDetail=null;if(v==='reserve')S.resStep=1;try{location.hash=v}catch(e){}render();window.scrollTo({top:0,behavior:'instant'})};
+const go=(v,extra)=>{if(S.view!==v)ROUTE_HISTORY.push(S.view);S.view=v;S.cartOpen=false;S.menuOpen=false;S.homeShortcutsOpen=false;S.done=null;S.errors={};S.brDetail=null;if(v==='reserve')S.resStep=1;try{location.hash=v}catch(e){}render();window.scrollTo({top:0,behavior:'instant'})};
 function itemImg(it,cls=''){return it.img?`<img src="${IMG[it.img]}" alt="${esc(lg(it.n))}">`:it.brand==='sofia'?`<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%">${sushiSVG(120)}</div>`:`<div style="display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--mist);font-size:13px;background:radial-gradient(circle at 50% 40%,#F1EEE2,#E2DECE);width:100%;height:100%;justify-content:center"><svg viewBox="0 0 64 64" width="70" fill="none" stroke="#7BC96F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 30h36l-4 20a6 6 0 0 1-6 5H24a6 6 0 0 1-6-5z"/><path d="M18 30c0-9 6-14 14-14s14 5 14 14"/><circle cx="32" cy="12" r="3" fill="#B8500A" stroke="#B8500A"/></svg>${S.lang==='ar'?'الصورة قريبًا':'Photo coming soon'}</div>`}
 
 /* ---------- WhatsApp ---------- */
@@ -1509,6 +1509,10 @@ function kitchens(){const ar=AR();return [
  {key:'sofia',go:'sofia',cls:'s',img:'sofia',eyc:'color:#E5675F',eye:ar?'علامة مستقلة':'Separate brand',name:ar?'سوفيا سوشي':'Sofia’s Sushi',desc:ar?'سوشي ورولات بمنيو خاص. بيتحضّر في مطبخ لوران، وبيوصلك في الفرعين.':'Sushi and rolls with their own menu. Prepared at Louran’s kitchen, available through both branches.',pts:ar?['أورامكي ورولات وهوسو وتيماكي','١٢٢ صنف: رولات وساشيمي وكومبو وكيك سوشي','توصيل وتيك أواي من لوران']:['Uramaki, rolls, hoso and temaki','122 items: rolls, sashimi, combos and sushi cakes','Delivery and takeaway from Louran'],btn:ar?'تصفح منيو سوفيا':'Browse Sofia’s menu',btnc:'s'},
  {key:'tahia',go:'tahia',cls:'t',img:'ms_th1',eyc:'color:var(--tl,#A3CC3F)',eye:ar?'المنيو الشرقي':'Oriental menu',name:ar?'مطبخ تحية':'Tahia Kitchen',desc:ar?'أكل شرقي بيتي في الفرعين، من الشوربة للطواجن والمحاشي.':'Home-style oriental cooking at both branches, from soups to tagines and stuffed vegetables.',pts:ar?['فراخ وأرانب محمرة وفتة','محاشي وكبدة وسجق إسكندراني','شوربة وطواجن']:['Roasted chicken, rabbit, fatta','Stuffed vegetables, Alexandrian liver and sausage','Soups and tagines'],btn:ar?'اكتشف مطبخ تحية':'Explore Tahia Kitchen',btnc:'t'}]}
 function kmedia(k){const m=KMEDIA[k.key]||{};if(m.src&&/\.gif($|\?)/i.test(m.src))return `<img src="${m.src}" alt="${esc(k.name)}" loading="lazy">`;if(m.src)return `<video muted loop playsinline preload="none" ${m.poster?`poster="${m.poster}"`:''} data-src="${m.src}" aria-label="${esc(k.name)}"></video><button class="snd" data-act="snd" aria-label="Sound">🔇</button>`;const src=READY_KITCHEN_IMAGES[k.key]||IMG[k.img];return `<img class="kb-img" src="${src}" alt="${esc(k.name)}" loading="lazy">`}
+function homeShortcutLinks(cls='mt'){
+ const items=[['offers',AR()?'العروض':'Deals','offers'],['menu',AR()?'المنيو':'Menu','menu'],['sofia',AR()?'سوفيا سوشي':'Sofia Sushi','sofia'],['tahia',AR()?'مطبخ تحية':'Tahia Kitchen','tahia'],['drinks',AR()?'المشروبات':'Drinks','cafe'],['shisha',AR()?'الشيشة':'Shisha','shisha-home'],['kids',AR()?'ركن الأطفال':'Kids corner','kids'],['services',AR()?'خدماتنا':'Our services','events'],['branches',AR()?'الفروع':'Branches','branches']];
+ return items.map(([k,n,id])=>{const ic=k==='offers'?MOODI.bf:(k==='shisha'?_sv('<path d="M7 20h10M9 20V9h6v11M10 9c0-2 4-2 4-5M15 12h2a2 2 0 0 1 0 4h-2"/>'):(MOODI[k]||MOODI.menu));const isView=['menu','sofia','tahia','cafe','kids','events','branches'].includes(id);return `<button class="${cls}" ${isView?`data-go="${id}" ${id==='cafe'?'data-ccat="all" data-sc="cflist"':''}`:`data-act="homejump" data-v="${id}"`}><i>${ic}</i><b>${n}</b></button>`}).join('');
+}
 function vHome(){
  const T=t(),kidItem=ITEMS.find(x=>x.id==='k1'),selectedBranch=T.brs[S.branch];
  const homeBranchLine=AR()?(S.branch==='lo'?`أهلاً بيكم في فرع ${selectedBranch}. التوصيل بيتم من لوران، وتقدروا تتصفحوا المنيو وتختاروا طلبكم.`:`أهلاً بيكم في فرع ${selectedBranch}. زورونا على طريق الجيش أو اطلبوا توصيل من لوران.`):(S.branch==='lo'?`Welcome to our ${selectedBranch} branch. Delivery is managed from Louran; browse the menu and choose your order.`:`Welcome to our ${selectedBranch} branch. Visit us on Army Road or order delivery from Louran.`);
@@ -1534,7 +1538,8 @@ function vHome(){
  <div class="marq" aria-label="${T.offEye}"><div class="track">${marqItems()}${marqItems(true)}</div></div>
 
 
-  <nav class="moodnav" id="moodnav" aria-label="${AR()?'اختصارات أقسام الصفحة الرئيسية':'Home section shortcuts'}"><div class="wrap"><div class="moodg">${[['offers',AR()?'العروض':'Deals','offers'],['menu',AR()?'المنيو':'Menu','menu'],['sofia',AR()?'سوفيا سوشي':'Sofia Sushi','sofia'],['tahia',AR()?'مطبخ تحية':'Tahia Kitchen','tahia'],['drinks',AR()?'المشروبات':'Drinks','cafe'],['shisha',AR()?'الشيشة':'Shisha','shisha-home'],['kids',AR()?'ركن الأطفال':'Kids corner','kids'],['services',AR()?'خدماتنا':'Our services','events'],['branches',AR()?'الفروع':'Branches','branches']].map(([k,n,id])=>{const ic=k==='offers'?MOODI.bf:(k==='shisha'?_sv('<path d="M7 20h10M9 20V9h6v11M10 9c0-2 4-2 4-5M15 12h2a2 2 0 0 1 0 4h-2"/>'):(MOODI[k]||MOODI.menu));const isView=['menu','sofia','tahia','cafe','kids','events','branches'].includes(id);return `<button class="mt" ${isView?`data-go="${id}" ${id==='cafe'?'data-ccat="all" data-sc="cflist"':''}`:`data-act="homejump" data-v="${id}"`}><i>${ic}</i><b>${n}</b></button>`}).join('')}</div></div></nav>
+  <nav class="moodnav" id="moodnav" aria-label="${AR()?'اختصارات أقسام الصفحة الرئيسية':'Home section shortcuts'}"><div class="wrap"><div class="moodg">${homeShortcutLinks()}</div></div></nav>
+  <div class="home-shortcuts-mobile ${S.homeShortcutsOpen?'open':''}" id="home-shortcuts-mobile"><button class="home-shortcuts-toggle" type="button" data-act="shortcuts-toggle" aria-expanded="${S.homeShortcutsOpen?'true':'false'}" aria-controls="home-shortcuts-panel"><span aria-hidden="true">${S.homeShortcutsOpen?'×':'⌃'}</span><b>${AR()?'الأقسام':'Sections'}</b></button><nav class="home-shortcuts-panel" id="home-shortcuts-panel" aria-label="${AR()?'اختصارات الأقسام':'Section shortcuts'}" ${S.homeShortcutsOpen?'':'hidden'}>${homeShortcutLinks('home-shortcut-link')}</nav></div>
  <section class="sec" id="offers" style="padding-top:8px"><div class="wrap">
   <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:18px"><div style="flex:1 1 340px;min-width:0"><p class="eyebrow">${AR()?'عروض بورتوفينو':'Portofino deals'}</p><h2 class="disp h2" style="margin:0">${S.dtab==='bf'?(AR()?'ابدأ يومك بطعم حلو':'Start your day the delicious way'):T.offT}</h2><p class="lead" style="margin-top:10px">${S.dtab==='bf'?(AR()?'فطار متكامل ونكهات طازجة ومزاج يخلّي صباحك مميز.':'A full breakfast, fresh flavors and the right mood.'):T.offS}</p></div>${S.dtab==='bf'?'':`<span class="ribbon">${T.tagB}</span>`}</div>
   <div class="dtabs" role="tablist"><button role="tab" aria-selected="${S.dtab==='bf'}" class="${S.dtab==='bf'?'on':''}" data-act="dtab" data-v="bf">${MOODI.bf}${AR()?'فطار':'Breakfast'}</button><button role="tab" aria-selected="${S.dtab!=='bf'}" class="${S.dtab!=='bf'?'on':''}" data-act="dtab" data-v="lunch">${MOODI.lunch}${AR()?'غداء':'Lunch'}</button></div>
@@ -1917,9 +1922,12 @@ function formWhatsAppMessage(kind){
  return `${T.waHello} - ${T.wTitleEv}\n\n${W.branch}: ${T.brs[S.branch]}\n${W.name}: ${F.name}\n${W.phone}: ${F.phone}\n${W.party}: ${F.guestsN}\n${W.type}: ${eventType}`+(F.date?`\n${W.date}: ${F.date}`:'')+(F.notes?`\n${W.notes}: ${F.notes}`:'')+(S.cart.length?`\n\n${W.items}:\n${orderLines()}\n${W.total}: ${cartTotal()} ${T.currency}`:'');
 }
 function upsell(){
- if(S.cart.some(c=>{const x=ITEMS.find(i=>i.id===c.id)||{};return x.cat==='dessert'||c.id==='dl5'}))return '';
- const it=ITEMS.find(i=>i.id==='dl5');if(!it)return '';
- return `<div class="ups"><img src="${IMG[it.img]}" alt=""><div><b>${AR()?'كمّل وجبتك بحلو؟':'Add something sweet?'}</b><small>${lg(it.n)} · ${money(it.price)}</small></div><button class="btn o sm" data-act="add" data-id="dl5">+ ${AR()?'أضف':'Add'}</button></div>`;
+ if(S.upsellAccepted)return '';
+ const inCart=new Set(S.cart.map(c=>c.id)),candidates=['dl5','d1','c1'];
+ const it=candidates.map(id=>ITEMS.find(x=>x.id===id)).find(x=>x&&!inCart.has(x.id));
+ if(!it)return '';
+ const sweet=it.cat==='dessert'||it.id==='dl5';
+ return `<div class="ups"><img src="${IMG[it.img]}" alt=""><div><b>${AR()?(sweet?'كمّلوا طلبكم بحاجة حلوة؟':'تحبوا تضيفوا مشروب؟'):(sweet?'Add something sweet?':'Add a drink?')}</b><small>${lg(it.n)} · ${money(it.price)}</small></div><button class="btn o sm" data-act="add" data-id="${it.id}">+ ${AR()?'أضف':'Add'}</button></div>`;
 }
 function steps(n,labels){
  const L=labels||(AR()?['اختار أكلك','راجع وابعت','الفرع يرد عليك']:['Choose','Review & send','Branch replies']);
@@ -1955,8 +1963,8 @@ function cartUndoHTML(){const r=S.lastRemoved;if(!r)return '';const it=ITEMS.fin
  const remainingOrderLines=orderLines.slice(2).join('');
  const orderDetails=cnt?`<div class="cart-order-details"><div class="cart-order-lines">${visibleOrderLines}</div>${remainingOrderLines?`<details class="cart-order-more" ${S.cartExpanded?'open':''}><summary><span>${AR()?'عرض باقي الأصناف':'Show remaining items'} <b>(${num(orderLines.length-2)})</b></span><i aria-hidden="true">⌄</i></summary><div class="cart-order-lines">${remainingOrderLines}</div></details>`:''}</div>`:'';
  return `<div class="ov" data-act="cart"></div><aside class="drawer" role="dialog" aria-label="${T.cartT}"><div class="hd"><div class="disp" style="font-size:26px">${T.cartT} ${cnt?`<small style="font-family:var(--body);font-size:14px;color:var(--mist);font-weight:500">· ${num(cnt)} ${T.items}</small>`:''}</div><button class="ctl" style="width:44px;justify-content:center;padding:0" data-act="cart" aria-label="Close">${ico.x}</button></div>
- <div class="bd">${cnt?orderDetails+`<div class="cart-methods-prompt"><span class="cart-methods-arrow" aria-hidden="true">↓</span><div><b>${T.howT}</b><small>${T.howS}</small></div></div>
-  ${svcs.map(([k,,s])=>`<button class="svc ${S.service===k?'on':''}" data-act="svc" data-v="${k}"><span class="rd"></span><span><b>${s[0]}</b><small>${s[1]}</small></span></button>`).join('')}`+upsell()
+ <div class="bd">${cnt?orderDetails+upsell()+`<div class="cart-methods-prompt"><span class="cart-methods-arrow" aria-hidden="true">↓</span><div><b>${T.howT}</b><small>${T.howS}</small></div></div>
+  ${svcs.map(([k,,s])=>`<button class="svc ${S.service===k?'on':''}" data-act="svc" data-v="${k}"><span class="rd"></span><span><b>${s[0]}</b><small>${s[1]}</small></span></button>`).join('')}`
   :`<div class="empty" style="margin-top:20px">${ico.cart.replace('class="ic"','class="ic" style="width:40px;height:40px;color:var(--leaf-l)"')}<h3 class="disp" style="font-size:26px;margin:0">${T.cartEmpty}</h3><p class="ds">${T.cartEmptyS}</p><button class="btn g" data-go="menu">${T.explore}</button></div>`}${cartUndoHTML()}</div>
  ${cnt?`<div class="ft"><div class="tot"><span>${T.sub}</span><span>${money(cartTotal())}</span></div><div class="tot big"><span>${T.total}</span><b>${money(cartTotal())}</b></div><div style="font-size:12.5px;color:var(--dim)">${taxTxt()}</div><button class="btn o lg" data-act="continue">${T.cont[S.service]} ${ico.arr()}</button>${calm()}</div>`:''}</aside>`;
 }
@@ -2025,18 +2033,19 @@ document.addEventListener('click',e=>{
  if(!el.dataset.go&&!S.cartOpen&&el.closest('.cslot')&&(act==='opt'||act==='add'||act==='cq')){
   const id=el.dataset.id;
   if(act==='opt'){S.opt[id]=+el.dataset.v}
-  else if(act==='add'){const it=ITEMS.find(i=>i.id===id);const o=it.o?(S.opt[id]||0):0;const ex=S.cart.find(c=>c.id===id&&c.o===o);ex?ex.q++:S.cart.push({id,o,q:1});S.bump=true}
+  else if(act==='add'){const it=ITEMS.find(i=>i.id===id);const o=it.o?(S.opt[id]||0):0;const ex=S.cart.find(c=>c.id===id&&c.o===o);ex?ex.q++:S.cart.push({id,o,q:1});S.bump=true;S.upsellAccepted=false}
   else{const i=S.cart.findIndex(c=>c.id===id&&c.o===+el.dataset.o);if(i>=0){S.cart[i].q+=(+el.dataset.v);if(S.cart[i].q<=0)S.cart.splice(i,1)}}
   soft();return;
  }
  if(act==='branch'){S.branch=el.dataset.v}
- if(el.dataset.go&&cartCount()>0&&el.matches('.branch-actions .order')){S.cartOpen=true;S.menuOpen=false;S.done=null;saveState();render();return} if(el.dataset.go){ if(el.dataset.eventType)S.form.evType=el.dataset.eventType; if(el.dataset.service)S.service=el.dataset.service; if(el.dataset.cat!==undefined)S.cat=el.dataset.cat; if(el.dataset.ccat!==undefined){S.ccat=el.dataset.ccat;S.cq=''} if(act==='branch'){S.branch=el.dataset.v} go(el.dataset.go,el.dataset.extra!==undefined?(el.dataset.extra||null):undefined);if(el.dataset.sc){const sc=el.dataset.sc;setTimeout(()=>{const m=document.getElementById(sc);if(m){const h=(document.querySelector('.hdr')||{offsetHeight:76}).offsetHeight,st=(document.getElementById('stick')||document.getElementById('sfstick')||{offsetHeight:0}).offsetHeight;const targetY=m.getBoundingClientRect().top+window.scrollY-h-st-10;window.scrollTo({top:Math.max(0,targetY),behavior:'smooth'})}},80)}return}
+ if(el.dataset.go&&cartCount()>0&&el.matches('.branch-actions .order')){S.cartOpen=true;S.menuOpen=false;S.done=null;saveState();render();return} if(el.dataset.go){ if(el.closest('#home-shortcuts-panel'))S.homeShortcutsOpen=false;if(el.dataset.eventType)S.form.evType=el.dataset.eventType; if(el.dataset.service)S.service=el.dataset.service; if(el.dataset.cat!==undefined)S.cat=el.dataset.cat; if(el.dataset.ccat!==undefined){S.ccat=el.dataset.ccat;S.cq=''} if(act==='branch'){S.branch=el.dataset.v} go(el.dataset.go,el.dataset.extra!==undefined?(el.dataset.extra||null):undefined);if(el.dataset.sc){const sc=el.dataset.sc;setTimeout(()=>{const m=document.getElementById(sc);if(m){const h=(document.querySelector('.hdr')||{offsetHeight:76}).offsetHeight,st=(document.getElementById('stick')||document.getElementById('sfstick')||{offsetHeight:0}).offsetHeight;const targetY=m.getBoundingClientRect().top+window.scrollY-h-st-10;window.scrollTo({top:Math.max(0,targetY),behavior:'smooth'})}},80)}return}
  if(act==='detail'){S.detailItem=el.dataset.id;saveState();render();return;}
  if(act==='closedetail'||(e.target.classList&&e.target.classList.contains('dish-detail-backdrop'))){S.detailItem=null;saveState();render();return;}
  if(act==='add-modal'){
    const id=el.dataset.id;
    const it=ITEMS.find(i=>i.id===id);
    if(it){
+     S.upsellAccepted=false;
      const o=it.o?(S.opt[id]||0):0;
      const ex=S.cart.find(c=>c.id===id&&c.o===o);
      ex?ex.q++:S.cart.push({id,o,q:1});
@@ -2062,7 +2071,8 @@ document.addEventListener('click',e=>{
  else if(act==='branch'){}
  else if(act==='back'){if(ROUTE_HISTORY.length)window.history.back();else go('home');return}
  else if(act==='top'){scrollTo({top:0,behavior:'smooth'});return}
- else if(act==='homejump'){if(el.dataset.tab){S.dtab=el.dataset.tab;render()}const m=document.getElementById(el.dataset.v);if(m){const h=(document.querySelector('.hdr')||{offsetHeight:76}).offsetHeight;const n=(document.getElementById('moodnav')||{offsetHeight:0}).offsetHeight;scrollTo({top:Math.max(0,m.getBoundingClientRect().top+scrollY-h-n-12),behavior:'smooth'})}return}
+ else if(act==='homejump'){if(el.closest('#home-shortcuts-panel')){S.homeShortcutsOpen=false;const panel=document.getElementById('home-shortcuts-panel'),toggle=document.querySelector('.home-shortcuts-toggle');if(panel)panel.hidden=true;if(toggle)toggle.setAttribute('aria-expanded','false')}if(el.dataset.tab){S.dtab=el.dataset.tab;render()}const m=document.getElementById(el.dataset.v);if(m){const h=(document.querySelector('.hdr')||{offsetHeight:76}).offsetHeight;const n=(document.getElementById('moodnav')||{offsetHeight:0}).offsetHeight;scrollTo({top:Math.max(0,m.getBoundingClientRect().top+scrollY-h-n-12),behavior:'smooth'})}return}
+ else if(act==='shortcuts-toggle'){S.homeShortcutsOpen=!S.homeShortcutsOpen}
   else if(act==='jump'){const m=document.getElementById(el.dataset.v);if(m){const nav=document.querySelector('.menu-nav'),hh=(document.querySelector('.hdr')||{offsetHeight:76}).offsetHeight+(nav?nav.offsetHeight:0)+12;scrollTo({top:Math.max(0,m.getBoundingClientRect().top+scrollY-hh),behavior:'smooth'})}return}
  else if(act==='down'){const m=document.querySelector('.marq');m&&scrollTo({top:m.getBoundingClientRect().top+scrollY-70,behavior:'smooth'});return}
  else if(act==='evt'){S.form.evType=el.dataset.v;S.errors.evType=''}
@@ -2085,15 +2095,15 @@ document.addEventListener('click',e=>{
  else if(act==='opt'){S.opt[el.dataset.id]=+el.dataset.v}
  else if(act==='clearq'){S.q='';if(S.view==='menu'){refreshMenu();return}}
  else if(act==='party'){S.party=Math.max(1,Math.min(30,S.party+(+el.dataset.v)))}
- else if(act==='kids-qty'){const i=S.cart.findIndex(c=>c.id===el.dataset.id&&c.o===0);if(i>=0){S.cart[i].q+=+el.dataset.v;if(S.cart[i].q<=0)S.cart.splice(i,1)}}
+ else if(act==='kids-qty'){S.upsellAccepted=false;const i=S.cart.findIndex(c=>c.id===el.dataset.id&&c.o===0);if(i>=0){S.cart[i].q+=+el.dataset.v;if(S.cart[i].q<=0)S.cart.splice(i,1)}}
  else if(act==='add'){
    const it=ITEMS.find(i=>i.id===el.dataset.id);const o=it.o?(S.opt[it.id]||0):0;
    const ex=S.cart.find(c=>c.id===it.id&&c.o===o);ex?ex.q++:S.cart.push({id:it.id,o,q:1});
-   S.bump=true;
+   S.bump=true;S.upsellAccepted=!!el.closest('.ups');
  }
- else if(act==='qty'){const c=S.cart[+el.dataset.i];if(c){c.q+=(+el.dataset.v);if(c.q<=0)S.cart.splice(+el.dataset.i,1)}}
- else if(act==='remove-item'){const i=+el.dataset.i,c=S.cart[i];if(c){S.lastRemoved={item:{...c},index:i};clearTimeout(S.removeUndoTimer);S.removeUndoTimer=setTimeout(()=>{S.lastRemoved=null;if(S.cartOpen)renderDrawer()},7000);S.cart.splice(i,1)}}
- else if(act==='undo-remove'){const r=S.lastRemoved;if(r){const existing=S.cart.find(c=>c.id===r.item.id&&c.o===r.item.o);if(existing)existing.q+=r.item.q;else S.cart.splice(Math.min(r.index,S.cart.length),0,r.item);S.lastRemoved=null;clearTimeout(S.removeUndoTimer)}}
+ else if(act==='qty'){const c=S.cart[+el.dataset.i];if(c){S.upsellAccepted=false;c.q+=(+el.dataset.v);if(c.q<=0)S.cart.splice(+el.dataset.i,1)}}
+ else if(act==='remove-item'){const i=+el.dataset.i,c=S.cart[i];if(c){S.upsellAccepted=false;S.lastRemoved={item:{...c},index:i};clearTimeout(S.removeUndoTimer);S.removeUndoTimer=setTimeout(()=>{S.lastRemoved=null;if(S.cartOpen)renderDrawer()},7000);S.cart.splice(i,1)}}
+ else if(act==='undo-remove'){const r=S.lastRemoved;if(r){S.upsellAccepted=false;const existing=S.cart.find(c=>c.id===r.item.id&&c.o===r.item.o);if(existing)existing.q+=r.item.q;else S.cart.splice(Math.min(r.index,S.cart.length),0,r.item);S.lastRemoved=null;clearTimeout(S.removeUndoTimer)}}
  else if(act==='svc'){S.service=el.dataset.v}
  else if(act==='service-continue'){S.service=el.dataset.service;S.cartOpen=true;S.menuOpen=false;S.done=null;saveState();render();return}
  else if(act==='continue'){S.errors={};go(S.service==='reserve'?'reserve':'checkout');return}
@@ -2156,8 +2166,38 @@ function predecode(){const im=[...document.querySelectorAll('.stage img')].filte
 function homeNavFlowTop(el){let top=0;for(let n=el;n&&n!==document.documentElement;n=n.offsetParent)top+=n.offsetTop||0;return Math.max(0,top)}
 const HOME_NAV={y:0,start:0,raf:false,railActive:''};
  function getTopNavActive(y,active){if(y<350)return 'home';if(['offers','chef','kit','home-menu','home-sofia','home-tahia','drinks','shisha-home'].includes(active))return 'menu';if(['vids','services-home'].includes(active))return 'events';if(active==='branches-home'||active==='branches-tail')return 'branches';if(active==='visit-home')return 'contact';return 'home'}
-function syncHomeNav(){if(HOME_NAV.raf)return;HOME_NAV.raf=true;requestAnimationFrame(()=>{HOME_NAV.raf=false;const nav=document.getElementById('moodnav');if(!nav||S.view!=='home')return;const y=scrollY,dy=y-HOME_NAV.y,hdr=(document.querySelector('.hdr')||{offsetHeight:76}).offsetHeight;if(y>HOME_NAV.start+nav.offsetHeight){if(dy>2)nav.classList.remove('is-hidden');else if(dy< -2)nav.classList.add('is-hidden')}else nav.classList.remove('is-hidden');HOME_NAV.y=y;const offers=document.getElementById('offers'),tabs=offers&&offers.querySelector('.dtabs'),cards=document.getElementById('car');if(tabs&&offers){const or=offers.getBoundingClientRect(),fullMenu=offers.querySelector('[data-go="menu"]'),inside=or.bottom>hdr&&or.top<innerHeight,stickyTop=parseFloat(getComputedStyle(tabs).top)||hdr,stopBeforeMenu=!!fullMenu&&fullMenu.getBoundingClientRect().top<=stickyTop+tabs.offsetHeight+12;if(!inside||stopBeforeMenu||nav.classList.contains('is-hidden'))tabs.classList.add('is-hidden');else tabs.classList.remove('is-hidden');}const line=hdr+nav.offsetHeight+48;const targets=[['offers','offers'],['chef','menu'],['kit','menu'],['home-menu','menu'],['home-sofia','sofia'],['home-tahia','tahia'],['drinks','drinks'],['shisha-home','shisha'],['kids-home','kids'],['perks-home',''],['vids','services'],['services-home','services'],['branches-home','branches'],['branches-tail','branches'],['visit-home','']];let active='';for(const [id,key] of targets){const el=document.getElementById(id);if(el&&el.getBoundingClientRect().top<=line)active=key}let activeButton=null;nav.querySelectorAll('[data-act="homejump"]').forEach(b=>{const key=({offers:'offers',kit:'menu','home-sofia':'sofia','home-tahia':'tahia',drinks:'drinks','shisha-home':'shisha','kids-home':'kids','perks-home':'services','vids':'services','services-home':'services','branches-home':'branches'}[b.dataset.v]||'');const on=!!active&&key===active;b.classList.toggle('is-active',on);if(on){b.setAttribute('aria-current','location');activeButton=b}else b.removeAttribute('aria-current')});const nr=nav.getBoundingClientRect();if(!active)HOME_NAV.railActive='';else if(activeButton&&!nav.classList.contains('is-hidden')&&HOME_NAV.railActive!==active&&nr.bottom>hdr&&nr.top<innerHeight){HOME_NAV.railActive=active;activeButton.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'nearest',inline:'center'})}const topActive=getTopNavActive(y,active);document.querySelectorAll('.hdr .nav button[data-go]').forEach(b=>{b.classList.toggle('on',b.dataset.go===topActive)})})}
 window.addEventListener('scroll',syncHomeNav,{passive:true});syncHomeNav();
+function syncHomeNav(){
+ if(HOME_NAV.raf)return;
+ HOME_NAV.raf=true;
+ requestAnimationFrame(()=>{
+  HOME_NAV.raf=false;
+  const nav=document.getElementById('moodnav');
+  if(!nav||S.view!=='home')return;
+  const y=scrollY,hdr=(document.querySelector('.hdr')||{offsetHeight:76}).offsetHeight;
+  const mobile=matchMedia('(max-width:700px)').matches;
+  if(mobile){
+   nav.classList.remove('is-hidden');
+   const shortcuts=document.getElementById('home-shortcuts-mobile');
+   if(shortcuts)shortcuts.classList.toggle('is-visible',y>HOME_NAV.start+nav.offsetHeight+120);
+  }else if(y>HOME_NAV.start+nav.offsetHeight){
+   const dy=y-HOME_NAV.y;
+   if(dy>2)nav.classList.remove('is-hidden');else if(dy< -2)nav.classList.add('is-hidden');
+  }else nav.classList.remove('is-hidden');
+  HOME_NAV.y=y;
+  const offers=document.getElementById('offers'),tabs=offers&&offers.querySelector('.dtabs');
+  if(tabs&&offers){
+   const or=offers.getBoundingClientRect(),fullMenu=offers.querySelector('[data-go="menu"]');
+   const inside=or.bottom>hdr&&or.top<innerHeight,stickyTop=parseFloat(getComputedStyle(tabs).top)||hdr;
+   const stopBeforeMenu=!!fullMenu&&fullMenu.getBoundingClientRect().top<=stickyTop+tabs.offsetHeight+12;
+   if(!inside||stopBeforeMenu||(mobile&&y>HOME_NAV.start+nav.offsetHeight))tabs.classList.add('is-hidden');else tabs.classList.remove('is-hidden');
+  }
+  const targets=[['offers','offers'],['chef','menu'],['kit','menu'],['home-menu','menu'],['home-sofia','sofia'],['home-tahia','tahia'],['drinks','drinks'],['shisha-home','shisha'],['kids-home','kids'],['perks-home',''],['vids','services'],['services-home','services'],['branches-home','branches'],['branches-tail','branches'],['visit-home','']];
+  let active='';for(const [id,key] of targets){const el=document.getElementById(id);if(el&&el.getBoundingClientRect().top<=hdr+48)active=key}
+  const topActive=getTopNavActive(y,active);
+  document.querySelectorAll('.hdr .nav button[data-go]').forEach(b=>b.classList.toggle('on',b.dataset.go===topActive));
+ });
+}
 const SOFIA_NAV={raf:false,active:''};
 function syncSofiaNav(){if(SOFIA_NAV.raf)return;SOFIA_NAV.raf=true;requestAnimationFrame(()=>{SOFIA_NAV.raf=false;if(S.view!=='sofia')return;const nav=document.querySelector('.sofia-nav'),heads=[...document.querySelectorAll('[data-sofia-section]')];if(!nav)return;const hdr=(document.querySelector('.hdr')||{offsetHeight:76}).offsetHeight,line=hdr+nav.offsetHeight+30;let active='';for(const h of heads)if(h.getBoundingClientRect().top<=line)active=h.dataset.sofiaSection;nav.querySelectorAll('.chip[data-v]:not([data-v="all"])').forEach(b=>{const on=b.dataset.v===active;b.classList.toggle('is-current',on);if(on)b.setAttribute('aria-current','location');else b.removeAttribute('aria-current')});if(active&&active!==SOFIA_NAV.active){const chip=nav.querySelector(`.chip[data-v="${active}"]`);if(chip)chip.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'nearest',inline:'center'});}SOFIA_NAV.active=active;});}
 window.addEventListener('scroll',syncSofiaNav,{passive:true});
@@ -3203,6 +3243,23 @@ html.paper .delivery-info-card{box-shadow:0 12px 30px rgba(45,39,26,.08)}
 .services-cart-note{max-width:760px;margin:18px 0 0;padding:14px 16px;border:1px solid color-mix(in srgb,var(--leaf-l) 38%,var(--line));border-radius:14px;background:color-mix(in srgb,var(--leaf) 12%,var(--card));color:var(--ink);line-height:1.65}
 .done-attached-order{display:grid;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}.done-attached-order>b{color:var(--leaf-l)}
 html.paper .services-cart-note{background:#f2f7ed;border-color:#cad8c0;color:#293427}
+@media(max-width:700px){
+ #moodnav{position:relative!important;top:auto!important;transform:none!important;transition:none!important}
+ #moodnav.is-hidden{transform:none!important}
+ #offers .dtabs{top:calc(var(--hh,76px) + 6px)!important}
+ .home-shortcuts-mobile{position:fixed;inset-inline-end:12px;bottom:calc(108px + env(safe-area-inset-bottom,0px));z-index:30;display:none;direction:rtl}
+ html[dir=ltr] .home-shortcuts-mobile{direction:ltr}
+ .home-shortcuts-mobile.is-visible{display:block}
+ .home-shortcuts-toggle{display:flex;align-items:center;gap:8px;min-height:46px;padding:0 13px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);box-shadow:0 8px 24px rgba(0,0,0,.24);font:700 13px var(--body);cursor:pointer}
+ .home-shortcuts-toggle>span{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:color-mix(in srgb,var(--leaf-l) 16%,var(--card));color:var(--leaf-l);font-size:19px;line-height:1}
+ .home-shortcuts-panel{width:min(230px,calc(100vw - 24px));max-height:min(60svh,440px);margin-bottom:8px;padding:7px;overflow-y:auto;overscroll-behavior:contain;border:1px solid var(--line);border-radius:18px;background:var(--bg);box-shadow:0 16px 40px rgba(0,0,0,.32)}
+ .home-shortcuts-panel:not([hidden]){display:grid;gap:5px}
+ .home-shortcut-link{display:flex;align-items:center;gap:10px;min-height:42px;padding:8px 10px;border:1px solid transparent;border-radius:12px;background:var(--card);color:var(--ink);text-align:start;font:600 13px var(--body);cursor:pointer}
+ .home-shortcut-link i{display:grid;place-items:center;width:25px;height:25px;flex:none;color:var(--leaf-l);font-style:normal}
+ .home-shortcut-link:focus-visible,.home-shortcuts-toggle:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+ html.paper .home-shortcuts-toggle,html.paper .home-shortcuts-panel{box-shadow:0 8px 24px rgba(45,39,26,.16)}
+}
+@media(min-width:701px){.home-shortcuts-mobile{display:none!important}}
 .handoff-status{display:flex;justify-content:center;align-items:center;gap:9px;max-width:520px;margin:0 auto 16px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--card2);color:var(--ink);font-weight:650;line-height:1.55}
 @media(max-width:800px){.services-overview-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.services-overview-grid{grid-template-columns:minmax(0,1fr)}.reservation-review dl{grid-template-columns:minmax(0,1fr)}.reservation-review-actions{display:grid;grid-template-columns:minmax(0,1fr)}.reservation-review-actions>*{width:100%;box-sizing:border-box}.services-cart-note{font-size:13px}.done-attached-order .line{grid-template-columns:48px minmax(0,1fr) auto}.done-attached-order .line img{width:48px;height:48px}}
