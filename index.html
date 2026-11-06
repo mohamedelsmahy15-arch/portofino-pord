@@ -140,7 +140,7 @@ select.ctl{appearance:none;padding-inline:14px 30px;background-image:linear-grad
 :root[dir="rtl"] select.ctl{padding-inline:30px 14px;background-position:16px 19px,11px 19px}
 .cartbtn{position:relative;width:46px;justify-content:center;padding:0}
 .badge{position:absolute;top:-7px;inset-inline-end:-7px;min-width:21px;height:21px;border-radius:11px;background:var(--leaf);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;padding-inline:5px}
-.burger{display:none}
+.burger{display:inline-flex;width:44px;justify-content:center;padding:0}
 @media (max-width:1500px){.nav button{padding:10px 11px;font-size:14.5px}.nav{gap:2px}.hdr .in{gap:12px}}
 @media (max-width:1180px){.nav,.hdr .orderbtn,.hdr .brsel{display:none}.burger{display:inline-flex;width:46px;justify-content:center;padding:0}.hdr .in{gap:10px}.logo{height:58px}.hdr .in .tools{margin-inline-start:auto}}
 .mnav{position:fixed;inset:0;width:auto;max-width:100vw;height:100vh;height:100dvh;overscroll-behavior:contain;overscroll-behavior-x:none;touch-action:pan-y;z-index:60;background:var(--bg);padding:calc(16px + env(safe-area-inset-top,0px)) max(20px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px));overflow-x:clip;overflow-y:auto;box-sizing:border-box}
@@ -1321,9 +1321,9 @@ const L = {
 };
 
 /* ---------- state ---------- */
-const S = {mx:{},dtab:(new Date().getHours()<12?'bf':'lunch'),sq:'',scat:'all',tq:'',tcat:'all',ccat:'all',cq:'',lang:'ar',view:'home',branch:'cc',brDetail:null,detailItem:null,cart:[],cartOpen:false,menuOpen:false,service:'delivery',cat:'all',q:'',
+const S = {mx:{},dtab:(new Date().getHours()<12?'bf':'lunch'),sq:'',scat:'all',tq:'',tcat:'all',ccat:'all',cq:'',lang:'ar',view:'home',branch:'cc',brDetail:null,detailItem:null,cart:[],cartOpen:false,menuOpen:false,service:'delivery',resStep:1,cat:'all',q:'',
   form:{},errors:{},done:null,party:2,opt:{},cartExpanded:false};
-try{const h=location.hash.replace('#','');if(['home','kids','menu','checkout','branches','sofia','tahia','cafe','events','contact','privacy','reserve'].includes(h))S.view=h}catch(e){}
+ try{const h=location.hash.replace('#','');if(['home','kids','menu','checkout','branches','sofia','tahia','cafe','events','services','contact','privacy','reserve'].includes(h))S.view=h}catch(e){}
 const $=(s,r=document)=>r.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const t=()=>L[S.lang];
@@ -1360,7 +1360,7 @@ const cartTotal=()=>Math.round(S.cart.reduce((a,c)=>a+c.q*unit(ITEMS.find(i=>i.i
 const optLabel=c=>{const it=ITEMS.find(i=>i.id===c.id);return it.o?lg(it.o.v[c.o]):''};
 const toast=m=>{const el=$('#toast');if(S.cartOpen||S.menuOpen)return;el.innerHTML=`<div>${esc(m)}</div>`;clearTimeout(toast.h);toast.h=setTimeout(()=>el.innerHTML='',1800)};
 const ROUTE_HISTORY=[];
-const go=(v,extra)=>{if(S.view!==v)ROUTE_HISTORY.push(S.view);S.view=v;S.cartOpen=false;S.menuOpen=false;S.done=null;S.errors={};S.brDetail=null;try{location.hash=v}catch(e){}render();window.scrollTo({top:0,behavior:'instant'})};
+const go=(v,extra)=>{if(S.view!==v)ROUTE_HISTORY.push(S.view);S.view=v;S.cartOpen=false;S.menuOpen=false;S.done=null;S.errors={};S.brDetail=null;if(v==='reserve')S.resStep=1;try{location.hash=v}catch(e){}render();window.scrollTo({top:0,behavior:'instant'})};
 function itemImg(it,cls=''){return it.img?`<img src="${IMG[it.img]}" alt="${esc(lg(it.n))}">`:it.brand==='sofia'?`<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%">${sushiSVG(120)}</div>`:`<div style="display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--mist);font-size:13px;background:radial-gradient(circle at 50% 40%,#F1EEE2,#E2DECE);width:100%;height:100%;justify-content:center"><svg viewBox="0 0 64 64" width="70" fill="none" stroke="#7BC96F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 30h36l-4 20a6 6 0 0 1-6 5H24a6 6 0 0 1-6-5z"/><path d="M18 30c0-9 6-14 14-14s14 5 14 14"/><circle cx="32" cy="12" r="3" fill="#B8500A" stroke="#B8500A"/></svg>${S.lang==='ar'?'الصورة قريبًا':'Photo coming soon'}</div>`}
 
 /* ---------- WhatsApp ---------- */
@@ -1398,23 +1398,23 @@ function orderLines(){const T=t();return S.cart.map(c=>{const it=ITEMS.find(i=>i
 
 /* ---------- views ---------- */
 function header(){
- const T=t();const links=['home','menu','sofia','tahia','branches','events','contact'];
+  const T=t();const links=['home','menu','sofia','tahia','branches','services','events','contact'];
  return `<header class="hdr"><div class="wrap in">
   <img class="logo" src="${THEME.get()==='dark'?IMG.logoI:IMG.logoP}" alt="Portofino Cafe & Restaurant" data-go="home" role="link" tabindex="0">
-  <nav class="nav" aria-label="Main">${links.map(l=>`<button data-go="${l}" class="${S.view===l?'on':''}">${T.nav[l]}</button>`).join('')}</nav>
+  <nav class="nav" aria-label="${AR()?'التنقل الرئيسي':'Main navigation'}">${links.map(l=>`<button data-go="${l}" class="${S.view===l?'on':''}">${l==='services'?(AR()?'خدماتنا':'Our services'):T.nav[l]}</button>`).join('')}</nav>
   <div class="tools">
    <select class="ctl brsel" id="brsel" aria-label="${T.branch}">${['cc','lo'].map(b=>`<option value="${b}" ${S.branch===b?'selected':''}>${T.brs[b]}</option>`).join('')}</select>
    <button class="ctl" data-act="lang" aria-label="Language">${T.lang}</button>${themeBtn(T)}
    <button class="btn o sm orderbtn" data-go="menu">${T.order}</button>
    <button class="ctl cartbtn" data-act="cart" aria-label="${T.cartT}">${ico.cart}${cartCount()?`<span class="badge ${S.bump?'bump':''}">${num(cartCount())}</span>`:''}</button>
-   <button class="ctl burger" data-act="menu" aria-label="Menu">${ico.menu}</button>
+   <button class="ctl burger" data-act="menu" aria-label="${AR()?'فتح القائمة':'Open menu'}" aria-expanded="${S.menuOpen?'true':'false'}" aria-controls="site-menu">${ico.menu}</button>
   </div></div></header>`;
 }
 function mobileNav(){
- const T=t();const links=['home','menu','sofia','tahia','branches','events','contact'];
- return `<div class="mnav" role="dialog" aria-label="Menu"><div class="top"><img src="${THEME.get()==='dark'?IMG.logoI:IMG.logoP}" alt="Portofino" style="height:60px"><button class="ctl" data-act="menu" aria-label="Close">${ico.x}</button></div>
+  const T=t();const links=['home','menu','sofia','tahia','branches','services','events','contact'];
+  return `<div class="mnav" id="site-menu" role="dialog" aria-label="${AR()?'القائمة الرئيسية':'Main menu'}"><div class="top"><img src="${THEME.get()==='dark'?IMG.logoI:IMG.logoP}" alt="Portofino" style="height:60px"><button class="ctl" data-act="menu" aria-label="${AR()?'إغلاق القائمة':'Close menu'}">${ico.x}</button></div>
  <div class="seg" style="width:100%;margin-block:8px 14px">${['cc','lo'].map(b=>`<button style="flex:1" data-act="branch" data-v="${b}" class="${S.branch===b?'on':''}">${T.brs[b]}</button>`).join('')}</div>
- ${links.map(l=>`<button class="lnk ${S.view===l?'on':''}" data-go="${l}">${T.nav[l]}<span>${ico.arr()}</span></button>`).join('')}
+  ${links.map(l=>`<button class="lnk ${S.view===l?'on':''}" data-go="${l}">${l==='services'?(AR()?'خدماتنا':'Our services'):T.nav[l]}<span>${ico.arr()}</span></button>`).join('')}
  <div class="actions" style="display:flex;gap:10px;margin-top:24px"><button class="btn o lg" style="flex:1" data-go="menu">${T.order}</button><button class="btn gh lg" data-go="reserve">${T.reqTable}</button></div>
  <div style="margin-top:20px;display:flex;align-items:center;justify-content:space-between"><span style="color:var(--mist)">Language</span><button class="ctl" data-act="lang">${T.lang}</button></div><div style="margin-top:12px;display:flex;align-items:center;justify-content:space-between"><span style="color:var(--mist)">${S.lang==='ar'?'المظهر':'Theme'}</span>${themeBtn(T)}</div></div>`;
 }
@@ -1633,7 +1633,7 @@ function menuListHTML(list){const T=t();if(!list.length)return `<div class="empt
  const searching=!!S.q.trim(),showAll=S.cat==='all';const L=showAll?{items:list,btn:''}:limitList('m:'+S.cat,list,LIM_MENU,searching||S.cat==='deal');
  if(S.cat==='deal'&&!searching)return `<div class="offers mlist">${L.items.map((x,i)=>offerCard(x,i)).join('')}</div>${L.btn}${menuPrintHTML()}`;
  const groups=S.cat==='all'?CATS.filter(([k])=>k!=='all').map(([k,n])=>({k,n,items:L.items.filter(x=>x.cat===k)})).filter(g=>g.items.length):[{k:S.cat,n:CATS.find(([k])=>k===S.cat)?.[1],items:L.items}];
- return `${groups.map(g=>{const sheets=MSHEETS.filter(x=>(MSMAP[g.k]||[]).includes(x[0]));return `<section class="mgroup" data-menu-section="${g.k}" aria-labelledby="mg-${g.k}"><div class="menu-group-head"><h2 class="disp mgtitle" id="mg-${g.k}">${g.n?lg(g.n):''}</h2>${sheets.length?`<button class="btn gh sm" data-act="mprint" data-v="${g.k}">${AR()?'المنيو المطبوع':'Printed menu'} ↓</button>`:''}</div><div class="mgrid mlist">${g.items.map((x,i)=>offerCard(x,i)).join('')}</div>${groups.length===1?L.btn:''}</section>`}).join('')}${menuPrintHTML()}`}
+  return `${groups.map(g=>{const sheets=MSHEETS.filter(x=>(MSMAP[g.k]||[]).includes(x[0]));return `<section class="mgroup" ${g===groups[0]?'id="menu-items"':''} data-menu-section="${g.k}" aria-labelledby="mg-${g.k}"><div class="menu-group-head"><h2 class="disp mgtitle" id="mg-${g.k}">${g.n?lg(g.n):''}</h2>${sheets.length?`<button class="btn gh sm" data-act="mprint" data-v="${g.k}">${AR()?'المنيو المطبوع':'Printed menu'} ↓</button>`:''}</div><div class="mgrid mlist">${g.items.map((x,i)=>offerCard(x,i)).join('')}</div>${groups.length===1?L.btn:''}</section>`}).join('')}${menuPrintHTML()}`}
 function toListTop(id){const w=document.getElementById(id),s=document.querySelector('.sofia-nav')||document.getElementById('stick');if(!w)return;const hh=(document.querySelector('.hdr')||{offsetHeight:76}).offsetHeight+(s?s.offsetHeight:0)+8;const top=w.getBoundingClientRect().top+scrollY-hh;if(scrollY>top)scrollTo({top:Math.max(0,top),behavior:'instant'})}
 function scrollMenuPrint(key){let target=key==='all'?document.getElementById('printed-menu-index'):key?document.getElementById(`printed-menu-${key}`):null;if(!target)target=document.getElementById('printed-menu-index');if(!target)return false;const nav=document.querySelector('.menu-nav'),hh=(document.querySelector('.hdr')||{offsetHeight:76}).offsetHeight+(nav?nav.offsetHeight:0)+12;scrollTo({top:Math.max(0,target.getBoundingClientRect().top+scrollY-hh),behavior:'smooth'});return true}
 function refreshMenu(){
@@ -1758,7 +1758,7 @@ function vReserve(){
  const T=t();
  if(S.done)return vDone();
  const today=new Date().toISOString().slice(0,10);
- return `<div class="wrap form-page" style="padding-block:clamp(24px,4vw,48px) 96px"><p class="eyebrow">${T.resEye}</p><header class="form-page-head"><h1 class="disp h2">${T.resT}</h1><p class="form-page-intro">${AR()?'اختار الفرع والموعد، وسنرسل طلب الحجز للفرع للمراجعة والتأكيد.':'Choose a branch and time. The branch will review your booking request and confirm with you.'}</p></header>${steps(1,AR()?['بيانات الحجز','مراجعة','واتساب']:['Booking details','Review','WhatsApp'])}
+  return `<div class="wrap form-page" style="padding-block:clamp(24px,4vw,48px) 96px"><p class="eyebrow">${T.resEye}</p><header class="form-page-head"><h1 class="disp h2">${T.resT}</h1><p class="form-page-intro">${AR()?'اختار الفرع والموعد، وسنرسل طلب الحجز للفرع للمراجعة والتأكيد.':'Choose a branch and time. The branch will review your booking request and confirm with you.'}</p></header>${steps(S.resStep===2?2:1,AR()?['بيانات الحجز','مراجعة','واتساب']:['Booking details','Review','WhatsApp'])}
  <div class="layout2" style="margin-top:28px"><form class="card form final-form" id="resf" novalidate>
    ${S.cart.length?`<details class="att"><summary><span class="ai">🧾</span><span class="at"><b>${S.lang==='ar'?'أصناف هتطلبها مع الطاولة':'Items to order with your table'}</b><small>${num(cartCount())} ${S.lang==='ar'?'أصناف':'items'} · ${money(cartTotal())}</small></span><span class="ac">${S.lang==='ar'?'عرض الطلب':'View order'}</span></summary><div class="ab">${summaryBlock()}<button type="button" class="btn gh sm" data-act="cart">${S.lang==='ar'?'تعديل الطلب':'Edit order'}</button></div></details>`:''}
   <div class="fld"><label>${T.branch}</label><div class="seg" style="display:flex">${['cc','lo'].map(b=>`<button type="button" style="flex:1" data-act="branch" data-v="${b}" class="${S.branch===b?'on':''}">${T.brs[b]}</button>`).join('')}</div></div>
@@ -1768,7 +1768,7 @@ function vReserve(){
   ${field('notes',T.notes,'textarea')}
   <div class="note">${ico.warn}<div>${AR()?'للمجموعات الكبيرة: الحجز بيتم قبلها بـ ٢٤ ساعة على الأقل. للمناسبات والحفلات كلمنا من صفحة':'Large groups: please request at least 24 hours ahead. For events and celebrations, use the'} <button type="button" class="lnkb" data-go="events">${T.nav.events}</button></div></div>
   <div class="note warn">${ico.warn}<div><b>${T.resNote}</b></div></div>
-  <div><button class="btn w lg" type="submit">${ico.wa}${T.sendReq}</button></div></form>
+   ${S.resStep===2?`<section class="reservation-review" aria-live="polite"><h2>${AR()?'مراجعة طلب الحجز':'Review your reservation'}</h2><dl><div><dt>${T.branch}</dt><dd>${T.brs[S.branch]}</dd></div><div><dt>${T.date}</dt><dd>${esc(S.form.date||'')}</dd></div><div><dt>${T.time}</dt><dd>${esc(S.form.time||'')}</dd></div><div><dt>${T.party}</dt><dd>${num(S.party)} ${T.guests}</dd></div><div><dt>${T.name}</dt><dd>${esc(S.form.name||'')}</dd></div><div><dt>${T.phone}</dt><dd>${esc(S.form.phone||'')}</dd></div></dl><button type="button" class="btn gh" data-act="res-edit">${AR()?'تعديل البيانات':'Edit details'}</button></section><div class="reservation-review-actions"><button class="btn gh" type="button" data-act="res-edit">${AR()?'رجوع لبيانات الحجز':'Back to details'}</button><button class="btn w lg" type="submit">${ico.wa}${T.sendReq}</button></div>`:`<button class="btn g lg reservation-next" type="button" data-act="res-review">${AR()?'مراجعة الحجز':'Review reservation'} ${ico.arr()}</button>`}</form>
  <aside class="card sum rsum"><div class="disp" style="font-size:24px">${T.resT}</div>
   <div class="tot"><span>${T.branch}</span><b style="color:var(--ink)">${T.brs[S.branch]}</b></div><div class="tot"><span>${T.party}</span><b style="color:var(--ink)">${num(S.party)}</b></div>
   <div style="height:1px;background:var(--line)"></div>
@@ -1777,6 +1777,19 @@ function vReserve(){
 function vBranches(){
  const T=t();
  return `<div class="wrap" style="padding-block:clamp(28px,5vw,56px) 96px"><p class="eyebrow">${T.brEye}</p><h1 class="disp h2" style="font-size:clamp(38px,6vw,68px)">${T.brT}</h1><div class="brgrid full" style="margin-top:28px">${['lo','cc'].map(b=>branchCard(b,true)).join('')}</div></div>`;
+}
+function vServices(){
+ const ar=AR();
+ const cards=[
+  ['delivery',ico.moto,ar?'التوصيل':'Delivery',ar?'اختاروا أصنافكم واطلبوا توصيل من فرع لوران.':'Choose your items and request delivery from Louran.'],
+  ['menu',ico.cart,ar?'الطلب على الطاولة':'Order to table',ar?'اختاروا الأصناف، ثم اختاروا الطلب على الطاولة من السلة.':'Choose your items, then select table service in the cart.', 'table'],
+  ['reserve',ico.cal,ar?'حجز الطاولات':'Table reservations',ar?'اختاروا الفرع والموعد وعدد الضيوف لإرسال طلب الحجز.':'Choose a branch, time and party size to request a table.'],
+  ['events',ico.cal,ar?'المناسبات والاحتفالات':'Celebrations',ar?'رتّبوا عيد ميلاد أو مناسبة خاصة مع فريق الفرع.':'Plan a birthday or special occasion with the branch team.'],
+  ['kids','<span class="service-emoji">🧸</span>',ar?'ركن الأطفال':'Kids corner',ar?'اكتشفوا ركن الأطفال ووجباتهم في الفرعين.':'Explore the kids corner and menu at both branches.'],
+  ['cafe','<span class="service-emoji">☕</span>',ar?'القهوة والمشروبات':'Coffee and drinks',ar?'تصفحوا قائمة المشروبات والقهوة.':'Browse coffee and drinks.'],
+  ['branches',ico.pin,ar?'الفروع والمواقف':'Branches and parking',ar?'تعرفوا على فروعنا ومعلومات الزيارة.':'Find our branches and visit information.']
+ ];
+ return `<div class="wrap services-page" style="padding-block:clamp(28px,5vw,56px) 96px"><p class="eyebrow">${ar?'خدمات بورتوفينو':'PORTOFINO SERVICES'}</p><h1 class="disp h2">${ar?'خدماتنا':'Our services'}</h1><p class="lead">${ar?'اختاروا الخدمة المناسبة، وهنساعدكم تكملوا طلبكم أو زيارتكم بسهولة.':'Choose the service you need and we will help you plan your order or visit.'}</p><div class="services-overview-grid">${cards.map(([route,icon,title,desc,service])=>`<button class="card service-overview-card" type="button" data-go="${route}" ${service?`data-service="${service}"`:''}><span aria-hidden="true">${icon}</span><b>${title}</b><small>${desc}</small><i aria-hidden="true">${ico.arr()}</i></button>`).join('')}</div></div>`;
 }
 function sofiaListHTML(){
  const searching=!!S.sq.trim();
@@ -1878,7 +1891,7 @@ function vEvents(){
  <div class="row2">${field('name',T.name)}${field('phone',T.phone,'tel','inputmode="tel"')}</div>${field('guestsN',T.guestsN,'number','min="1"')}${evTypes()}${field('date',T.date,'date')}${field('notes',T.details,'textarea')}
  <div><button class="btn w lg" type="submit">${ico.wa}${T.sendInq}</button><p class="ds" style="margin-top:12px">${T.evNote}</p></div></form></div>`;
 }
-const EVT=[['عيد ميلاد','Birthday'],['خطوبة / كتب كتاب','Engagement / wedding'],['عزومة عائلية','Family gathering'],['لمّة أصحاب','Friends get-together'],['حفلة أطفال','Kids party'],['تخرج / نجاح','Graduation / achievement'],['اجتماع عمل / شركة','Business / corporate'],['مناسبة أخرى','Other']];
+const EVT=[['عيد ميلاد','Birthday'],['ذكرى سنوية','Anniversary'],['خطوبة / كتب كتاب','Engagement / wedding'],['عزومة عائلية','Family gathering'],['لمّة أصحاب','Friends get-together'],['حفلة أطفال','Kids party'],['تخرج / نجاح','Graduation / achievement'],['اجتماع عمل / شركة','Business / corporate'],['مناسبة أخرى','Other']];
 function evTypes(){
  const T=t();const e=S.errors.evType;const cur=S.form.evType||'';const other=EVT[EVT.length-1][AR()?0:1];
  return `<div class="fld ${e?'bad':''}"><label>${T.evType}</label><div class="opts" role="group" aria-label="${T.evType}">${EVT.map(x=>{const v=x[AR()?0:1];return `<button type="button" class="chip ${cur===v?'on':''}" data-act="evt" data-v="${esc(v)}">${cur===v?'✓ ':''}${v}</button>`}).join('')}</div>${cur===other?field('evOther',AR()?'اكتب نوع المناسبة':'Describe the event'):''}${e?`<div class="er">● ${e}</div>`:''}</div>`;
@@ -1950,10 +1963,10 @@ function render(){
  const T=t();const _cl=document.getElementById('car');const _cs=_cl?_cl.scrollLeft:null;document.documentElement.classList.toggle('lock',!!(S.cartOpen||S.menuOpen));
  applyTheme();document.documentElement.lang=S.lang;document.documentElement.dir=S.lang==='ar'?'rtl':'ltr';
  document.title=S.lang==='ar'?'بورتوفينو كافيه ومطعم':'Portofino Website';
- const views={home:vHome,kids:vKids,menu:vMenu,delivery:vDelivery,checkout:vCheckout,reserve:vReserve,branches:vBranches,sofia:vSofia,tahia:vTahia,cafe:vCafe,events:vEvents,contact:vContact,privacy:vPrivacy};
+  const views={home:vHome,kids:vKids,menu:vMenu,delivery:vDelivery,checkout:vCheckout,reserve:vReserve,services:vServices,branches:vBranches,sofia:vSofia,tahia:vTahia,cafe:vCafe,events:vEvents,contact:vContact,privacy:vPrivacy};
   const show=cartCount()>0&&!S.done;
   const cartBar=cartBarVisible();
- const keyboardShortcuts=S.view==='home'?`<a class="skiplink" href="#primary-order">${AR()?'تخطّي إلى الطلب':'Skip to ordering'}</a><a class="skiplink" href="#primary-reserve">${AR()?'تخطّي إلى الحجز':'Skip to reservation'}</a>`:'';
+  const keyboardShortcuts=S.view==='home'?`<a class="skiplink" href="#primary-order">${AR()?'تخطّي إلى الطلب':'Skip to ordering'}</a><a class="skiplink" href="#primary-reserve">${AR()?'تخطّي إلى الحجز':'Skip to reservation'}</a>`:S.view==='menu'?`<a class="skiplink" href="#menu-items">${AR()?'تخطّي إلى أصناف المنيو':'Skip to menu items'}</a>`:'';
  $('#app').innerHTML=`<a class="skiplink" href="#main">${AR()?'تخطي إلى المحتوى':'Skip to content'}</a>${keyboardShortcuts}`+header()+`<main class="stage" id="main" tabindex="-1">${backHTML()}${(views[S.view]||vHome)()}</main>`+footer()+
    `${S.detailItem?dishDetailModal(S.detailItem):''}<div class="mbar ${cartBar?'show':''}${S.bump?' bump':''}"><button data-act="cart"><span style="display:flex;align-items:center;gap:10px"><span style="min-width:26px;height:26px;border-radius:13px;background:#fff;color:var(--ember);display:inline-flex;align-items:center;justify-content:center;font-size:13px">${num(cartCount())}</span>${T.cartT}</span><b>${money(cartTotal())} ${ico.arr()}</b></button></div>`+
   `<button class="totop" data-act="top" aria-label="${AR()?'للأعلى':'Back to top'}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>`+
@@ -2017,7 +2030,9 @@ document.addEventListener('click',e=>{
    return;
  }
  if(act==='duel'){const w=el.closest('.duel');const v=el.dataset.v;w.dataset.pick=(w.dataset.pick===v)?'':v;w.querySelectorAll('.dpick').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===w.dataset.pick?'true':'false'));return}
-   else if(act==='lang'){S.lang=S.lang==='ar'?'en':'ar'}
+    else if(act==='res-review'){S.errors={};const T=t(),F=S.form;for(const k of ['date','time','name'])if(!(F[k]||'').trim())S.errors[k]=T.eReq;const ph=(F.phone||'').replace(/[\s\-]/g,'').replace(/^\+?2/,'');if(!/^0?1[0-9]{9}$/.test(ph))S.errors.phone=T.ePhone;if(Object.keys(S.errors).length){render();document.querySelector('#resf .fld.bad input')?.focus();return}S.resStep=2}
+    else if(act==='res-edit'){S.resStep=1;S.errors={}}
+    else if(act==='lang'){S.lang=S.lang==='ar'?'en':'ar'}
   else if(act==='theme'){THEME.set(THEME.get()==='dark'?'paper':'dark')}
  else if(act==='cart'){S.cartOpen=!S.cartOpen}
  else if(act==='menu'){S.menuOpen=!S.menuOpen}
@@ -2115,7 +2130,7 @@ document.addEventListener('submit',e=>{
  if(msg){const det={service:f.id==='chk'?T.svcName[S.service]:'',branch:T.brs[S.branch],date:F.date||'',time:F.time||'',pick:F.pick||'',table:F.table||'',party:(kind==='res'?S.party:F.guestsN)||'',name:F.name||'',phone:F.phone||'',notes:F.notes||'',area:F.area||'',address:F.address||'',type:F.evOther&&F.evType===EVT[EVT.length-1][AR()?0:1]?F.evOther:(F.evType||'')};S.done={link:waLink(msg),kind:kind==='res'?'res':(kind==='ev'?'ev':'ord'),details:det}}
  render();window.scrollTo({top:0,behavior:'instant'});
 });
-window.addEventListener('hashchange',()=>{try{const h=location.hash.replace('#','');if(h&&h!==S.view&&['home','kids','menu','delivery','checkout','branches','sofia','tahia','cafe','events','contact','privacy','reserve'].includes(h)){if(ROUTE_HISTORY.length){const last=ROUTE_HISTORY[ROUTE_HISTORY.length-1];if(last===h)ROUTE_HISTORY.pop();else ROUTE_HISTORY.push(S.view)}else ROUTE_HISTORY.push(S.view);S.view=h;S.cartOpen=false;S.menuOpen=false;render();window.scrollTo({top:0,behavior:'instant'})}}catch(e){}});
+window.addEventListener('hashchange',()=>{try{const h=location.hash.replace('#','');if(h&&h!==S.view&&['home','kids','menu','delivery','checkout','branches','sofia','tahia','cafe','events','services','contact','privacy','reserve'].includes(h)){if(ROUTE_HISTORY.length){const last=ROUTE_HISTORY[ROUTE_HISTORY.length-1];if(last===h)ROUTE_HISTORY.pop();else ROUTE_HISTORY.push(S.view)}else ROUTE_HISTORY.push(S.view);S.view=h;S.cartOpen=false;S.menuOpen=false;render();window.scrollTo({top:0,behavior:'instant'})}}catch(e){}});
 
 /* ---------- motion layer ---------- */
 const FX={seen:new Set(),lastView:null,io:null,tilts:[],drifts:[],car:null,dots:null,mx:0,my:0,tx:0,ty:0,moved:false,go:false,hero:null,decos:[],lsy:-1,dirty:true,cT:0,cB:0,
@@ -3173,4 +3188,18 @@ body :where(button,a,input,select,textarea,[tabindex="0"]){scroll-margin-block:9
 @media(max-width:640px){.delivery-overview-grid{grid-template-columns:minmax(0,1fr);gap:12px}.delivery-actions{display:grid;grid-template-columns:minmax(0,1fr)}.delivery-actions .btn{width:100%;box-sizing:border-box;white-space:normal;text-align:center}.checkout-meta-row{font-size:12.5px}}
 html.paper .delivery-info-card{box-shadow:0 12px 30px rgba(45,39,26,.08)}
 @media(prefers-reduced-motion:reduce){.delivery-info-card,.delivery-actions .btn{transition:none!important}.delivery-info-card:hover,.delivery-actions .btn:hover{transform:none!important}}
+</style><style id="services-reservation-review">
+.services-page{max-width:1100px}.services-page>.h2{font-size:clamp(36px,5vw,58px);margin:0 0 10px}
+.services-overview-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:28px}
+.service-overview-card{position:relative;display:grid;grid-template-columns:48px minmax(0,1fr) 24px;grid-template-rows:auto auto;align-items:center;gap:7px 14px;min-width:0;min-height:126px;padding:20px;text-align:start;background:var(--card);border:1px solid var(--line);color:var(--ink);cursor:pointer}
+.service-overview-card>span:first-child{grid-row:1/3;display:grid;place-items:center;width:46px;height:46px;border-radius:15px;background:color-mix(in srgb,var(--leaf-l) 14%,var(--card));color:var(--leaf-l)}
+.service-overview-card b{align-self:end;font-size:18px}.service-overview-card small{align-self:start;color:var(--mist);font-size:13px;line-height:1.55}.service-overview-card>i{grid-column:3;grid-row:1/3;color:var(--leaf-l);font-style:normal}
+.service-emoji{font-size:25px}.service-overview-card:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.reservation-review{margin:20px 0;padding:clamp(16px,3vw,24px);border:1px solid var(--line);border-radius:18px;background:var(--card2);color:var(--ink)}
+.reservation-review h2{margin:0 0 12px;font-size:clamp(20px,4vw,26px)}.reservation-review dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 18px;margin:0 0 14px}
+.reservation-review dl>div{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line);min-width:0}.reservation-review dt{color:var(--mist)}.reservation-review dd{margin:0;text-align:end;overflow-wrap:anywhere;font-weight:650}
+.reservation-review-actions{display:flex;gap:10px;flex-wrap:wrap}.reservation-review-actions>*{flex:1 1 220px}.reservation-next{width:100%;margin-top:6px}
+@media(max-width:800px){.services-overview-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.services-overview-grid{grid-template-columns:minmax(0,1fr)}.reservation-review dl{grid-template-columns:minmax(0,1fr)}.reservation-review-actions{display:grid;grid-template-columns:minmax(0,1fr)}.reservation-review-actions>*{width:100%;box-sizing:border-box}}
+@media(prefers-reduced-motion:reduce){.service-overview-card{transition:none!important}.service-overview-card:hover{transform:none!important}}
 </style></body></html>
