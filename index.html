@@ -473,6 +473,7 @@ html:not(.atop) .cue,html.lock .cue,html.intro .cue{opacity:0;pointer-events:non
 }
 .card.offer.inc{border-color:rgba(123,201,111,.55);box-shadow:0 0 0 1px rgba(123,201,111,.25)}
 .inb{position:absolute;top:10px;inset-inline-start:10px;background:var(--leaf);color:#fff;font-size:12.5px;font-weight:700;padding:5px 11px;border-radius:999px;box-shadow:0 6px 16px rgba(0,0,0,.4);animation:bump .5s cubic-bezier(.3,1.6,.5,1)}
+.inb.inb-sm,.cgrid .cfr .inb{top:4px!important;inset-inline-start:4px!important;min-width:22px!important;height:22px!important;padding:0 5px!important;font-size:11px!important;font-weight:800!important;border-radius:11px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;box-shadow:0 2px 8px rgba(0,0,0,.45)!important;border:1.5px solid rgba(255,255,255,.9)!important;line-height:1!important;z-index:3!important}
 .qs{display:inline-flex;align-items:center;border-radius:999px;background:var(--leaf);color:#fff;overflow:hidden}
 .qs button{width:44px;height:44px;border:0;background:none;color:#fff;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .qs button:active{background:rgba(0,0,0,.18)}
@@ -1235,7 +1236,7 @@ const L = {
   name:'الاسم',phone:'رقم الموبايل',area:'المنطقة',address:'العنوان بالتفصيل وأقرب علامة',notes:'ملاحظات (اختياري)',tableNo:'رقم الطاولة',pickT:'ميعاد الاستلام',branch:'الفرع',
   eName:'اكتب اسمك',ePhone:'اكتب رقم موبايل صحيح',eReq:'الحقل ده مطلوب',
   sendWA:'ابعت الطلب على واتساب',summary:'ملخص الطلب',
-   doneT:'تم استلام طلبك بنجاح!',doneS:'تم تسجيل بياناتك وتأكيد تفاصيل الحجز. اضغط بالأسفل لفتح محادثة واتساب المباشرة مع الفرع للتأكيد الفوري.',openWA:'افتح واتساب',editOrder:'عدّل البيانات أو أضف طلبات',newOrder:'ابدأ طلب جديد',
+   doneT:'فاضل خطوة واحدة لتأكيد طلبك!',doneS:'تم تسجيل بياناتك وتجهيز الرسالة. اضغط بالأسفل لفتح محادثة واتساب وإرسالها للفرع لاعتماد وتأكيد طلبك فوراً.',openWA:'افتح واتساب',editOrder:'عدّل البيانات أو أضف طلبات',newOrder:'ابدأ طلب جديد',
   resEye:'الحجوزات',resT:'اطلب طاولة',date:'التاريخ',time:'الوقت',party:'عدد الأفراد',guests:'أفراد',
   resNote:'يتم استلام وتأكيد حجزك فورًا مع مدير الصالة عبر واتساب لضمان أفضل طاولة متاحة.',sendReq:'ابعت الطلب على واتساب',
    attached:'أصناف هتطلبها مع الطاولة',statusW:'الحالة بعد الإرسال: في انتظار رد الفرع',
@@ -1465,7 +1466,7 @@ function dishDetailModal(id){
 function offerCard(it,ix,variant){
  const T=t();const sel=S.opt[it.id]||0;const ci=S.cart.findIndex(c=>c.id===it.id&&c.o===(it.o?sel:0));const inCart=ci>=0;const tq=S.cart.filter(c=>c.id===it.id).reduce((n,c)=>n+c.q,0);
  const ready=READY_OFFER_IMAGES[it.id]||it.readyImg||(it.brand==='sofia'?SOFIA_CATEGORY_IMAGES[it.sc&&it.sc.ar]:it.brand==='cafe'?CAFE_CARD_IMAGES[it.g]:null);const image=ready?`<img src="${ready}" alt="${esc(lg(it.n))}" loading="lazy" decoding="async">`:itemImg(it);
- return `<div class="cslot r tl ${variant||''}" data-id="${it.id}" style="--d:${Math.min(ix||0,4)*.05}s"><article class="card offer ${it.brand==='sofia'?'sofc':it.brand==='tahia'?'tahc':''} ${tq?'inc':''}"><div class="ph">${image.replace('<img ','<img data-lb="menu" ')}${it.deal?`<span class="rib">🔥 ${AR()?'عرض '+(new Date().getHours()<14?'صباحي':'مسائي'):(new Date().getHours()<14?'Morning Deal':'Evening Deal')}</span>`:it.old?`<span class="rib">${AR()?'وفّر ':'Save '}${num(it.old-it.price)}</span>`:''}${CHEF.includes(it.id)&&variant!=='chef'?`<span class="chefb">★ ${AR()?'اختيار مميز':'Featured'}</span>`:''}${tq?`<span class="inb">✓ ${S.lang==='ar'?'في السلة':'In cart'} · ${num(tq)}</span>`:''}</div>
+ return `<div class="cslot r tl ${variant||''}" data-id="${it.id}" style="--d:${Math.min(ix||0,4)*.05}s"><article class="card offer ${it.brand==='sofia'?'sofc':it.brand==='tahia'?'tahc':''} ${tq?'inc':''}"><div class="ph">${image.replace('<img ','<img data-lb="menu" ')}${it.deal?`<span class="rib">🔥 ${AR()?'عرض '+(new Date().getHours()<14?'صباحي':'مسائي'):(new Date().getHours()<14?'Morning Deal':'Evening Deal')}</span>`:it.old?`<span class="rib">${AR()?'وفّر ':'Save '}${num(it.old-it.price)}</span>`:''}${CHEF.includes(it.id)&&variant!=='chef'?`<span class="chefb">★ ${AR()?'اختيار مميز':'Featured'}</span>`:''}${tq?`<span class="inb ${variant==='cfr'?'inb-sm':''}">✓ ${variant==='cfr'?num(tq):(S.lang==='ar'?'في السلة':'In cart')+' · '+num(tq)}</span>`:''}</div>
   <div>${variant==='chef'?`<p class="eyebrow" style="margin:0 0 6px;color:var(--gold)">${it.brand==='sofia'?(AR()?"سوفيا سوشي":"Sofia’s Sushi"):it.brand==='tahia'?(AR()?"مطبخ تحية":"Tahia Kitchen"):(AR()?"بورتوفينو":"Portofino")}</p>`:''}<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px"><h3 class="nm" style="margin:0">${lg(it.n)}</h3><button class="btn-detail" type="button" data-act="detail" data-id="${it.id}" aria-label="${AR()?'تفاصيل':'Details'} ${esc(lg(it.n))}" style="background:none;border:0;color:var(--leaf-l);font-size:12px;cursor:pointer;padding:2px 4px;text-decoration:underline;flex:none">${AR()?'تفاصيل':'Details'}</button></div><p class="ds">${lg(it.d)}</p></div>
   ${it.o?`<div class="opts" role="group" aria-label="${lg(it.o.l)}">${it.o.v.map((v,i)=>`<button class="chip ${sel===i?'on':''}" data-act="opt" data-id="${it.id}" data-v="${i}">${sel===i?'✓ ':''}${lg(v)}${v.p!=null?' · '+num(v.p):''}</button>`).join('')}</div>`:''}
   <div class="foot" style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:auto"><span class="price">${it.old?`<s class="was">${num(it.old)}</s>`:''}${num(unit(it,it.o?sel:0))}<small>${T.currency}</small></span>${inCart?`<div class="qs" role="group" aria-label="${S.lang==='ar'?'الكمية':'Quantity'}"><button data-act="cq" data-id="${it.id}" data-o="${it.o?sel:0}" data-v="-1" aria-label="-">${S.cart[ci].q===1?ico.trash:'−'}</button><b>${num(S.cart[ci].q)}</b><button data-act="cq" data-id="${it.id}" data-o="${it.o?sel:0}" data-v="1" aria-label="+">+</button></div>`:`<button class="btn o sm" data-act="add" data-id="${it.id}">${T.add}</button>`}</div></article></div>`;
@@ -1667,21 +1668,40 @@ function vCheckout(){
   <div class="tot big"><span>${T.total}</span><b>${money(cartTotal())}</b></div><div style="font-size:12.5px;color:var(--dim)">${taxTxt()}</div></aside></div></div>`;
 }
 function vDone(){
- const T=t();const d=S.done;const dt=d.details||{};const ar=AR();
- return `<div class="wrap" style="padding-block:clamp(40px,6vw,80px) 120px;max-width:760px"><div class="card form ok"><div class="big">${ico.chk}</div>
-  <h1 class="disp h2" style="margin:0">${T.doneT}</h1><p class="lead">${T.doneS}</p>
-  <div class="note ok" style="background:rgba(123,201,111,.15);border:1px solid var(--leaf);border-radius:14px;padding:16px;display:flex;gap:12px;align-items:flex-start;color:#fff;margin-bottom:20px">${ico.chk}<div style="flex:1"><b>${ar?'تم تسجيل تفاصيل طلبك بنجاح وجارٍ التنسيق المباشر مع الفرع':'Your details have been successfully registered. Direct branch confirmation ready.'}</b>
-  <div class="done-details-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.15);font-size:14px">
+ const T=t();const d=S.done||{};const dt=d.details||{};const ar=AR();
+ const kind=d.kind||(dt.type?'ev':(dt.party?'res':'ord'));
+ const title=kind==='res'?(ar?'فاضل خطوة واحدة لتأكيد الحجز!':'One last step to confirm your booking!'):
+             kind==='ev'?(ar?'فاضل خطوة واحدة لتأكيد مناسبتك!':'One last step to confirm your event!'):
+             (ar?'فاضل خطوة واحدة لتأكيد طلبك!':'One last step to confirm your order!');
+ const sub=kind==='res'?(ar?'تم تسجيل بياناتك وتجهيز رسالة الحجز. حجزك لم يُعتمد بعد؛ اضغط على الزر الأخضر بالأسفل لفتح محادثة واتساب وإرسال الرسالة للفرع لتأكيد طاولتك فوراً.':'Your booking details are prepared. Your reservation is not confirmed yet; tap the button below to send the message via WhatsApp to secure your table.'):
+           kind==='ev'?(ar?'تم تسجيل بياناتك وتجهيز تفاصيل المناسبة. اضغط على الزر الأخضر بالأسفل لفتح محادثة واتساب وإرسال الرسالة للفرع لتأكيد الموعد والتنسيق المباشر.':'Your event details are prepared. Tap the button below to send the message via WhatsApp to coordinate and confirm your date.'):
+           (ar?'تم تسجيل بياناتك وتجهيز قائمة الطلبات. أوردرك لم يُعتمد بعد؛ اضغط على الزر الأخضر بالأسفل لإرسال الرسالة للفرع عبر واتساب لبدء التحضير والتوصيل فوراً.':'Your order details are prepared. Your order is not confirmed yet; tap the button below to send the message via WhatsApp to start preparation.');
+ const boxTitle=kind==='res'?(ar?'بيانات الحجز المسجلة (في انتظار الإرسال عبر واتساب)':'Booking Details (Awaiting WhatsApp Confirmation)'):
+                kind==='ev'?(ar?'تفاصيل المناسبة المسجلة (في انتظار الإرسال عبر واتساب)':'Event Details (Awaiting WhatsApp Confirmation)'):
+                (ar?'بيانات الطلب المسجلة (في انتظار الإرسال عبر واتساب)':'Order Details (Awaiting WhatsApp Confirmation)');
+ return `<div class="wrap" style="padding-block:clamp(40px,6vw,80px) 120px;max-width:760px"><div class="card form ok"><div class="big" style="background:rgba(37,211,102,.15);color:#25D366;border-radius:50%;width:76px;height:76px;display:inline-flex;align-items:center;justify-content:center;margin:0 auto 16px">${ico.wa}</div>
+  <h1 class="disp h2" style="margin:0">${title}</h1><p class="lead" style="margin-top:10px">${sub}</p>
+  <div class="note ok" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:18px;display:flex;gap:12px;align-items:flex-start;color:#fff;margin-bottom:20px">${ico.chk}<div style="flex:1"><b style="color:var(--gold);display:block;margin-bottom:4px">${boxTitle}</b>
+  <div class="done-details-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:10px;padding-top:12px;border-top:1px solid rgba(255,255,255,.1);font-size:14px">
     ${dt.branch?`<div><span style="color:var(--mist)">${ar?'الفرع':'Branch'}:</span> <b>${dt.branch}</b></div>`:''}
     ${dt.date?`<div><span style="color:var(--mist)">${ar?'التاريخ':'Date'}:</span> <b>${dt.date}</b></div>`:''}
     ${dt.time?`<div><span style="color:var(--mist)">${ar?'الوقت':'Time'}:</span> <b>${dt.time}</b></div>`:''}
     ${dt.party?`<div><span style="color:var(--mist)">${ar?'عدد الأفراد':'Party size'}:</span> <b>${dt.party}</b></div>`:''}
     ${dt.name?`<div><span style="color:var(--mist)">${ar?'الاسم':'Guest Name'}:</span> <b>${dt.name}</b></div>`:''}
     ${dt.phone?`<div><span style="color:var(--mist)">${ar?'رقم الموبايل':'Phone'}:</span> <b dir="ltr">${dt.phone}</b></div>`:''}
+    ${dt.area?`<div><span style="color:var(--mist)">${ar?'المنطقة':'Area'}:</span> <b>${dt.area}</b></div>`:''}
+    ${dt.address?`<div><span style="color:var(--mist)">${ar?'العنوان':'Address'}:</span> <b>${dt.address}</b></div>`:''}
     ${dt.type?`<div><span style="color:var(--mist)">${ar?'نوع المناسبة':'Event Type'}:</span> <b>${dt.type}</b></div>`:''}
     ${dt.notes?`<div style="grid-column:1/-1"><span style="color:var(--mist)">${ar?'ملاحظات':'Notes'}:</span> <i>${esc(dt.notes)}</i></div>`:''}
   </div></div></div>
-  <a class="btn w lg" href="${d.link}" target="_blank" rel="noopener">${ico.wa}${T.openWA}</a>
+  <div class="wa-action-hint" style="background:rgba(37,211,102,.12);border:1px solid #25D366;border-radius:14px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;gap:12px;color:#fff;text-align:start;box-shadow:0 4px 14px rgba(37,211,102,.15)">
+    <span style="font-size:24px;line-height:1">📲</span>
+    <div style="flex:1;font-size:14px;line-height:1.5">
+      <b style="color:#25D366;display:block;margin-bottom:2px">${ar?'تنبيه هام لتأكيد طلبك:':'Important notice to confirm:'}</b>
+      ${ar?'الطلب لن يصل للفرع تلقائياً بدون إرسال الرسالة. اضغط الزر بالأسفل لفتح واتساب وإرسال الرسالة الجاهزة لتأكيد الحجز فوراً.':'Your request does not reach the branch automatically. Tap the button below to send the prepared WhatsApp message now.'}
+    </div>
+  </div>
+  <a class="btn w lg" href="${d.link}" target="_blank" rel="noopener" style="font-size:16px;font-weight:700;box-shadow:0 6px 20px rgba(37,211,102,.35)">${ico.wa} ${ar?'تأكيد وإرسال عبر واتساب الآن':'Confirm & Send via WhatsApp Now'}</a>
    <button class="btn gh" data-act="edit-order">${T.editOrder}</button>
    <button class="btn gh" style="margin-top:8px;opacity:.7" data-act="restart">${T.newOrder}</button></div></div>`;
 }
@@ -1906,7 +1926,7 @@ function soft(){
   oc.className=nc.className;
   ['.opts','.foot'].forEach(sel=>{const a=oc.querySelector(sel),b=nc.querySelector(sel);if(a&&b)a.replaceWith(b)});
   const ob=oc.querySelector('.inb'),nb=nc.querySelector('.inb');
-  if(nb&&!ob)oc.querySelector('.ph').appendChild(nb);else if(nb&&ob)ob.textContent=nb.textContent;else if(ob)ob.remove();
+  if(nb&&!ob)oc.querySelector('.ph').appendChild(nb);else if(nb&&ob){ob.textContent=nb.textContent;ob.className=nb.className;}else if(ob)ob.remove();
  });
  const cb=$('.cartbtn');if(cb)cb.innerHTML=`${ico.cart}${cartCount()?`<span class="badge ${S.bump?'bump':''}">${num(cartCount())}</span>`:''}`;
  const mb=$('.mbar');if(mb)mb.outerHTML=mbarHTML();
@@ -2934,7 +2954,7 @@ html.paper .mnav .seg button:focus-visible{outline:3px solid #c69b3b!important;o
 /* Drinks menu: keep the photo, name, options and price in separate, predictable areas. */
 .cgrid{grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch;gap:14px}
 .cgrid .cslot.cfr .card.offer{display:grid!important;grid-template-columns:76px minmax(0,1fr) auto!important;grid-template-areas:"ph tx ft" "ph op op"!important;align-items:center!important;gap:10px 14px!important;height:100%;min-width:0;padding:14px!important}
-.cgrid .cfr .card.offer>.ph{grid-area:ph!important;display:block!important;width:76px!important;height:76px!important;aspect-ratio:1!important;overflow:hidden;border-radius:13px!important}
+.cgrid .cfr .card.offer>.ph{grid-area:ph!important;display:block!important;width:76px!important;height:76px!important;aspect-ratio:1!important;position:relative!important;overflow:visible!important;border-radius:13px!important}
 .cgrid .cfr .ph img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
 .cgrid .cfr .card.offer>div:not(.opts):not(.foot):not(.ph){grid-area:tx!important;min-width:0}
 .cgrid .cfr .nm{margin:0!important;line-height:1.35;overflow-wrap:anywhere}
