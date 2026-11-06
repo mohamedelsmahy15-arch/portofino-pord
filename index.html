@@ -1415,7 +1415,7 @@ function mobileNav(){
  return `<div class="mnav" role="dialog" aria-label="Menu"><div class="top"><img src="${THEME.get()==='dark'?IMG.logoI:IMG.logoP}" alt="Portofino" style="height:60px"><button class="ctl" data-act="menu" aria-label="Close">${ico.x}</button></div>
  <div class="seg" style="width:100%;margin-block:8px 14px">${['cc','lo'].map(b=>`<button style="flex:1" data-act="branch" data-v="${b}" class="${S.branch===b?'on':''}">${T.brs[b]}</button>`).join('')}</div>
  ${links.map(l=>`<button class="lnk ${S.view===l?'on':''}" data-go="${l}">${T.nav[l]}<span>${ico.arr()}</span></button>`).join('')}
- <div style="display:flex;gap:10px;margin-top:24px"><button class="btn o lg" style="flex:1" data-go="menu">${T.order}</button><button class="btn gh lg" data-go="reserve">${T.reqTable}</button></div>
+ <div class="actions" style="display:flex;gap:10px;margin-top:24px"><button class="btn o lg" style="flex:1" data-go="menu">${T.order}</button><button class="btn gh lg" data-go="reserve">${T.reqTable}</button></div>
  <div style="margin-top:20px;display:flex;align-items:center;justify-content:space-between"><span style="color:var(--mist)">Language</span><button class="ctl" data-act="lang">${T.lang}</button></div><div style="margin-top:12px;display:flex;align-items:center;justify-content:space-between"><span style="color:var(--mist)">${S.lang==='ar'?'المظهر':'Theme'}</span>${themeBtn(T)}</div></div>`;
 }
 const READY_OFFER_IMAGES={
@@ -1555,13 +1555,13 @@ function vHome(){
   <p class="eyebrow">${AR()?'وقت حلو للعيلة':'A little fun for the family'}</p><h2 class="disp h2" style="margin-bottom:12px">${AR()?'ركن الأطفال، فسحة تفرّحهم':'A happy place for little guests'}</h2>
   <div class="kidsfeature kids-home-feature">
    <div class="kidsmedia"><button class="kids-home-link" type="button" data-go="kids" aria-label="${AR()?'اكتشف ركن الأطفال':'Explore the kids corner'}"><img class="kids-home-poster" src="صور الموقع - من فيسبوك/kids-corner-home-gallery.jpg" alt="${AR()?'أجواء اللعب والأنشطة في ركن أطفال بورتوفينو':'Play and activities at Portofino kids corner'}" loading="lazy"><i class="kids-balloon b1" aria-hidden="true"></i><i class="kids-balloon b2" aria-hidden="true"></i><i class="kids-balloon b3" aria-hidden="true"></i><i class="kids-balloon b4" aria-hidden="true"></i><span class="kids-cta">${AR()?'اكتشف ركن الأطفال':'Explore the kids corner'} ${ico.arr()}</span></button></div>
-   <div class="kidsbody"><h3>${AR()?'كل زيارة فيها حكاية':'Make every visit a little adventure'}</h3><p class="lead">${AR()?'لعب وألوان وأنشطة عائلية في كامب شيزار ولوران.':'Play, color and family activities at Camp Caesar and Louran.'}</p><div style="margin-top:18px"><button class="btn g" data-go="kids">${AR()?'دخول ركن الأطفال':'Explore Kids Area'} ${ico.arr()}</button></div></div>
+   <div class="kidsbody"><h3>${AR()?'كل زيارة فيها حكاية':'Make every visit a little adventure'}</h3><p class="lead">${AR()?'لعب وألوان وأنشطة عائلية في كامب شيزار ولوران.':'Play, color and family activities at Camp Caesar and Louran.'}</p></div>
   </div>
  </div></section>
 
  <section class="sec perks-home" id="perks-home"><div class="wrap">
   <header class="perks-heading"><div><p class="eyebrow">${AR()?'تفاصيل تخلّي القعدة أريح':'A MORE COMFORTABLE VISIT'}</p><h2 class="disp h2">${AR()?'كل حاجة جاهزة لقعدتكم':'Everything for an easier visit'}</h2><p>${AR()?'واي فاي سريع، مواقف مجانية، وترفيه يكمّل أجواء بورتفينو.':'Fast Wi-Fi, free parking, and entertainment to round out your Portofino visit.'}</p></div><span class="wifi-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 9a12 12 0 0 1 15 0M7.5 12a7.2 7.2 0 0 1 9 0M10.3 15a2.9 2.9 0 0 1 3.4 0M12 18.5h.01"/></svg>${AR()?'إنترنت فائق السرعة':'High-speed Wi-Fi'}</span></header>
-  <div class="perks-gallery"><article class="perk-card"><img src="صور الموقع - من فيسبوك/486019707_1054832716682331_3379402140548748676_n.jpg" alt="${AR()?'مواقف مجانية في فرعي بورتفينو':'Free parking at Portofino branches'}" loading="lazy" decoding="async"><div class="perk-caption"><h3>${AR()?'وصل واركن براحتك':'Arrive and park with ease'}</h3><p>${AR()?'مواقف مجانية في لوران وكامب شيزار':'Free parking in Louran and Camp Caesar'}</p></div></article><article class="perk-card"><img src="صور الموقع - من فيسبوك/486172025_1054832596682343_197666068301021980_n.jpg" alt="${AR()?'أجواء ترفيه وألعاب في بورتفينو':'Games and entertainment at Portofino'}" loading="lazy" decoding="async"><div class="perk-caption"><h3>${AR()?'اللمة أحلى مع الترفيه':'Make time for a little fun'}</h3><p>${AR()?'ألعاب وأجواء حلوة تكمل قعدتكم':'Games and good vibes to enjoy together'}</p></div></article></div>
+   <div class="perks-gallery"><article class="perk-card"><img src="صور الموقع - من فيسبوك/486019707_1054832716682331_3379402140548748676_n.jpg" alt="${AR()?'مواقف مجانية في فرعي بورتفينو':'Free parking at Portofino branches'}" loading="lazy" decoding="async"><div class="perk-caption"><h3>${AR()?'وصلوا بالسلامة، واركنوا براحتكم':'Arrive safely, then park with ease'}</h3><p>${AR()?'مواقف مجانية في لوران وكامب شيزار':'Free parking in Louran and Camp Caesar'}</p></div></article><article class="perk-card"><img src="صور الموقع - من فيسبوك/486172025_1054832596682343_197666068301021980_n.jpg" alt="${AR()?'أجواء ترفيه وألعاب في بورتفينو':'Games and entertainment at Portofino'}" loading="lazy" decoding="async"><div class="perk-caption"><h3>${AR()?'اللمة أحلى مع الترفيه':'Make time for a little fun'}</h3><p>${AR()?'ألعاب وأجواء حلوة تكمل قعدتكم':'Games and good vibes to enjoy together'}</p></div></article></div>
  </div></section>
 
  ${vidSection()}
@@ -1922,9 +1922,10 @@ function render(){
  applyTheme();document.documentElement.lang=S.lang;document.documentElement.dir=S.lang==='ar'?'rtl':'ltr';
  document.title=S.lang==='ar'?'بورتوفينو كافيه ومطعم':'Portofino Website';
  const views={home:vHome,kids:vKids,menu:vMenu,checkout:vCheckout,reserve:vReserve,branches:vBranches,sofia:vSofia,tahia:vTahia,cafe:vCafe,events:vEvents,contact:vContact,privacy:vPrivacy};
- const show=cartCount()>0&&!S.done;
+  const show=cartCount()>0&&!S.done;
+  const cartBar=cartBarVisible();
  $('#app').innerHTML=`<a class="skiplink" href="#main">${AR()?'تخطي إلى المحتوى':'Skip to content'}</a>`+header()+`<main class="stage" id="main" tabindex="-1">${backHTML()}${(views[S.view]||vHome)()}</main>`+footer()+
-  `${S.detailItem?dishDetailModal(S.detailItem):''}<div class="mbar ${show?'show':''}${S.bump?' bump':''}"><button data-act="cart"><span style="display:flex;align-items:center;gap:10px"><span style="min-width:26px;height:26px;border-radius:13px;background:#fff;color:var(--ember);display:inline-flex;align-items:center;justify-content:center;font-size:13px">${num(cartCount())}</span>${T.cartT}</span><b>${money(cartTotal())} ${ico.arr()}</b></button></div>`+
+   `${S.detailItem?dishDetailModal(S.detailItem):''}<div class="mbar ${cartBar?'show':''}${S.bump?' bump':''}"><button data-act="cart"><span style="display:flex;align-items:center;gap:10px"><span style="min-width:26px;height:26px;border-radius:13px;background:#fff;color:var(--ember);display:inline-flex;align-items:center;justify-content:center;font-size:13px">${num(cartCount())}</span>${T.cartT}</span><b>${money(cartTotal())} ${ico.arr()}</b></button></div>`+
   `<button class="totop" data-act="top" aria-label="${AR()?'للأعلى':'Back to top'}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>`+
   (S.view==='home'?`<button class="cue" data-act="down" aria-label="${AR()?'اكتشف المزيد':'Scroll down'}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>`:'')+(S.cartOpen?drawer():'')+(S.menuOpen?mobileNav():'')+((S.cartOpen||S.menuOpen)?'':`<a class="wafab ${show?'up':''}" href="${waLink(T.waHello)}" target="_blank" rel="noopener" aria-label="WhatsApp">${ico.wa}</a>`);
  afterRender();
@@ -1932,7 +1933,8 @@ function render(){
 }
 
 /* ---------- events ---------- */
-function mbarHTML(){const T=t();const show=cartCount()>0;return `<div class="mbar ${show?'show':''}${S.bump?' bump':''}"><button data-act="cart"><span style="display:flex;align-items:center;gap:10px"><span style="min-width:26px;height:26px;border-radius:13px;background:#fff;color:var(--ember);display:inline-flex;align-items:center;justify-content:center;font-size:13px">${num(cartCount())}</span>${T.cartT}</span><b>${money(cartTotal())} ${ico.arr()}</b></button></div>`}
+function cartBarVisible(){return cartCount()>0&&!S.done&&!['reserve','checkout','events','contact'].includes(S.view)}
+function mbarHTML(){const T=t();return `<div class="mbar ${cartBarVisible()?'show':''}${S.bump?' bump':''}"><button data-act="cart"><span style="display:flex;align-items:center;gap:10px"><span style="min-width:26px;height:26px;border-radius:13px;background:#fff;color:var(--ember);display:inline-flex;align-items:center;justify-content:center;font-size:13px">${num(cartCount())}</span>${T.cartT}</span><b>${money(cartTotal())} ${ico.arr()}</b></button></div>`}
 function renderDrawer(){
  const old=document.querySelector('.drawer');if(!old)return render();
  const st=(old.querySelector('.bd')||{}).scrollTop||0;
@@ -2108,13 +2110,11 @@ window.addEventListener('scroll',syncMenuNav,{passive:true});
 function initKidsWelcomeIntro(st){
  st=st||document.querySelector(".stage")||document.getElementById("main")||document.body;
  if(!st||document.querySelector(".kids-welcome-overlay"))return;
- const dark=THEME.get()==="dark",src=dark?"فيديوهات-ركن-الأطفال/portofino-kids-dark_port.mp4":"فيديوهات-ركن-الأطفال/portofino-kids-light_port.mp4",poster=dark?"فيديوهات-ركن-الأطفال/poster-dark_port.jpg":"فيديوهات-ركن-الأطفال/poster-light_port.jpg";
+ const dark=THEME.get()==="dark",poster=dark?"فيديوهات-ركن-الأطفال/poster-dark_port.jpg":"فيديوهات-ركن-الأطفال/poster-light_port.jpg";
  const overlay=document.createElement("div");overlay.className="kids-welcome-overlay";overlay.setAttribute("role","dialog");overlay.setAttribute("aria-modal","true");overlay.setAttribute("aria-label",AR()?"ترحيب ركن الأطفال":"Kids corner welcome");
- overlay.innerHTML=`<video class="kids-welcome-film" muted playsinline preload="auto" poster="${poster}" aria-hidden="true"><source src="${src}" type="video/mp4"></video><div class="kids-welcome-gate gate-a" aria-hidden="true"></div><div class="kids-welcome-gate gate-b" aria-hidden="true"></div><div class="kids-welcome-copy"><span>${AR()?"أهلاً بيكم":"WELCOME TO"}</span><strong>${AR()?"ركن الأطفال":"Kids Corner"}</strong></div><button class="kids-welcome-skip" type="button">${AR()?"تخطي":"Skip"}</button>`;
- st.appendChild(overlay);const film=overlay.querySelector("video");let done=false,opening=setTimeout(()=>overlay.classList.add("is-opening"),1450),fallback=setTimeout(finish,3300);
+ overlay.innerHTML=`<img class="kids-welcome-still" src="${poster}" alt="" aria-hidden="true"><div class="kids-welcome-gate gate-a" aria-hidden="true"></div><div class="kids-welcome-gate gate-b" aria-hidden="true"></div><div class="kids-welcome-copy"><span>${AR()?"أهلاً بيكم":"WELCOME TO"}</span><strong>${AR()?"ركن الأطفال":"Kids Corner"}</strong></div><button class="kids-welcome-skip" type="button">${AR()?"دخول":"Enter"}</button>`;
+ st.appendChild(overlay);let done=false,opening=setTimeout(()=>overlay.classList.add("is-opening"),650),fallback=setTimeout(finish,1800);
  function finish(){if(done)return;done=true;clearTimeout(opening);clearTimeout(fallback);overlay.classList.add("is-closing");setTimeout(()=>overlay.remove(),550)}
- function playFromFive(){if(done)return;if(film.duration>5)film.currentTime=5;const p=film.play();p&&p.catch(()=>{})}
- film.addEventListener("loadedmetadata",playFromFive,{once:true});film.addEventListener("timeupdate",()=>{if(film.currentTime>=8)finish()});if(film.readyState>=1)playFromFive();
  overlay.querySelector(".kids-welcome-skip").addEventListener("click",finish);const key=e=>{if(e.key==="Escape"&&!done){finish();document.removeEventListener("keydown",key)}};document.addEventListener("keydown",key);overlay.addEventListener("click",e=>{if(e.target===overlay)finish()});
 }function afterRender(){saveState();requestAnimationFrame(catHints);initVideos();if(S.view==="kids"){const kv=document.getElementById("kids-video");if(kv){kv.muted=true;const p=kv.play();if(p)p.catch(()=>{})}}(window.requestIdleCallback||setTimeout)(predecode,{timeout:600});{const h=document.querySelector('.hdr');if(h)document.documentElement.style.setProperty('--hh',h.offsetHeight+'px');const mn=document.getElementById('moodnav');if(mn)document.documentElement.style.setProperty('--moodnav-h',mn.offsetHeight+'px')}
  const same=FX.lastView===S.view;FX.lastView=S.view;if(!same&&S.view==="kids")initKidsWelcomeIntro($(".stage"));if(!same&&S.view==='home'){const nav=document.getElementById('moodnav');HOME_NAV.start=nav?homeNavFlowTop(nav):0;HOME_NAV.y=scrollY;if(nav)nav.classList.remove('is-hidden')}if(S.view==='home')requestAnimationFrame(syncHomeNav);if(S.view==='sofia')requestAnimationFrame(syncSofiaNav);else SOFIA_NAV.active='';if(S.view==='menu')requestAnimationFrame(syncMenuNav);else MENU_NAV.active='';
@@ -2372,6 +2372,8 @@ html.paper .kidsfeature .kids-home-link:after{background:linear-gradient(180deg,
 </style>
 <style id="kids-welcome-intro">
 .kids-welcome-overlay{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;overflow:hidden;background:radial-gradient(ellipse at center,rgba(54,86,63,.18),transparent 58%),#f7f4ec;isolation:isolate;opacity:1;transition:opacity .55s ease}
+.kids-welcome-still{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;background:#f7f4ec}
+html:not(.paper) .kids-welcome-still{background:#0a111d}
 html:not(.paper) .kids-welcome-overlay{background:radial-gradient(ellipse at center,rgba(69,107,78,.2),transparent 58%),#0a111d}
 .kids-welcome-film{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;background:transparent}
 .kids-welcome-overlay:before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(4,10,18,.1),rgba(4,10,18,.24));pointer-events:none}
@@ -3030,4 +3032,45 @@ html.lock,html.lock body{overflow-x:clip;scrollbar-gutter:stable}
 @media(max-width:960px){.layout2:has(>form.card.form){justify-items:center}.layout2>form.card.form{width:min(100%,760px);margin-inline:auto}.layout2>aside.card.sum{width:min(100%,760px);margin-inline:auto}}
 /* The home rail stays contextual while scrolling down and yields the screen while scrolling up; the cart remains the single bottom action. */
 @media(max-width:760px){.moodnav{scroll-margin-top:var(--hh,76px)}.moodnav:not(.is-hidden){z-index:24}.mbar.show{z-index:25}.mbar.show~.totop{bottom:calc(92px + env(safe-area-inset-bottom,0px))}}
+</style><style id="responsive-overflow-and-form-final">
+/* Keep overlays and panels inside the viewport in both reading directions. */
+html,body{max-inline-size:100%;overflow-x:clip;overscroll-behavior-x:none}
+html.lock,html.lock body{overflow:hidden;overflow-x:clip;scrollbar-gutter:stable}
+.mnav{inset:0;inline-size:auto;max-inline-size:100%;box-sizing:border-box;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;overscroll-behavior-x:none;touch-action:pan-y}
+.mnav>*{min-inline-size:0;max-inline-size:100%}
+.mnav .lnk{min-inline-size:0;overflow-wrap:anywhere}
+.mnav .top img{width:auto;max-width:calc(100% - 60px);max-height:60px;object-fit:contain}
+.mnav .seg{box-sizing:border-box;inline-size:100%;min-inline-size:0}
+.mnav .seg button{min-inline-size:0;overflow-wrap:anywhere}
+.mnav .actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px!important;min-inline-size:0}
+.mnav .actions .btn{box-sizing:border-box;width:100%;min-inline-size:0;max-inline-size:100%;padding-inline:8px;font-size:clamp(12px,3.7vw,15px);line-height:1.25;white-space:normal;overflow-wrap:anywhere}
+.drawer{box-sizing:border-box;inline-size:min(480px,100vw);max-inline-size:100vw;overflow-x:hidden;overscroll-behavior-x:none}
+.drawer .bd{min-inline-size:0;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain}
+/* The home kids photo keeps its complete composition and its single clear CTA. */
+#kids-home .kidsfeature{box-sizing:border-box;width:min(100%,1120px);max-width:100%;min-width:0;overflow:hidden;grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr)!important;gap:clamp(12px,2.2vw,26px)!important}
+#kids-home .kidsfeature>*{min-width:0;max-width:100%}
+#kids-home .kidsfeature .kidsmedia{position:relative!important;inset:auto!important;width:100%!important;height:auto!important;min-width:0!important;min-height:0!important;aspect-ratio:4/3!important;overflow:hidden;align-self:stretch!important}
+#kids-home .kidsfeature .kidsmedia .kids-home-link{position:absolute!important;inset:0!important;display:block;width:100%!important;height:100%!important;min-width:0!important;min-height:0!important;max-width:100%!important;aspect-ratio:auto!important;overflow:hidden;box-sizing:border-box}
+#kids-home .kidsfeature .kidsmedia .kids-home-link img.kids-home-poster{position:absolute!important;inset:0!important;display:block;width:100%!important;height:100%!important;min-width:0!important;min-height:0!important;max-width:100%!important;aspect-ratio:auto!important;object-fit:contain!important;object-position:center!important;background:var(--card)!important;transform:none!important;filter:none!important}
+#kids-home .kidsfeature .kidsmedia .kids-home-link .kids-cta{inset-inline:clamp(8px,2vw,16px)!important;bottom:clamp(8px,2vw,16px)!important;width:auto!important;max-width:calc(100% - 16px)!important;min-width:0;padding:10px 14px!important;white-space:normal;overflow-wrap:anywhere;line-height:1.3}
+#kids-home .kidsfeature .kidsmedia .kids-home-link .kids-brandmark{max-width:calc(100% - 24px);white-space:normal;text-align:center}
+#kids-home .kidsfeature .kidsbody{box-sizing:border-box;width:100%!important;min-width:0!important;max-width:100%;overflow-wrap:anywhere}
+/* Let drinks cards reflow to the width available to their contents. */
+.cgrid{width:100%;min-width:0;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr))!important;align-items:stretch}
+.cgrid .cslot,.cgrid .cslot.cfr,.cgrid .cslot.cfr .card.offer{min-width:0;max-width:100%;width:100%;box-sizing:border-box}
+.cgrid .cslot.cfr .card.offer{overflow:hidden}
+.cgrid .cfr .card.offer>div:not(.opts):not(.foot):not(.ph){min-width:0;overflow-wrap:anywhere}
+.cgrid .cfr .nm,.cgrid .cfr .ds{min-width:0;overflow-wrap:anywhere}
+.cgrid .cfr .foot{min-width:0;max-width:100%}
+.cgrid .cfr .opts{min-width:0;max-width:100%;flex-wrap:wrap}
+/* Reflow each drink card by its own width, including when a tablet grid makes narrow columns. */
+.cgrid .cslot.cfr{container-type:inline-size;min-width:0}
+@container (max-width:420px){.cgrid .cslot.cfr .card.offer{grid-template-columns:76px minmax(0,1fr)!important;grid-template-areas:"ph tx" "ph ft" "op op"!important;gap:6px 12px!important}.cgrid .cslot.cfr .card.offer>.ph{width:76px!important;height:76px!important}.cgrid .cslot.cfr .card.offer .foot{flex-direction:row!important;align-items:center!important;justify-content:space-between!important;width:100%;min-width:0!important}.cgrid .cslot.cfr .card.offer .opts{display:flex;flex-wrap:wrap;min-width:0}.cgrid .cslot.cfr .card.offer .foot .btn{min-height:40px;padding-inline:10px;font-size:12px;white-space:normal}}
+/* A floating cart should not cover fields or submit buttons during long forms. */
+.mbar.is-suppressed{display:none!important}
+.stage form button[type="submit"]{box-sizing:border-box;min-width:0;max-width:100%;padding-inline:12px;justify-content:center;white-space:normal;overflow-wrap:anywhere}
+@media(max-width:800px){#kids-home .kidsfeature{grid-template-columns:minmax(0,1fr)!important;gap:12px!important}#kids-home .kidsfeature .kidsmedia{aspect-ratio:4/3!important}#kids-home .kidsfeature .kidsbody{width:100%!important;margin:0!important;padding:clamp(16px,5vw,24px)!important}}
+@media(max-width:760px){.cgrid{grid-template-columns:1fr!important;gap:11px}.cgrid .cslot.cfr .card.offer{grid-template-columns:68px minmax(0,1fr)!important;grid-template-areas:"ph tx" "ph ft" "op op"!important;gap:6px 12px!important;padding:12px!important}.cgrid .cfr .card.offer>.ph{width:68px!important;height:68px!important}.cgrid .cfr .foot{flex-direction:row;justify-content:space-between!important;align-items:center!important;width:100%;min-width:0}.cgrid .cfr .opts .chip{white-space:normal;max-width:100%}}
+@media(max-width:360px){.hdr .in{gap:6px}.hdr .logo{height:38px!important;max-width:82px;object-fit:contain}.hdr .in .tools{gap:4px;min-width:0}.hdr .in .tools>.ctl{min-width:38px;min-height:40px;padding-inline:7px}.hdr .burger{width:38px}.hdr .in .tools>[data-act="lang"]{min-width:42px;padding-inline:6px}.cgrid .cslot.cfr .card.offer{grid-template-columns:58px minmax(0,1fr)!important;gap:6px 9px!important;padding:10px!important}.cgrid .cfr .card.offer>.ph{width:58px!important;height:58px!important}.cgrid .cfr .foot .btn{min-height:34px;padding-inline:8px;font-size:11.5px}}
+@media(prefers-reduced-motion:reduce){#kids-home .kidsfeature .kids-home-poster{transition:none!important}}
 </style></body></html>
