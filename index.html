@@ -140,7 +140,7 @@ select.ctl{appearance:none;padding-inline:14px 30px;background-image:linear-grad
 :root[dir="rtl"] select.ctl{padding-inline:30px 14px;background-position:16px 19px,11px 19px}
 .cartbtn{position:relative;width:46px;justify-content:center;padding:0}
 .badge{position:absolute;top:-7px;inset-inline-end:-7px;min-width:21px;height:21px;border-radius:11px;background:var(--leaf);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;padding-inline:5px}
-.burger{display:inline-flex;width:44px;justify-content:center;padding:0}
+.burger{display:none;width:44px;justify-content:center;padding:0}
 @media (max-width:1500px){.nav button{padding:10px 11px;font-size:14.5px}.nav{gap:2px}.hdr .in{gap:12px}}
 @media (max-width:1180px){.nav,.hdr .orderbtn,.hdr .brsel{display:none}.burger{display:inline-flex;width:46px;justify-content:center;padding:0}.hdr .in{gap:10px}.logo{height:58px}.hdr .in .tools{margin-inline-start:auto}}
 .mnav{position:fixed;inset:0;width:auto;max-width:100vw;height:100vh;height:100dvh;overscroll-behavior:contain;overscroll-behavior-x:none;touch-action:pan-y;z-index:60;background:var(--bg);padding:calc(16px + env(safe-area-inset-top,0px)) max(20px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px));overflow-x:clip;overflow-y:auto;box-sizing:border-box}
@@ -1709,8 +1709,7 @@ function vDone(){
              kind==='ev'?(ar?'راجع تفاصيل مناسبتك':'Review your celebration'):
              (ar?'راجع طلبك قبل الإرسال':'Review your order');
  
- const sub=ar?'تأكد من التفاصيل، ثم أرسلها إلى الفرع عبر واتساب. الحجز أو الطلب لا يتأكد إلا بعد رد الفرع.':
-              'Check the details, then send them to the branch on WhatsApp. Your request is confirmed after the branch replies.';
+  const sub=d.handoff?(ar?'واتساب اتفتح في تبويب آخر. أرسل الرسالة هناك، وانتظر رد الفرع لتأكيد الحجز أو الطلب.':'WhatsApp opened in another tab. Send the message there, then wait for the branch to confirm your request.'):(ar?'تأكد من التفاصيل، ثم أرسلها إلى الفرع عبر واتساب. الحجز أو الطلب لا يتأكد إلا بعد رد الفرع.':'Check the details, then send them to the branch on WhatsApp. Your request is confirmed after the branch replies.');
 
  const summaryHeading=kind==='res'?(ar?'ملخص بيانات الحجز':'Booking Summary'):
                       kind==='ev'?(ar?'ملخص بيانات المناسبة':'Event Summary'):
@@ -1718,9 +1717,9 @@ function vDone(){
  const progressLabels=kind==='ev'?(ar?['تفاصيل المناسبة','مراجعة','واتساب']:['Event details','Review','WhatsApp']):kind==='res'?(ar?['بيانات الحجز','مراجعة','واتساب']:['Booking details','Review','WhatsApp']):(ar?['بيانات الطلب','مراجعة','واتساب']:['Order details','Review','WhatsApp']);
 
  return `<div class="wrap done-wrap" style="padding-block:clamp(18px,4vw,44px) 56px;max-width:760px"><div class="card form ok done-card" style="padding:clamp(20px,4vw,40px);text-align:center">
-  <ol class="steps form-steps done-steps" aria-label="${ar?'خطوات الإرسال':'Send steps'}">${progressLabels.map((label,i)=>`<li class="${i===0?'done':i===1?'cur':''}"><span>${i===0?'✓':i+1}</span>${label}</li>`).join('')}</ol>
+   <ol class="steps form-steps done-steps" aria-label="${ar?'خطوات الإرسال':'Send steps'}">${progressLabels.map((label,i)=>`<li class="${i===0?'done':i===(d.handoff?2:1)?'cur':''}"><span>${i===0?'✓':i+1}</span>${label}</li>`).join('')}</ol>
   <div class="done-wa-icon" aria-hidden="true">${ico.wa}</div>
-  <h1 class="disp h2" style="margin:0;font-size:clamp(24px,4vw,32px);line-height:1.2;color:var(--ink)">${title}</h1>
+   <h1 class="disp h2" style="margin:0;font-size:clamp(24px,4vw,32px);line-height:1.2;color:var(--ink)">${d.handoff?(ar?'تم فتح واتساب':'WhatsApp opened'):title}</h1>
   <p class="lead done-sub" style="margin:8px auto 16px;max-width:440px;font-size:14.5px;line-height:1.6;color:var(--mist)">${sub}</p>
 
   <div class="done-summary-box" style="background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:start;margin-bottom:18px">
@@ -1745,8 +1744,7 @@ function vDone(){
     </div>
   </div>
 
-  <a class="btn w lg done-main-cta" href="${d.link}" target="_blank" rel="noopener">${ico.wa} ${ar?'إرسال للفرع عبر واتساب':'Send to the branch on WhatsApp'}</a>
-  <p class="done-whatsapp-note">${ar?'ستُفتح رسالة جاهزة للمراجعة والإرسال. لن يتم إرسالها تلقائيًا.':'A prepared message will open for you to review and send. It will not be sent automatically.'}</p>
+   ${d.handoff?`<div class="handoff-status" role="status">${ico.chk} ${ar?'الرسالة جاهزة في تبويب واتساب. ارجع للموقع بعد إرسالها.':'Your message is ready in the WhatsApp tab. Return here after sending it.'}</div>`:`<a class="btn w lg done-main-cta" href="${d.link}" data-act="whatsapp-handoff" target="_blank" rel="noopener">${ico.wa} ${ar?'إرسال للفرع عبر واتساب':'Send to the branch on WhatsApp'}</a><p class="done-whatsapp-note">${ar?'ستُفتح رسالة جاهزة للمراجعة والإرسال. لن يتم إرسالها تلقائيًا.':'A prepared message will open for you to review and send. It will not be sent automatically.'}</p>`}
 
   <div class="done-actions" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
     <button class="btn gh sm" style="flex:1;min-width:140px;justify-content:center;font-size:13px" data-act="edit-order">${T.editOrder}</button>
@@ -2032,6 +2030,7 @@ document.addEventListener('click',e=>{
  if(act==='duel'){const w=el.closest('.duel');const v=el.dataset.v;w.dataset.pick=(w.dataset.pick===v)?'':v;w.querySelectorAll('.dpick').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===w.dataset.pick?'true':'false'));return}
     else if(act==='res-review'){S.errors={};const T=t(),F=S.form;for(const k of ['date','time','name'])if(!(F[k]||'').trim())S.errors[k]=T.eReq;const ph=(F.phone||'').replace(/[\s\-]/g,'').replace(/^\+?2/,'');if(!/^0?1[0-9]{9}$/.test(ph))S.errors.phone=T.ePhone;if(Object.keys(S.errors).length){render();document.querySelector('#resf .fld.bad input')?.focus();return}S.resStep=2}
     else if(act==='res-edit'){S.resStep=1;S.errors={}}
+  else if(act==='whatsapp-handoff'){setTimeout(()=>{if(S.done){S.done.handoff=true;render();window.scrollTo({top:0,behavior:'instant'})}},300);return}
     else if(act==='lang'){S.lang=S.lang==='ar'?'en':'ar'}
   else if(act==='theme'){THEME.set(THEME.get()==='dark'?'paper':'dark')}
  else if(act==='cart'){S.cartOpen=!S.cartOpen}
@@ -3199,6 +3198,7 @@ html.paper .delivery-info-card{box-shadow:0 12px 30px rgba(45,39,26,.08)}
 .reservation-review h2{margin:0 0 12px;font-size:clamp(20px,4vw,26px)}.reservation-review dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 18px;margin:0 0 14px}
 .reservation-review dl>div{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line);min-width:0}.reservation-review dt{color:var(--mist)}.reservation-review dd{margin:0;text-align:end;overflow-wrap:anywhere;font-weight:650}
 .reservation-review-actions{display:flex;gap:10px;flex-wrap:wrap}.reservation-review-actions>*{flex:1 1 220px}.reservation-next{width:100%;margin-top:6px}
+.handoff-status{display:flex;justify-content:center;align-items:center;gap:9px;max-width:520px;margin:0 auto 16px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--card2);color:var(--ink);font-weight:650;line-height:1.55}
 @media(max-width:800px){.services-overview-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.services-overview-grid{grid-template-columns:minmax(0,1fr)}.reservation-review dl{grid-template-columns:minmax(0,1fr)}.reservation-review-actions{display:grid;grid-template-columns:minmax(0,1fr)}.reservation-review-actions>*{width:100%;box-sizing:border-box}}
 @media(prefers-reduced-motion:reduce){.service-overview-card{transition:none!important}.service-overview-card:hover{transform:none!important}}
