@@ -129,6 +129,7 @@ section{position:relative}
 .hdr{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:rgba(10,18,32,.96);border-bottom:1px solid rgba(255,255,255,.06)}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:40;background:var(--bg)}
 .hdr .in{display:flex;align-items:center;gap:20px;min-height:76px}
+:root[dir="ltr"] .hdr .in{max-width:1480px}
 .logo{height:70px;width:auto;cursor:pointer;margin-block:-4px}
 .nav{display:flex;gap:6px;margin-inline:auto}
 .nav button{white-space:nowrap;background:none;border:0;cursor:pointer;padding:10px 14px;border-radius:999px;font-size:15px;color:var(--ink);font-weight:500;min-height:44px}
@@ -1561,7 +1562,7 @@ function vHome(){
 
  <section class="sec perks-home" id="perks-home"><div class="wrap">
   <header class="perks-heading"><div><p class="eyebrow">${AR()?'تفاصيل تخلّي القعدة أريح':'A MORE COMFORTABLE VISIT'}</p><h2 class="disp h2">${AR()?'كل حاجة جاهزة لقعدتكم':'Everything for an easier visit'}</h2><p>${AR()?'واي فاي سريع، مواقف مجانية، وترفيه يكمّل أجواء بورتفينو.':'Fast Wi-Fi, free parking, and entertainment to round out your Portofino visit.'}</p></div><span class="wifi-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 9a12 12 0 0 1 15 0M7.5 12a7.2 7.2 0 0 1 9 0M10.3 15a2.9 2.9 0 0 1 3.4 0M12 18.5h.01"/></svg>${AR()?'إنترنت فائق السرعة':'High-speed Wi-Fi'}</span></header>
-   <div class="perks-gallery"><article class="perk-card"><img src="صور الموقع - من فيسبوك/486019707_1054832716682331_3379402140548748676_n.jpg" alt="${AR()?'مواقف مجانية في فرعي بورتفينو':'Free parking at Portofino branches'}" loading="lazy" decoding="async"><div class="perk-caption"><h3>${AR()?'وصلوا بالسلامة، واركنوا براحتكم':'Arrive safely, then park with ease'}</h3><p>${AR()?'مواقف مجانية في لوران وكامب شيزار':'Free parking in Louran and Camp Caesar'}</p></div></article><article class="perk-card"><img src="صور الموقع - من فيسبوك/486172025_1054832596682343_197666068301021980_n.jpg" alt="${AR()?'أجواء ترفيه وألعاب في بورتفينو':'Games and entertainment at Portofino'}" loading="lazy" decoding="async"><div class="perk-caption"><h3>${AR()?'اللمة أحلى مع الترفيه':'Make time for a little fun'}</h3><p>${AR()?'ألعاب وأجواء حلوة تكمل قعدتكم':'Games and good vibes to enjoy together'}</p></div></article></div>
+   <div class="perks-gallery"><article class="perk-card"><img src="صور الموقع - من فيسبوك/486019707_1054832716682331_3379402140548748676_n.jpg" alt="${AR()?'مواقف مجانية في فرعي بورتفينو':'Free parking at Portofino branches'}" loading="lazy" decoding="async"><div class="perk-caption"><h3>${AR()?'توصلوا بالسلامة، واركنوا براحتكم':'Arrive safely and park with ease'}</h3><p>${AR()?'مواقف مجانية في فرعي لوران وكامب شيزار':'Free parking at both our Louran and Camp Caesar branches'}</p></div></article><article class="perk-card"><img src="صور الموقع - من فيسبوك/486172025_1054832596682343_197666068301021980_n.jpg" alt="${AR()?'أجواء ترفيه وألعاب في بورتفينو':'Games and entertainment at Portofino'}" loading="lazy" decoding="async"><div class="perk-caption"><h3>${AR()?'اللمة أحلى مع الترفيه':'Make time for a little fun'}</h3><p>${AR()?'ألعاب وأجواء حلوة تكمل قعدتكم':'Games and good vibes to enjoy together'}</p></div></article></div>
  </div></section>
 
  ${vidSection()}
