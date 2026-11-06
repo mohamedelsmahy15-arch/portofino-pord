@@ -1598,16 +1598,17 @@ function vHome(){
 }
 function vDelivery(){
  const ar=AR(),branch=t().brs.lo;
+ const hasOrder=cartCount()>0;
  return `<div class="wrap delivery-page" style="padding-block:clamp(28px,5vw,56px) 96px">
   <p class="eyebrow">${ar?'خدمة التوصيل':'DELIVERY SERVICE'}</p>
   <h1 class="disp h2">${ar?'توصيل بورتوفينو':'Portofino delivery'}</h1>
-  <p class="lead delivery-intro">${ar?'اختاروا أصنافكم من المنيو، وسنجهّز طلب التوصيل من فرع لوران.':'Choose from the menu and we will coordinate your delivery order from Louran.'}</p>
+  <p class="lead delivery-intro">${hasOrder?(ar?`سلتكم فيها ${num(cartCount())} أصناف. اختاروا «كمّل طلب التوصيل» للانتقال مباشرةً لبيانات العنوان، أو أضيفوا أصنافًا أخرى من المنيو.`:`Your cart has ${num(cartCount())} items. Choose “Continue to delivery” to enter your address, or add more items from the menu.`):(ar?'اختاروا أصنافكم من المنيو، وسنجهّز طلب التوصيل من فرع لوران.':'Choose from the menu and we will coordinate your delivery order from Louran.')}</p>
   <div class="delivery-overview-grid">
    <article class="card delivery-info-card"><span aria-hidden="true">${ico.moto}</span><div><h2 class="disp">${ar?'التوصيل من لوران':'Delivery from Louran'}</h2><p>${ar?'طلبات التوصيل يديرها فرع لوران حتى لو كان الفرع المختار كامب شيزار.':'Delivery is managed by the Louran branch, even when Camp Caesar is selected.'}</p></div></article>
    <article class="card delivery-info-card"><span aria-hidden="true">${ico.pin}</span><div><h2 class="disp">${ar?'اختاروا فرعكم':'Choose your branch'}</h2><p>${ar?`الفرع المختار حاليًا: ${t().brs[S.branch]}. سيؤكد الفريق تفاصيل الطلب والتوصيل.`:`Current branch: ${t().brs[S.branch]}. The team will confirm order and delivery details.`}</p></div></article>
   </div>
   <div class="note grn delivery-note"><div>${ar?'بعد اختيار الأصناف، أدخلوا المنطقة والعنوان ورقم الموبايل في نموذج الطلب. راجعوا التفاصيل قبل فتح واتساب.':'After choosing your items, enter your area, address and mobile number in the order form. Review the details before opening WhatsApp.'}</div></div>
-  <div class="delivery-actions"><button class="btn g lg" data-go="menu" data-cat="all" data-service="delivery">${ar?'تصفح المنيو للتوصيل':'Browse menu for delivery'} ${ico.arr()}</button>${cartCount()?`<button class="btn gh lg" data-act="cart">${ar?'افتح السلة':'Open cart'} ${ico.cart}</button>`:''}</div>
+  <div class="delivery-actions">${hasOrder?`<button class="btn g lg" data-act="service-continue" data-service="delivery">${ar?'كمّل طلب التوصيل':'Continue to delivery'} ${ico.arr()}</button><button class="btn gh lg" data-go="menu" data-cat="all" data-service="delivery">${ar?'إضافة أصناف من المنيو':'Add items from the menu'} ${ico.arr()}</button>`:`<button class="btn g lg" data-go="menu" data-cat="all" data-service="delivery">${ar?'تصفح المنيو للتوصيل':'Browse menu for delivery'} ${ico.arr()}</button>`}</div>
  </div>`;
 }
 function branchCard(b,full){
@@ -1750,6 +1751,7 @@ function vDone(){
       ${dt.type?`<div class="done-detail"><span>${ar?'نوع المناسبة':'Event type'}</span><b>${esc(dt.type)}</b></div>`:''}
       ${dt.notes?`<div class="done-detail wide"><span>${ar?'ملاحظات':'Notes'}</span><i>${esc(dt.notes)}</i></div>`:''}
     </div>
+    ${kind==='ev'&&S.cart.length?`<div class="done-attached-order"><b>${ar?'الأصناف المضافة للمناسبة':'Items attached to this event request'}</b>${summaryBlock()}<div class="tot big"><span>${T.total}</span><b>${money(cartTotal())}</b></div></div>`:''}
   </div>
 
    ${d.handoff?`<div class="handoff-status" role="status">${ico.chk} ${ar?'الرسالة جاهزة في تبويب واتساب. ارجع للموقع بعد إرسالها.':'Your message is ready in the WhatsApp tab. Return here after sending it.'}</div>`:`<a class="btn w lg done-main-cta" href="${d.link}" data-act="whatsapp-handoff" target="_blank" rel="noopener">${ico.wa} ${ar?'إرسال للفرع عبر واتساب':'Send to the branch on WhatsApp'}</a><p class="done-whatsapp-note">${ar?'ستُفتح رسالة جاهزة للمراجعة والإرسال. لن يتم إرسالها تلقائيًا.':'A prepared message will open for you to review and send. It will not be sent automatically.'}</p>`}
@@ -1787,7 +1789,7 @@ function vBranches(){
 function vServices(){
  const ar=AR();
  const cards=[
-  ['delivery',ico.moto,ar?'التوصيل':'Delivery',ar?'اختاروا أصنافكم واطلبوا توصيل من فرع لوران.':'Choose your items and request delivery from Louran.'],
+  ['delivery',ico.moto,ar?'التوصيل':'Delivery',ar?'اختاروا أصنافكم واطلبوا توصيل من فرع لوران.':'Choose your items and request delivery from Louran.','delivery'],
   ['menu',ico.cart,ar?'الطلب على الطاولة':'Order to table',ar?'اختاروا الأصناف، ثم اختاروا الطلب على الطاولة من السلة.':'Choose your items, then select table service in the cart.', 'table'],
   ['reserve',ico.cal,ar?'حجز الطاولات':'Table reservations',ar?'اختاروا الفرع والموعد وعدد الضيوف لإرسال طلب الحجز.':'Choose a branch, time and party size to request a table.'],
   ['events',ico.cal,ar?'المناسبات والاحتفالات':'Celebrations',ar?'رتّبوا عيد ميلاد أو مناسبة خاصة مع فريق الفرع.':'Plan a birthday or special occasion with the branch team.'],
@@ -1795,7 +1797,7 @@ function vServices(){
   ['cafe','<span class="service-emoji">☕</span>',ar?'القهوة والمشروبات':'Coffee and drinks',ar?'تصفحوا قائمة المشروبات والقهوة.':'Browse coffee and drinks.'],
   ['branches',ico.pin,ar?'الفروع والمواقف':'Branches and parking',ar?'تعرفوا على فروعنا ومعلومات الزيارة.':'Find our branches and visit information.']
  ];
- return `<div class="wrap services-page" style="padding-block:clamp(28px,5vw,56px) 96px"><p class="eyebrow">${ar?'خدمات بورتوفينو':'PORTOFINO SERVICES'}</p><h1 class="disp h2">${ar?'خدماتنا':'Our services'}</h1><p class="lead">${ar?'اختاروا الخدمة المناسبة، وهنساعدكم تكملوا طلبكم أو زيارتكم بسهولة.':'Choose the service you need and we will help you plan your order or visit.'}</p><div class="services-overview-grid">${cards.map(([route,icon,title,desc,service])=>`<button class="card service-overview-card" type="button" data-go="${route}" ${service?`data-service="${service}"`:''}><span aria-hidden="true">${icon}</span><b>${title}</b><small>${desc}</small><i aria-hidden="true">${ico.arr()}</i></button>`).join('')}</div></div>`;
+ return `<div class="wrap services-page" style="padding-block:clamp(28px,5vw,56px) 96px"><p class="eyebrow">${ar?'خدمات بورتوفينو':'PORTOFINO SERVICES'}</p><h1 class="disp h2">${ar?'خدماتنا':'Our services'}</h1><p class="lead">${ar?'اختاروا الخدمة المناسبة، وهنساعدكم تكملوا طلبكم أو زيارتكم بسهولة.':'Choose the service you need and we will help you plan your order or visit.'}</p>${cartCount()?`<p class="services-cart-note">${ar?`سلتكم فيها ${num(cartCount())} أصناف بقيمة ${money(cartTotal())}. اختاروا الخدمة وسنوصلكم للخطوة المناسبة مع الاحتفاظ بطلبكم.`:`Your cart has ${num(cartCount())} items worth ${money(cartTotal())}. Choose a service and we’ll take you to the right next step with your order saved.`}</p>`:''}<div class="services-overview-grid">${cards.map(([route,icon,title,desc,service])=>{const tableWithCart=service==='table'&&cartCount()>0;const cardDesc=tableWithCart?(ar?`طلبكم محفوظ في السلة. اضغطوا هنا لفتحها، ثم اختاروا «كمّل للطلب على الطاولة».`:`Your items are saved. Click here to open your cart, then choose “Continue to table order.”`):desc;const action=tableWithCart?`data-act="service-continue" data-service="table"`:`data-go="${route}" ${service?`data-service="${service}"`:''}`;return `<button class="card service-overview-card" type="button" ${action}><span aria-hidden="true">${icon}</span><b>${title}</b><small>${cardDesc}</small><i aria-hidden="true">${ico.arr()}</i></button>`}).join('')}</div></div>`;
 }
 function sofiaListHTML(){
  const searching=!!S.sq.trim();
@@ -1894,15 +1896,26 @@ function vEvents(){
 
  ${steps(1,ar?['تفاصيل المناسبة','مراجعة','واتساب']:['Event details','Review','WhatsApp'])}<form class="card form final-form" id="evf" novalidate style="max-width:880px"><div class="final-form-head"><span class="final-form-icon" aria-hidden="true">✦</span><div><p class="eyebrow">${ar?'تفاصيل الاحتفال':'CELEBRATION DETAILS'}</p><div class="disp final-form-title">${T.evForm}</div><p class="final-form-hint">${ar?'اكتب التفاصيل الأساسية، والفرع هيتواصل معاك للتأكيد.':'Share a few details and the branch will follow up to confirm.'}</p></div></div>
  <div class="fld"><label>${T.branch}</label><div class="seg" style="display:flex">${['cc','lo'].map(b=>`<button type="button" style="flex:1" data-act="branch" data-v="${b}" class="${S.branch===b?'on':''}">${T.brs[b]}</button>`).join('')}</div></div>
+ ${S.cart.length?`<details class="att" open><summary><span class="ai">🧾</span><span class="at"><b>${ar?'الأصناف المرتبطة بالمناسبة':'Items for your occasion'}</b><small>${num(cartCount())} ${ar?'أصناف':'items'} · ${money(cartTotal())}</small></span><span class="ac">${ar?'عرض الطلب':'View order'}</span></summary><div class="ab">${summaryBlock()}<button type="button" class="btn gh sm" data-act="cart">${ar?'تعديل الطلب':'Edit order'}</button></div></details>`:''}
  <div class="row2">${field('name',T.name)}${field('phone',T.phone,'tel','inputmode="tel"')}</div>${field('guestsN',T.guestsN,'number','min="1"')}${evTypes()}${field('date',T.date,'date')}${field('notes',T.details,'textarea')}
  <div><button class="btn w lg" type="submit">${ico.wa}${T.sendInq}</button><p class="ds" style="margin-top:12px">${T.evNote}</p></div></form></div>`;
 }
 const EVT=[['عيد ميلاد','Birthday'],['ذكرى سنوية','Anniversary'],['خطوبة / كتب كتاب','Engagement / wedding'],['عزومة عائلية','Family gathering'],['لمّة أصحاب','Friends get-together'],['حفلة أطفال','Kids party'],['تخرج / نجاح','Graduation / achievement'],['اجتماع عمل / شركة','Business / corporate'],['مناسبة أخرى','Other']];
+function localizeEventType(value,from,to){const i=EVT.findIndex(x=>x[from]===value);return i<0?value:EVT[i][to]}
 function evTypes(){
  const T=t();const e=S.errors.evType;const cur=S.form.evType||'';const other=EVT[EVT.length-1][AR()?0:1];
  return `<div class="fld ${e?'bad':''}"><label>${T.evType}</label><div class="opts" role="group" aria-label="${T.evType}">${EVT.map(x=>{const v=x[AR()?0:1];return `<button type="button" class="chip ${cur===v?'on':''}" data-act="evt" data-v="${esc(v)}">${cur===v?'✓ ':''}${v}</button>`}).join('')}</div>${cur===other?field('evOther',AR()?'اكتب نوع المناسبة':'Describe the event'):''}${e?`<div class="er">● ${e}</div>`:''}</div>`;
 }
 function calm(){return `<p class="calm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>${AR()?'مفيش دفع دلوقتي. الفرع هيراجع طلبك ويأكد معاك على واتساب.':'Nothing to pay now. The branch will review your order and confirm with you on WhatsApp.'}</p>`}
+function formWhatsAppMessage(kind){
+ const T=t(),W=T.ww,F=S.form;
+ if(kind==='ord')return `${T.waHello} - ${T.wTitleOrder}\n\n${W.items}:\n${orderLines()}\n${W.total}: ${cartTotal()} ${T.currency} (${taxTxt()})\n\n${W.svc}: ${T.svcName[S.service]}\n${W.name}: ${F.name}\n${W.phone}: ${F.phone}`
+  +(S.service==='delivery'?`\n${W.area}: ${F.area}\n${W.address}: ${F.address}`:`\n${W.branch}: ${T.brs[S.branch]}`)
+  +(S.service==='table'?`\n${W.table}: ${F.table}`:'')+(S.service==='takeaway'&&F.pick?`\n${W.pick}: ${F.pick}`:'')+(F.notes?`\n${W.notes}: ${F.notes}`:'');
+ if(kind==='res')return `${T.waHello} - ${T.wTitleRes}\n\n${W.branch}: ${T.brs[S.branch]}\n${W.date}: ${F.date}\n${W.time}: ${F.time}\n${W.party}: ${S.party}\n${W.name}: ${F.name}\n${W.phone}: ${F.phone}`+(F.notes?`\n${W.notes}: ${F.notes}`:'')+(S.cart.length?`\n\n${W.items}:\n${orderLines()}\n${W.total}: ${cartTotal()} ${T.currency}`:'');
+ const other=EVT[EVT.length-1][AR()?0:1],eventType=F.evType===other?(F.evOther||F.evType):localizeEventType(F.evType,S.lang==='ar'?0:1,S.lang==='ar'?0:1);
+ return `${T.waHello} - ${T.wTitleEv}\n\n${W.branch}: ${T.brs[S.branch]}\n${W.name}: ${F.name}\n${W.phone}: ${F.phone}\n${W.party}: ${F.guestsN}\n${W.type}: ${eventType}`+(F.date?`\n${W.date}: ${F.date}`:'')+(F.notes?`\n${W.notes}: ${F.notes}`:'')+(S.cart.length?`\n\n${W.items}:\n${orderLines()}\n${W.total}: ${cartTotal()} ${T.currency}`:'');
+}
 function upsell(){
  if(S.cart.some(c=>{const x=ITEMS.find(i=>i.id===c.id)||{};return x.cat==='dessert'||c.id==='dl5'}))return '';
  const it=ITEMS.find(i=>i.id==='dl5');if(!it)return '';
@@ -2039,7 +2052,7 @@ document.addEventListener('click',e=>{
     else if(act==='res-review'){S.errors={};const T=t(),F=S.form;for(const k of ['date','time','name'])if(!(F[k]||'').trim())S.errors[k]=T.eReq;const ph=(F.phone||'').replace(/[\s\-]/g,'').replace(/^\+?2/,'');if(!/^0?1[0-9]{9}$/.test(ph))S.errors.phone=T.ePhone;if(Object.keys(S.errors).length){render();document.querySelector('#resf .fld.bad input')?.focus();return}S.resStep=2}
     else if(act==='res-edit'){S.resStep=1;S.errors={}}
   else if(act==='whatsapp-handoff'){setTimeout(()=>{if(S.done){S.done.handoff=true;render();window.scrollTo({top:0,behavior:'instant'})}},300);return}
-    else if(act==='lang'){S.lang=S.lang==='ar'?'en':'ar'}
+    else if(act==='lang'){const from=S.lang;S.lang=from==='ar'?'en':'ar';const to=S.lang==='ar'?0:1,fromIndex=from==='ar'?0:1;if(S.form.evType)S.form.evType=localizeEventType(S.form.evType,fromIndex,to);if(S.done){const d=S.done.details||{};d.branch=t().brs[S.branch];if(S.done.kind==='ord')d.service=t().svcName[S.service]||'';if(d.type)d.type=localizeEventType(d.type,fromIndex,to);S.done.link=waLink(formWhatsAppMessage(S.done.kind),S.done.kind==='ord'&&S.service==='delivery'?'lo':S.branch)}}
   else if(act==='theme'){THEME.set(THEME.get()==='dark'?'paper':'dark')}
  else if(act==='cart'){S.cartOpen=!S.cartOpen}
  else if(act==='menu'){S.menuOpen=!S.menuOpen}
@@ -2082,6 +2095,7 @@ document.addEventListener('click',e=>{
  else if(act==='remove-item'){const i=+el.dataset.i,c=S.cart[i];if(c){S.lastRemoved={item:{...c},index:i};clearTimeout(S.removeUndoTimer);S.removeUndoTimer=setTimeout(()=>{S.lastRemoved=null;if(S.cartOpen)renderDrawer()},7000);S.cart.splice(i,1)}}
  else if(act==='undo-remove'){const r=S.lastRemoved;if(r){const existing=S.cart.find(c=>c.id===r.item.id&&c.o===r.item.o);if(existing)existing.q+=r.item.q;else S.cart.splice(Math.min(r.index,S.cart.length),0,r.item);S.lastRemoved=null;clearTimeout(S.removeUndoTimer)}}
  else if(act==='svc'){S.service=el.dataset.v}
+ else if(act==='service-continue'){S.service=el.dataset.service;S.cartOpen=true;S.menuOpen=false;S.done=null;saveState();render();return}
  else if(act==='continue'){S.errors={};go(S.service==='reserve'?'reserve':'checkout');return}
   else if(act==='edit-order'){
   const kind=S.done?.kind;
@@ -2116,25 +2130,16 @@ document.addEventListener('submit',e=>{
  const ph=(F.phone||'').replace(/[\s\-]/g,'').replace(/^\+?2/,'');
  if(!/^0?1[0-9]{9}$/.test(ph))S.errors.phone=T.ePhone;
  let msg='',kind='ord';
- const W=T.ww;
  if(f.id==='chk'){
   if(S.service==='delivery'){need('area',T.eReq);need('address',T.eReq)}
   if(S.service==='table')need('table',T.eReq);
-  if(!Object.keys(S.errors).length){
-   msg=`${T.waHello} - ${T.wTitleOrder}\n\n${W.items}:\n${orderLines()}\n${W.total}: ${cartTotal()} ${T.currency} (${taxTxt()})\n\n${W.svc}: ${T.svcName[S.service]}\n${W.name}: ${F.name}\n${W.phone}: ${F.phone}`
-   +(S.service==='delivery'?`\n${W.area}: ${F.area}\n${W.address}: ${F.address}`:`\n${W.branch}: ${T.brs[S.branch]}`)
-   +(S.service==='table'?`\n${W.table}: ${F.table}`:'')+(S.service==='takeaway'&&F.pick?`\n${W.pick}: ${F.pick}`:'')+(F.notes?`\n${W.notes}: ${F.notes}`:'');
-  }
  }else if(f.id==='resf'){
-  need('date',T.eReq);need('time',T.eReq);
-  if(!Object.keys(S.errors).length){kind='res';
-   msg=`${T.waHello} - ${T.wTitleRes}\n\n${W.branch}: ${T.brs[S.branch]}\n${W.date}: ${F.date}\n${W.time}: ${F.time}\n${W.party}: ${S.party}\n${W.name}: ${F.name}\n${W.phone}: ${F.phone}`+(F.notes?`\n${W.notes}: ${F.notes}`:'')+(S.cart.length?`\n\n${W.items}:\n${orderLines()}\n${W.total}: ${cartTotal()} ${T.currency}`:'');}
+  need('date',T.eReq);need('time',T.eReq);kind='res';
  }else if(f.id==='evf'){
-  need('guestsN',T.eReq);need('evType',T.eReq);if(F.evType===EVT[EVT.length-1][AR()?0:1])need('evOther',T.eReq);
-  if(!Object.keys(S.errors).length){kind='ev';
-   msg=`${T.waHello} - ${T.wTitleEv}\n\n${W.branch}: ${T.brs[S.branch]}\n${W.name}: ${F.name}\n${W.phone}: ${F.phone}\n${W.party}: ${F.guestsN}\n${W.type}: ${F.evOther&&F.evType===EVT[EVT.length-1][AR()?0:1]?F.evOther:F.evType}`+(F.date?`\n${W.date}: ${F.date}`:'')+(F.notes?`\n${W.notes}: ${F.notes}`:'');}
+  need('guestsN',T.eReq);need('evType',T.eReq);if(F.evType===EVT[EVT.length-1][AR()?0:1])need('evOther',T.eReq);kind='ev';
  }
- if(msg){const det={service:f.id==='chk'?T.svcName[S.service]:'',branch:T.brs[S.branch],date:F.date||'',time:F.time||'',pick:F.pick||'',table:F.table||'',party:(kind==='res'?S.party:F.guestsN)||'',name:F.name||'',phone:F.phone||'',notes:F.notes||'',area:F.area||'',address:F.address||'',type:F.evOther&&F.evType===EVT[EVT.length-1][AR()?0:1]?F.evOther:(F.evType||'')};S.done={link:waLink(msg),kind:kind==='res'?'res':(kind==='ev'?'ev':'ord'),details:det}}
+ if(!Object.keys(S.errors).length)msg=formWhatsAppMessage(kind);
+ if(msg){const det={service:f.id==='chk'?T.svcName[S.service]:'',branch:T.brs[S.branch],date:F.date||'',time:F.time||'',pick:F.pick||'',table:F.table||'',party:(kind==='res'?S.party:F.guestsN)||'',name:F.name||'',phone:F.phone||'',notes:F.notes||'',area:F.area||'',address:F.address||'',type:F.evOther&&F.evType===EVT[EVT.length-1][AR()?0:1]?F.evOther:(F.evType||'')};S.done={link:waLink(msg,kind==='ord'&&S.service==='delivery'?'lo':S.branch),kind,details:det}}
  render();window.scrollTo({top:0,behavior:'instant'});
 });
 window.addEventListener('hashchange',()=>{try{const h=location.hash.replace('#','');if(h&&h!==S.view&&['home','kids','menu','delivery','checkout','branches','sofia','tahia','cafe','events','services','contact','privacy','reserve'].includes(h)){if(ROUTE_HISTORY.length){const last=ROUTE_HISTORY[ROUTE_HISTORY.length-1];if(last===h)ROUTE_HISTORY.pop();else ROUTE_HISTORY.push(S.view)}else ROUTE_HISTORY.push(S.view);S.view=h;S.cartOpen=false;S.menuOpen=false;render();window.scrollTo({top:0,behavior:'instant'})}}catch(e){}});
@@ -3195,8 +3200,11 @@ html.paper .delivery-info-card{box-shadow:0 12px 30px rgba(45,39,26,.08)}
 .reservation-review h2{margin:0 0 12px;font-size:clamp(20px,4vw,26px)}.reservation-review dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 18px;margin:0 0 14px}
 .reservation-review dl>div{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line);min-width:0}.reservation-review dt{color:var(--mist)}.reservation-review dd{margin:0;text-align:end;overflow-wrap:anywhere;font-weight:650}
 .reservation-review-actions{display:flex;gap:10px;flex-wrap:wrap}.reservation-review-actions>*{flex:1 1 220px}.reservation-next{width:100%;margin-top:6px}
+.services-cart-note{max-width:760px;margin:18px 0 0;padding:14px 16px;border:1px solid color-mix(in srgb,var(--leaf-l) 38%,var(--line));border-radius:14px;background:color-mix(in srgb,var(--leaf) 12%,var(--card));color:var(--ink);line-height:1.65}
+.done-attached-order{display:grid;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}.done-attached-order>b{color:var(--leaf-l)}
+html.paper .services-cart-note{background:#f2f7ed;border-color:#cad8c0;color:#293427}
 .handoff-status{display:flex;justify-content:center;align-items:center;gap:9px;max-width:520px;margin:0 auto 16px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--card2);color:var(--ink);font-weight:650;line-height:1.55}
 @media(max-width:800px){.services-overview-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:560px){.services-overview-grid{grid-template-columns:minmax(0,1fr)}.reservation-review dl{grid-template-columns:minmax(0,1fr)}.reservation-review-actions{display:grid;grid-template-columns:minmax(0,1fr)}.reservation-review-actions>*{width:100%;box-sizing:border-box}}
+@media(max-width:560px){.services-overview-grid{grid-template-columns:minmax(0,1fr)}.reservation-review dl{grid-template-columns:minmax(0,1fr)}.reservation-review-actions{display:grid;grid-template-columns:minmax(0,1fr)}.reservation-review-actions>*{width:100%;box-sizing:border-box}.services-cart-note{font-size:13px}.done-attached-order .line{grid-template-columns:48px minmax(0,1fr) auto}.done-attached-order .line img{width:48px;height:48px}}
 @media(prefers-reduced-motion:reduce){.service-overview-card{transition:none!important}.service-overview-card:hover{transform:none!important}}
 </style><style>.kids-welcome-still{display:none!important}.handoff-status{display:flex;justify-content:center;align-items:center;gap:9px;max-width:520px;margin:0 auto 16px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--card2);color:var(--ink);font-weight:650;line-height:1.55}</style><script id="video-download-guards">(()=>{const protect=v=>{if(!v||v.nodeType!==1||v.tagName!=='VIDEO'||v.dataset.downloadUiProtected)return;v.setAttribute('controlsList','nodownload noremoteplayback');v.setAttribute('disablepictureinpicture','');v.disablePictureInPicture=true;v.addEventListener('contextmenu',e=>e.preventDefault());v.dataset.downloadUiProtected='1'};document.querySelectorAll('video').forEach(protect);new MutationObserver(records=>records.forEach(r=>r.addedNodes.forEach(n=>{if(n.nodeType!==1)return;protect(n);n.querySelectorAll&&n.querySelectorAll('video').forEach(protect)}))).observe(document.documentElement,{childList:true,subtree:true})})();</script></body></html>
