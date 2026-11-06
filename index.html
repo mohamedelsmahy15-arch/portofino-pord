@@ -1680,40 +1680,50 @@ function vCheckout(){
 function vDone(){
  const T=t();const d=S.done||{};const dt=d.details||{};const ar=AR();
  const kind=d.kind||(dt.type?'ev':(dt.party?'res':'ord'));
- const title=kind==='res'?(ar?'فاضل خطوة واحدة لتأكيد الحجز!':'One last step to confirm your booking!'):
-             kind==='ev'?(ar?'فاضل خطوة واحدة لتأكيد مناسبتك!':'One last step to confirm your event!'):
-             (ar?'فاضل خطوة واحدة لتأكيد طلبك!':'One last step to confirm your order!');
- const sub=kind==='res'?(ar?'تم تسجيل بياناتك وتجهيز رسالة الحجز. حجزك لم يُعتمد بعد؛ اضغط على الزر الأخضر بالأسفل لفتح محادثة واتساب وإرسال الرسالة للفرع لتأكيد طاولتك فوراً.':'Your booking details are prepared. Your reservation is not confirmed yet; tap the button below to send the message via WhatsApp to secure your table.'):
-           kind==='ev'?(ar?'تم تسجيل بياناتك وتجهيز تفاصيل المناسبة. اضغط على الزر الأخضر بالأسفل لفتح محادثة واتساب وإرسال الرسالة للفرع لتأكيد الموعد والتنسيق المباشر.':'Your event details are prepared. Tap the button below to send the message via WhatsApp to coordinate and confirm your date.'):
-           (ar?'تم تسجيل بياناتك وتجهيز قائمة الطلبات. أوردرك لم يُعتمد بعد؛ اضغط على الزر الأخضر بالأسفل لإرسال الرسالة للفرع عبر واتساب لبدء التحضير والتوصيل فوراً.':'Your order details are prepared. Your order is not confirmed yet; tap the button below to send the message via WhatsApp to start preparation.');
- const boxTitle=kind==='res'?(ar?'بيانات الحجز المسجلة (في انتظار الإرسال عبر واتساب)':'Booking Details (Awaiting WhatsApp Confirmation)'):
-                kind==='ev'?(ar?'تفاصيل المناسبة المسجلة (في انتظار الإرسال عبر واتساب)':'Event Details (Awaiting WhatsApp Confirmation)'):
-                (ar?'بيانات الطلب المسجلة (في انتظار الإرسال عبر واتساب)':'Order Details (Awaiting WhatsApp Confirmation)');
- return `<div class="wrap" style="padding-block:clamp(40px,6vw,80px) 120px;max-width:760px"><div class="card form ok"><div class="big" style="background:rgba(37,211,102,.15);color:#25D366;border-radius:50%;width:76px;height:76px;display:inline-flex;align-items:center;justify-content:center;margin:0 auto 16px">${ico.wa}</div>
-  <h1 class="disp h2" style="margin:0">${title}</h1><p class="lead" style="margin-top:10px">${sub}</p>
-  <div class="note ok" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:18px;display:flex;gap:12px;align-items:flex-start;color:#fff;margin-bottom:20px">${ico.chk}<div style="flex:1"><b style="color:var(--gold);display:block;margin-bottom:4px">${boxTitle}</b>
-  <div class="done-details-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:10px;padding-top:12px;border-top:1px solid rgba(255,255,255,.1);font-size:14px">
-    ${dt.branch?`<div><span style="color:var(--mist)">${ar?'الفرع':'Branch'}:</span> <b>${dt.branch}</b></div>`:''}
-    ${dt.date?`<div><span style="color:var(--mist)">${ar?'التاريخ':'Date'}:</span> <b>${dt.date}</b></div>`:''}
-    ${dt.time?`<div><span style="color:var(--mist)">${ar?'الوقت':'Time'}:</span> <b>${dt.time}</b></div>`:''}
-    ${dt.party?`<div><span style="color:var(--mist)">${ar?'عدد الأفراد':'Party size'}:</span> <b>${dt.party}</b></div>`:''}
-    ${dt.name?`<div><span style="color:var(--mist)">${ar?'الاسم':'Guest Name'}:</span> <b>${dt.name}</b></div>`:''}
-    ${dt.phone?`<div><span style="color:var(--mist)">${ar?'رقم الموبايل':'Phone'}:</span> <b dir="ltr">${dt.phone}</b></div>`:''}
-    ${dt.area?`<div><span style="color:var(--mist)">${ar?'المنطقة':'Area'}:</span> <b>${dt.area}</b></div>`:''}
-    ${dt.address?`<div><span style="color:var(--mist)">${ar?'العنوان':'Address'}:</span> <b>${dt.address}</b></div>`:''}
-    ${dt.type?`<div><span style="color:var(--mist)">${ar?'نوع المناسبة':'Event Type'}:</span> <b>${dt.type}</b></div>`:''}
-    ${dt.notes?`<div style="grid-column:1/-1"><span style="color:var(--mist)">${ar?'ملاحظات':'Notes'}:</span> <i>${esc(dt.notes)}</i></div>`:''}
-  </div></div></div>
-  <div class="wa-action-hint" style="background:rgba(37,211,102,.12);border:1px solid #25D366;border-radius:14px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;gap:12px;color:#fff;text-align:start;box-shadow:0 4px 14px rgba(37,211,102,.15)">
-    <span style="font-size:24px;line-height:1">📲</span>
-    <div style="flex:1;font-size:14px;line-height:1.5">
-      <b style="color:#25D366;display:block;margin-bottom:2px">${ar?'تنبيه هام لتأكيد طلبك:':'Important notice to confirm:'}</b>
-      ${ar?'الطلب لن يصل للفرع تلقائياً بدون إرسال الرسالة. اضغط الزر بالأسفل لفتح واتساب وإرسال الرسالة الجاهزة لتأكيد الحجز فوراً.':'Your request does not reach the branch automatically. Tap the button below to send the prepared WhatsApp message now.'}
+ 
+ const title=kind==='res'?(ar?'جاهز لتأكيد حجزك!':'Ready to confirm your booking!'):
+             kind==='ev'?(ar?'جاهز لتأكيد مناسبتك!':'Ready to confirm your event!'):
+             (ar?'جاهز لتأكيد طلبك!':'Ready to confirm your order!');
+ 
+ const sub=ar?'خطوة أخيرة: اضغط على الزر الأخضر بالأسفل لإرسال التفاصيل مباشرة إلى واتساب الفرع واعتماد الحجز فوراً.':
+              'One last step: Tap the green button below to send your details directly to the branch on WhatsApp to confirm instantly.';
+
+ const summaryHeading=kind==='res'?(ar?'ملخص بيانات الحجز':'Booking Summary'):
+                      kind==='ev'?(ar?'ملخص بيانات المناسبة':'Event Summary'):
+                      (ar?'ملخص بيانات الطلب':'Order Summary');
+
+ return `<div class="wrap done-wrap" style="padding-block:clamp(16px,3vw,36px) 48px;max-width:560px"><div class="card form ok done-card" style="padding:clamp(20px,4vw,32px);text-align:center">
+  <div class="done-wa-icon" style="background:rgba(37,211,102,.12);color:#25D366;border:1px solid rgba(37,211,102,.3);border-radius:50%;width:64px;height:64px;display:inline-flex;align-items:center;justify-content:center;margin:0 auto 12px">${ico.wa}</div>
+  <h1 class="disp h2" style="margin:0;font-size:clamp(24px,4vw,32px);line-height:1.2;color:var(--ink)">${title}</h1>
+  <p class="lead done-sub" style="margin:8px auto 16px;max-width:440px;font-size:14.5px;line-height:1.6;color:var(--mist)">${sub}</p>
+
+  <div class="done-summary-box" style="background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:start;margin-bottom:18px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)">
+      <b style="color:var(--leaf-l);font-size:14px;display:flex;align-items:center;gap:6px">${ico.chk} ${summaryHeading}</b>
+      <span style="font-size:12px;color:var(--mist)">${ar?'في انتظار الإرسال':'Pending send'}</span>
+    </div>
+    <div class="done-details-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px 14px;font-size:13.5px">
+      ${dt.branch?`<div><span style="color:var(--mist);display:block;font-size:12px">${ar?'الفرع':'Branch'}</span><b style="color:var(--ink)">${dt.branch}</b></div>`:''}
+      ${dt.date?`<div><span style="color:var(--mist);display:block;font-size:12px">${ar?'التاريخ':'Date'}</span><b style="color:var(--ink)">${dt.date}</b></div>`:''}
+      ${dt.time?`<div><span style="color:var(--mist);display:block;font-size:12px">${ar?'الوقت':'Time'}</span><b style="color:var(--ink)">${dt.time}</b></div>`:''}
+      ${dt.party?`<div><span style="color:var(--mist);display:block;font-size:12px">${ar?'عدد الأفراد':'Party size'}</span><b style="color:var(--ink)">${dt.party} ${ar?'أفراد':'guests'}</b></div>`:''}
+      ${dt.name?`<div><span style="color:var(--mist);display:block;font-size:12px">${ar?'الاسم':'Guest Name'}</span><b style="color:var(--ink)">${dt.name}</b></div>`:''}
+      ${dt.phone?`<div><span style="color:var(--mist);display:block;font-size:12px">${ar?'رقم الموبايل':'Phone'}</span><b style="color:var(--ink)" dir="ltr">${dt.phone}</b></div>`:''}
+      ${dt.area?`<div><span style="color:var(--mist);display:block;font-size:12px">${ar?'المنطقة':'Area'}</span><b style="color:var(--ink)">${dt.area}</b></div>`:''}
+      ${dt.address?`<div><span style="color:var(--mist);display:block;font-size:12px">${ar?'العنوان':'Address'}</span><b style="color:var(--ink)">${dt.address}</b></div>`:''}
+      ${dt.type?`<div><span style="color:var(--mist);display:block;font-size:12px">${ar?'نوع المناسبة':'Event Type'}</span><b style="color:var(--ink)">${dt.type}</b></div>`:''}
+      ${dt.notes?`<div style="grid-column:1/-1"><span style="color:var(--mist);display:block;font-size:12px">${ar?'ملاحظات':'Notes'}</span><i style="color:var(--ink)">${esc(dt.notes)}</i></div>`:''}
     </div>
   </div>
-  <a class="btn w lg" href="${d.link}" target="_blank" rel="noopener" style="font-size:16px;font-weight:700;box-shadow:0 6px 20px rgba(37,211,102,.35)">${ico.wa} ${ar?'تأكيد وإرسال عبر واتساب الآن':'Confirm & Send via WhatsApp Now'}</a>
-   <button class="btn gh" data-act="edit-order">${T.editOrder}</button>
-   <button class="btn gh" style="margin-top:8px;opacity:.7" data-act="restart">${T.newOrder}</button></div></div>`;
+
+  <a class="btn w lg done-main-cta" href="${d.link}" target="_blank" rel="noopener" style="width:100%;font-size:16px;font-weight:700;padding:14px;border-radius:12px;justify-content:center;box-shadow:0 6px 20px rgba(37,211,102,.35);margin:0 auto">${ico.wa} ${ar?'إرسال وتأكيد عبر واتساب الآن':'Send & Confirm on WhatsApp'}</a>
+  <p style="margin:8px 0 16px;font-size:12px;color:var(--mist)">${ar?'💬 تفتح محادثة الفرع مباشرة مع الرسالة مجهزة للإرسال':'Opens direct WhatsApp chat with ready-to-send message'}</p>
+
+  <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+    <button class="btn gh sm" style="flex:1;min-width:140px;justify-content:center;font-size:13px" data-act="edit-order">${T.editOrder}</button>
+    <button class="btn gh sm" style="flex:1;min-width:140px;justify-content:center;font-size:13px;opacity:.75" data-act="restart">${T.newOrder}</button>
+  </div>
+ </div></div>`;
 }
 function vReserve(){
  const T=t();
