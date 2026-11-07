@@ -1221,7 +1221,7 @@ const L = {
   brs:{cc:'كامب شيزار',lo:'لوران'},
   heroEye:'كافيه ومطعم · الإسكندرية',heroA:'أكل حلو.',heroB:'وقعدة',heroC:'دافية.',
   heroSub:'تعالى لنا في كامب شيزار أو لوران، أو اطلب توصيل. اختار من المنيو وكمّل طلبك على واتساب.',
-  explore:'استكشف المنيو',reqTable:'اطلب طاولة',
+  explore:'استكشف المنيو',reqTable:'احجز طاولة',
   f1:'فرعين في الإسكندرية',f2:'التوصيل من فرع لوران',f3:'تنسيق الطلب على واتساب',
   tagA:'عروض الغداء',tagB:'السعر شامل الضريبة',tagC:'بداية من',
   offEye:'عروض الغداء',offT:'غداء كامل بسعر واحد',offS:'كل عرض معاه مشروب. السعر شامل الضريبة.',
@@ -1235,7 +1235,7 @@ const L = {
   viewBr:'تفاصيل الفرع',map:'الخريطة',
   svcCC:['الأكل في الفرع','طلب للطاولة','تيك أواي (لو قريب من الفرع)','السوشي والتوصيل من لوران','منطقة أطفال','ركنة فاليه'],
   svcLO:['الأكل في الفرع','التوصيل بيتم من هنا','سوفيا سوشي هنا','منطقة أطفال','ركنة فاليه'],
-  visitT:'ناوي تزورنا؟',visitS:'ابعت طلب طاولة وهنأكده معاك على واتساب. الطلب مش حجز مؤكد لحد ما الفرع يرد.',
+  visitT:'ناوي تزورنا؟',visitS:'ابعتوا طلب حجز بموعد وعدد أفراد، والفرع هيراجع ويأكد معاكم على واتساب. لو قاعدين بالفعل وعايزين تطلبوا أكل على الطاولة، أضيفوا الأصناف واختاروا «اطلبوا أكل لطاولتكم» من السلة.',
   menuEye:'المنيو',menuT:'نفسك في إيه؟',search:'ابحث عن صنف',
   noRes:'مفيش أصناف مطابقة',noResS:'جرّب كلمة تانية أو اختار قسم.',clear:'مسح البحث',
   cartEmpty:'السلة فاضية',cartEmptyS:'ابدأ بإضافة صنف من المنيو.',
@@ -1244,8 +1244,8 @@ const L = {
   howT:'اختار طريقة استلام طلبك',howS:'توصيل · استلام من الفرع · طلب على الطاولة',
   sDel:['توصيل','التوصيل بيتم من فرع لوران حتى لو اخترت كامب شيزار.'],
   sTake:['استلام من الفرع','هتستلم الطلب من الفرع اللي اخترته.'],
-  sTable:['اطلب لطاولتي','لو قاعد معانا في الفرع.'],
-  sRes:['احجز طاولة','طلب حجز على واتساب ومعاه طلبك.'],
+  sTable:['اطلبوا أكل لطاولتكم','للضيوف الجالسين الآن داخل الفرع؛ أدخلوا رقم الطاولة.'],
+  sRes:['احجزوا طاولة','اختاروا موعدًا وعدد الأفراد. ده طلب حجز قعدة، مش طلب أكل.'],
   cont:{delivery:'كمّل للتوصيل',takeaway:'كمّل للاستلام',table:'كمّل للطلب على الطاولة',reserve:'كمّل للحجز'},
   back:'رجوع',remove:'حذف',
   chkEye:{delivery:'توصيل',takeaway:'استلام',table:'طلب على الطاولة'},
@@ -1254,10 +1254,10 @@ const L = {
   name:'الاسم',phone:'رقم الموبايل',area:'المنطقة',address:'العنوان بالتفصيل وأقرب علامة',notes:'ملاحظات (اختياري)',tableNo:'رقم الطاولة',pickT:'ميعاد الاستلام',branch:'الفرع',
   eName:'اكتب اسمك',ePhone:'اكتب رقم موبايل صحيح',eReq:'الحقل ده مطلوب',
   sendWA:'ابعت الطلب على واتساب',summary:'ملخص الطلب',
-   doneT:'فاضل خطوة واحدة لتأكيد طلبك!',doneS:'تم تسجيل بياناتك وتجهيز الرسالة. اضغط بالأسفل لفتح محادثة واتساب وإرسالها للفرع لاعتماد وتأكيد طلبك فوراً.',openWA:'افتح واتساب',editOrder:'عدّل البيانات أو أضف طلبات',newOrder:'ابدأ طلب جديد',
-  resEye:'الحجوزات',resT:'اطلب طاولة',date:'التاريخ',time:'الوقت',party:'عدد الأفراد',guests:'أفراد',
-  resNote:'يتم استلام وتأكيد حجزك فورًا مع مدير الصالة عبر واتساب لضمان أفضل طاولة متاحة.',sendReq:'ابعت الطلب على واتساب',
-   attached:'أصناف هتطلبها مع الطاولة',statusW:'الحالة بعد الإرسال: في انتظار رد الفرع',
+  doneT:'فاضل خطوة واحدة لتأكيد طلبك!',doneS:'راجع التفاصيل، ثم افتح واتساب واضغط إرسال. الطلب لا يُرسل تلقائيًا، والفرع يراجعه ويرد لتأكيده.',openWA:'افتح واتساب',editOrder:'عدّل البيانات أو أضف طلبات',newOrder:'ابدأ طلب جديد',sentTitle:'شكرًا لإرسال طلبكم',sentCopy:'الفرع هيراجع الرسالة ويرد لتأكيد الطلب أو الحجز. الحجز لا يتأكد إلا بعد رد الفرع.',handoffTitle:'الخطوة الأخيرة: واتساب',handoffCopy:'لو لسه ما ضغطتش إرسال في واتساب، افتحه وابعت الرسالة. بعد الإرسال ارجع واضغط «أرسلت الرسالة». فتح واتساب وحده لا يرسل الطلب.',handoffStatus:'الرسالة جاهزة في واتساب. بعد إرسالها، أكّد هنا.',confirmSent:'أرسلت الرسالة على واتساب',reopenWA:'افتح واتساب لإرسال الرسالة',returnSite:'العودة للموقع',sentStatus:'أكدتم إرسال الرسالة. طلبكم الآن بانتظار رد الفرع.',
+  resEye:'الحجوزات',resT:'حجز طاولة',date:'التاريخ',time:'الوقت',party:'عدد الأفراد',guests:'أفراد',
+  resNote:'ده طلب حجز، والفرع هيراجع التوافر ويأكد معاكم على واتساب. الحجز مش مؤكد قبل رد الفرع.',sendReq:'ابعت الطلب على واتساب',
+   attached:'أصناف مرفقة بطلب الحجز (اختياري)',statusW:'بعد الإرسال: في انتظار رد الفرع لتأكيد الحجز',
   evEye:'المناسبات',evT:'اتجمعوا حوالين طاولتنا',evS:'عيد ميلاد، لمّة أو مناسبة؟ ابعت استفسارك وهنرد عليك بالتفاصيل.',evForm:'احكيلنا عن مناسبتك',guestsN:'عدد الحضور',evType:'نوع المناسبة',details:'تفاصيل (اختياري)',sendInq:'ابعت الاستفسار على واتساب',evNote:'استفسار فقط. التفاصيل والتوافر بيأكدهم الفرع.',
   conEye:'تواصل',conT:'سهل توصلنا',conS:'أسرع طريقة لتنسيق طلب أو طاولة أو سؤال هي واتساب.',chat:'كلمنا على واتساب',
   prEye:'قانوني',prT:'الخصوصية',prBanner:'نص سياسة الخصوصية هيتضاف من بورتوفينو قبل الإطلاق.',prH:['البيانات اللي بنجمعها','إزاي بنستخدمها','واتساب وخدمات خارجية','اختياراتك','تواصل معنا'],
@@ -1277,7 +1277,7 @@ const L = {
   brs:{cc:'Camp Caesar',lo:'Louran'},
   heroEye:'Cafe & Restaurant · Alexandria',heroA:'Good food.',heroB:'Warm',heroC:'tables.',
   heroSub:'Dine with us at Camp Caesar or Louran, or order for delivery. Browse the menu and we coordinate the rest on WhatsApp.',
-  explore:'Explore Menu',reqTable:'Request a Table',
+  explore:'Explore Menu',reqTable:'Reserve a Table',
   f1:'Two branches in Alexandria',f2:'Delivery managed from Louran',f3:'Orders coordinated on WhatsApp',
   tagA:'Lunch offers',tagB:'Prices include tax',tagC:'From',
   offEye:'Lunch offers',offT:'A full lunch, one price',offS:'Every offer includes a drink. Prices include tax.',
@@ -1291,7 +1291,7 @@ const L = {
   viewBr:'Branch details',map:'Map',
   svcCC:['Dine in','Order to your table','Takeaway (if you are near the branch)','Sushi & delivery from Louran','Kids area','Valet corner'],
   svcLO:['Dine in','Delivery managed here','Sofia’s Sushi is here','Kids area','Valet corner'],
-  visitT:'Planning a visit?',visitS:'Send a table request and we confirm it with you on WhatsApp. A request is not a confirmed reservation until the branch replies.',
+  visitT:'Planning a visit?',visitS:'Send a reservation request with your date and party size; the branch will review and confirm it on WhatsApp. If you are already seated and want food, add dishes and choose “Order food to my table” in your cart.',
   menuEye:'Menu',menuT:'What are you hungry for?',search:'Search dishes',
   noRes:'No dishes match your search',noResS:'Try another word or pick a category.',clear:'Clear search',
   cartEmpty:'Your cart is empty',cartEmptyS:'Start by adding a dish from the menu.',
@@ -1300,8 +1300,8 @@ const L = {
   howT:'Choose how to receive your order',howS:'Delivery · Takeaway · Order to your table',
   sDel:['Delivery','Managed from the Louran branch, even when Camp Caesar is selected.'],
   sTake:['Takeaway','Collect from the branch you selected.'],
-  sTable:['Order to my table','For guests already seated at the branch.'],
-  sRes:['Reserve a table','A WhatsApp request with your order attached.'],
+  sTable:['Order food to my table','For guests seated at the branch now; enter your table number.'],
+  sRes:['Reserve a table','Choose a date and party size. This requests a reservation; it does not place a food order.'],
   cont:{delivery:'Continue to Delivery',takeaway:'Continue to Takeaway',table:'Continue to Table Order',reserve:'Continue to Reservation'},
   back:'Back',remove:'Remove',
   chkEye:{delivery:'Delivery',takeaway:'Takeaway',table:'Order to table'},
@@ -1310,10 +1310,10 @@ const L = {
   name:'Full name',phone:'Mobile number',area:'Area',address:'Full address and nearest landmark',notes:'Notes (optional)',tableNo:'Table number',pickT:'Pickup time',branch:'Branch',
   eName:'Please enter your name',ePhone:'Please enter a valid mobile number',eReq:'This field is required',
   sendWA:'Send Order on WhatsApp',summary:'Order summary',
-   doneT:'Ready to send',doneS:'Your order has not been sent yet. Open WhatsApp to review the prepared message and send it yourself; the branch will review it and reply.',openWA:'Open WhatsApp',editOrder:'Edit details or add items',newOrder:'Start a new order',
-  resEye:'Reservations',resT:'Request a table',date:'Date',time:'Time',party:'Party size',guests:'guests',
-  resNote:'Your booking is directly verified and confirmed by our branch manager via WhatsApp to guarantee your table.',sendReq:'Send Request on WhatsApp',
-  attached:'Attached order',statusW:'Status after sending: awaiting branch reply',
+   doneT:'Ready to send',doneS:'Review your details, open WhatsApp, and tap Send. Nothing is sent automatically; the branch will review and reply to confirm.',openWA:'Open WhatsApp',editOrder:'Edit details or add items',newOrder:'Start a new order',sentTitle:'Thanks for sending your request',sentCopy:'The branch will review your message and reply to confirm your order or reservation. Reservations are not confirmed until the branch replies.',handoffTitle:'One last step: WhatsApp',handoffCopy:'If you have not tapped Send in WhatsApp yet, open it and send the message. Then return here and confirm. Opening WhatsApp alone does not send your request.',handoffStatus:'Your message is ready in WhatsApp. After sending it, confirm here.',confirmSent:'I sent the WhatsApp message',reopenWA:'Open WhatsApp to send the message',returnSite:'Return to the website',sentStatus:'You confirmed the message was sent. Your request is now awaiting the branch reply.',
+  resEye:'Reservations',resT:'Reserve a table',date:'Date',time:'Time',party:'Party size',guests:'guests',
+  resNote:'This is a reservation request. The branch will check availability and confirm on WhatsApp; your table is not booked until they reply.',sendReq:'Send Request on WhatsApp',
+  attached:'Items attached to this reservation (optional)',statusW:'After sending: awaiting branch confirmation',
   evEye:'Events',evT:'Gather around our tables',evS:'A birthday, a get-together or a celebration? Send an inquiry and we will reply with the details.',evForm:'Tell us about your event',guestsN:'Expected guests',evType:'Type of event',details:'Details (optional)',sendInq:'Send Inquiry on WhatsApp',evNote:'An inquiry only. Details and availability are confirmed by the branch.',
   conEye:'Contact',conT:'We’re easy to reach',conS:'The fastest way to coordinate an order, a table or a question is WhatsApp.',chat:'Chat on WhatsApp',
   prEye:'Legal',prT:'Privacy',prBanner:'The privacy policy text will be supplied by Portofino before launch.',prH:['What we collect','How we use it','WhatsApp and third parties','Your choices','Contact us'],
@@ -1331,14 +1331,26 @@ const L = {
 
 /* ---------- state ---------- */
 const S = {mx:{},dtab:(new Date().getHours()<12?'bf':'lunch'),sq:'',scat:'all',tq:'',tcat:'all',ccat:'all',cq:'',lang:'ar',view:'home',branch:'cc',brDetail:null,detailItem:null,cart:[],cartOpen:false,menuOpen:false,homeShortcutsOpen:false,upsellAccepted:false,service:'delivery',resStep:1,cat:'all',q:'',
-  form:{},errors:{},done:null,party:2,opt:{},cartExpanded:false};
+  form:{},formBuckets:{'order:delivery':{},'order:takeaway':{},'order:table':{},reservation:{},event:{}},activeFormKey:'order:delivery',errors:{},done:null,party:2,opt:{},cartExpanded:false};
  try{const h=location.hash.replace('#','');if(['home','kids','menu','checkout','branches','sofia','tahia','cafe','events','services','contact','privacy','reserve'].includes(h))S.view=h}catch(e){}
+function activateForm(view=S.view,service=S.service){
+ const key=view==='checkout'?`order:${service}`:view==='reserve'?'reservation':view==='events'?'event':null;
+ if(!key)return;
+ if(!S.formBuckets[key])S.formBuckets[key]={};
+ S.activeFormKey=key;S.form=S.formBuckets[key];
+}
+activateForm(S.view);
 const $=(s,r=document)=>r.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const t=()=>L[S.lang];
 const lg=o=>o[S.lang];
 const num=n=>S.lang==='ar'?String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]):String(n);
 const money=n=>`${num(n)} ${t().currency}`;
+function formatDisplayTime(value){
+ const m=String(value||'').match(/^(\d{1,2}):(\d{2})$/);if(!m)return String(value||'');
+ const hour=+m[1],minute=m[2],pm=hour>=12,hour12=hour%12||12;
+ return S.lang==='ar'?`${num(hour12)}:${num(minute)} ${pm?'م':'ص'}`:`${hour12}:${minute} ${pm?'PM':'AM'}`;
+}
 const _sv=p=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
 const MOODI={bf:_sv('<path d="M3 18h18M6.5 18a5.5 5.5 0 0 1 11 0M12 6v3M5.2 9.6l1.9 1.9M18.8 9.6l-1.9 1.9"/>'),lunch:_sv('<circle cx="12" cy="13" r="6"/><circle cx="12" cy="13" r="2.4"/><path d="M3.5 4.5v5M5.5 4.5v5M4.5 9.5V20M20.5 4.5c-1.6 1-2.2 3-2.2 5.2h2.2V20"/>'),menu:_sv('<path d="M4 6.5c5-3 11-3 16 0L12 21z"/><circle cx="10" cy="9.5" r="1"/><circle cx="14" cy="11" r="1"/><circle cx="12" cy="15" r="1"/>'),drinks:_sv('<path d="M5 10h11v4a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5zM16 11.5h1.8a2.4 2.4 0 0 1 0 4.8H16M8 3.5c-1 1.2 1 2 0 3.2M12 3.5c-1 1.2 1 2 0 3.2"/>'),sofia:_sv('<path d="M5 12v3c0 2.5 3 4.5 7 4.5s7-2 7-4.5v-3"/><ellipse cx="12" cy="12" rx="7" ry="4.5"/><ellipse cx="12" cy="12" rx="2.6" ry="1.6"/>'),tahia:_sv('<path d="M3.5 20.5h17M6 20.5l1.2-6h9.6l1.2 6M7.6 14.5c0-3 2.2-5 4.4-8 2.2 3 4.4 5 4.4 8M12 6.5V4"/>'),kids:_sv('<ellipse cx="12" cy="9" rx="5" ry="6"/><path d="M12 15l-1.3 2.4h2.6zM12 17.4c0 1.6 1.6 2 1.6 3.6"/>'),services:_sv('<path d="M3 7h11v10H3zM14 10h4l3 3v4h-7z"/><circle cx="7" cy="19" r="1.5"/><circle cx="17" cy="19" r="1.5"/>'),branches:_sv('<path d="M12 21s7-6.2 7-11a7 7 0 0 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>')};
 const ico={
@@ -1369,7 +1381,7 @@ const cartTotal=()=>Math.round(S.cart.reduce((a,c)=>a+c.q*unit(ITEMS.find(i=>i.i
 const optLabel=c=>{const it=ITEMS.find(i=>i.id===c.id);return it.o?lg(it.o.v[c.o]):''};
 const toast=m=>{const el=$('#toast');if(S.cartOpen||S.menuOpen)return;el.innerHTML=`<div>${esc(m)}</div>`;clearTimeout(toast.h);toast.h=setTimeout(()=>el.innerHTML='',1800)};
 const ROUTE_HISTORY=[];
-const go=(v,extra)=>{if(S.view!==v)ROUTE_HISTORY.push(S.view);S.view=v;S.cartOpen=false;S.menuOpen=false;S.homeShortcutsOpen=false;S.done=null;S.errors={};S.brDetail=null;if(v==='reserve')S.resStep=1;try{location.hash=v}catch(e){}render();window.scrollTo({top:0,behavior:'instant'})};
+const go=(v,extra)=>{if(S.view!==v)ROUTE_HISTORY.push(S.view);S.view=v;activateForm(v);S.cartOpen=false;S.menuOpen=false;S.homeShortcutsOpen=false;S.done=null;S.errors={};S.brDetail=null;if(v==='reserve')S.resStep=1;try{location.hash=v}catch(e){}render();window.scrollTo({top:0,behavior:'instant'})};
 function itemImg(it,cls=''){return it.img?`<img src="${IMG[it.img]}" alt="${esc(lg(it.n))}">`:it.brand==='sofia'?`<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%">${sushiSVG(120)}</div>`:`<div style="display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--mist);font-size:13px;background:radial-gradient(circle at 50% 40%,#F1EEE2,#E2DECE);width:100%;height:100%;justify-content:center"><svg viewBox="0 0 64 64" width="70" fill="none" stroke="#7BC96F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 30h36l-4 20a6 6 0 0 1-6 5H24a6 6 0 0 1-6-5z"/><path d="M18 30c0-9 6-14 14-14s14 5 14 14"/><circle cx="32" cy="12" r="3" fill="#B8500A" stroke="#B8500A"/></svg>${S.lang==='ar'?'الصورة قريبًا':'Photo coming soon'}</div>`}
 
 /* ---------- WhatsApp ---------- */
@@ -1680,6 +1692,7 @@ function kitTabs(a){
 function vMenu(){
  const T=t();const list=menuList();
  return `<div class="wrap mhead">${kitTabs('menu')}<p class="eyebrow">${T.menuEye}</p><h1 class="disp h2" style="font-size:clamp(38px,6vw,68px);margin:0">${T.menuT}</h1>
+  ${cartCount()?`<div class="menu-cart-notice" role="status"><div><b>${AR()?'طلبكم محفوظ في السلة':'Your cart is saved'}</b><span>${AR()?`${num(cartCount())} أصناف · ${money(cartTotal())}. أضيفوا أصنافًا أخرى أو افتحوا السلة لاختيار طريقة الاستلام.`:`${num(cartCount())} items · ${money(cartTotal())}. Add more dishes or open your cart to choose how to receive your order.`}</span></div><button class="btn gh sm" type="button" data-act="cart">${AR()?'افتحوا السلة':'View cart'} ${ico.arr()}</button></div>`:''}
   <div class="mtools" style="margin-bottom:0"><div class="seg" role="group" aria-label="${T.branch}">${['cc','lo'].map(b=>`<button data-act="branch" data-v="${b}" class="${S.branch===b?'on':''}">${T.brs[b]}</button>`).join('')}</div></div><div class="mtools" style="margin-block:10px 8px"><label class="search">${ico.search}<input id="q" type="search" placeholder="${T.search}" value="${esc(S.q)}" aria-label="${T.search}"></label><button class="btn gh sm jmp" data-act="menuprint">${AR()?'المنيو المطبوع ↓':'Printed menu ↓'}</button></div>
   <div class="stick menu-nav" id="stick">
   ${catsWrap(CATS.map(([k,n])=>k==='coffee'?`<button class="chip" style="min-height:44px;padding:0 20px;font-size:15px" data-go="cafe" data-ccat="all">${AR()?'قهوة ومشروبات ↗':'Coffee & drinks ↗'}</button>`:`<button class="chip ${S.cat===k?'on':''}" style="min-height:44px;padding:0 20px;font-size:15px" data-act="mcat" data-v="${k}">${lg(n)}</button>`).join(''))}</div>
@@ -1689,12 +1702,14 @@ function vMenu(){
 }
 function summaryBlock(){
  const T=t();
- return S.cart.map(c=>{const it=ITEMS.find(i=>i.id===c.id);const o=optLabel(c);const photo=READY_OFFER_IMAGES[it.id]||it.readyImg||(it.brand==='sofia'?SOFIA_CATEGORY_IMAGES[it.sc&&it.sc.ar]:it.brand==='cafe'?CAFE_CARD_IMAGES[it.g]:it.img?IMG[it.img]:null);return `<div class="line">${photo?`<img src="${photo}" alt="${esc(lg(it.n))}" loading="lazy">`:`<div style="width:64px;height:64px;border-radius:14px;background:var(--card2);flex:none"></div>`}<div class="mid"><div class="t">${lg(it.n)}</div><div class="s">${o?o+' · ':''}× ${num(c.q)}</div></div><b style="color:var(--leaf-l)">${money(it.price*c.q)}</b></div>`}).join('');
+ return S.cart.map(c=>{const it=ITEMS.find(i=>i.id===c.id);const o=optLabel(c);const photo=READY_OFFER_IMAGES[it.id]||it.readyImg||(it.brand==='sofia'?SOFIA_CATEGORY_IMAGES[it.sc&&it.sc.ar]:it.brand==='cafe'?CAFE_CARD_IMAGES[it.g]:it.img?IMG[it.img]:null);return `<div class="line">${photo?`<img src="${photo}" alt="${esc(lg(it.n))}" loading="lazy">`:`<div style="width:64px;height:64px;border-radius:14px;background:var(--card2);flex:none"></div>`}<div class="mid"><div class="t">${lg(it.n)}</div><div class="s">${o?o+' · ':''}${num(c.q)} × ${money(unit(it,c.o))} ${AR()?'للوحدة':'each'}</div></div><b style="color:var(--leaf-l)">${money(unit(it,c.o)*c.q)}</b></div>`}).join('');
 }
 function field(id,label,type='text',extra=''){
  const e=S.errors[id];const v=esc(S.form[id]||'');
- return `<div class="fld ${e?'bad':''}"><label for="f_${id}">${label}</label>${type==='textarea'?`<textarea id="f_${id}" data-f="${id}">${v}</textarea>`:`<input id="f_${id}" data-f="${id}" type="${type}" value="${v}" ${extra}>`}${e?`<div class="er">● ${e}</div>`:''}</div>`;
+ const preview=type==='time'?`<small class="time-format-preview" id="time-preview-${id}" aria-live="polite">${S.form[id]?formatDisplayTime(S.form[id]):(AR()?'هيظهر الوقت بصيغة ٦:٣٠ م أو ٦:٣٠ ص':'Time will appear as 6:30 PM or 6:30 AM')}</small>`:'';
+ return `<div class="fld ${e?'bad':''}"><label for="f_${id}">${label}</label>${type==='textarea'?`<textarea id="f_${id}" data-f="${id}">${v}</textarea>`:`<input id="f_${id}" data-f="${id}" type="${type}" value="${v}" ${type==='time'?`aria-describedby="time-preview-${id}"`:''} ${extra}>`}${preview}${e?`<div class="er">● ${e}</div>`:''}</div>`;
 }
+function syncTimePreview(input){if(input?.type==='time'){const p=input.parentElement?.querySelector('.time-format-preview');if(p)p.textContent=input.value?formatDisplayTime(input.value):(AR()?'هيظهر الوقت بصيغة ٦:٣٠ م أو ٦:٣٠ ص':'Time will appear as 6:30 PM or 6:30 AM')}}
 function vCheckout(){
  const T=t();const sv=S.service;
  if(S.done)return vDone();
@@ -1715,29 +1730,40 @@ function vCheckout(){
 function checkoutContextHTML(){
  const T=t(),sv=S.service,F=S.form,ar=AR();
  const rows=[[ar?'الخدمة':'Service',T.svcName[sv]||''],[ar?'الفرع':'Branch',sv==='delivery'?(ar?'التوصيل من لوران':'Delivery from Louran'):T.brs[S.branch]]];
- if(sv==='takeaway')rows.push([ar?'ميعاد الاستلام':'Pickup time',F.pick|| (ar?'اختاروا الميعاد في النموذج':'Select a time in the form')]);
+ if(sv==='takeaway')rows.push([ar?'ميعاد الاستلام':'Pickup time',F.pick?formatDisplayTime(F.pick):(ar?'اختاروا الميعاد في النموذج':'Select a time in the form')]);
  if(sv==='table')rows.push([ar?'رقم الطاولة':'Table number',F.table|| (ar?'أدخلوا الرقم في النموذج':'Enter a number in the form')]);
  return `<div class="checkout-context-title">${ar?'تفاصيل الاستلام':'Service details'}</div>${rows.map(([label,value])=>`<div class="checkout-meta-row"><span>${label}</span><b>${esc(String(value))}</b></div>`).join('')}`;
 }
 function vDone(){
  const T=t();const d=S.done||{};const dt=d.details||{};const ar=AR();
  const kind=d.kind||(dt.type?'ev':(dt.party?'res':'ord'));
+ const confirmed=!!d.sentConfirmed;
+ const copy=ar?{
+  sentTitle:'شكرًا، أكدت إرسال الرسالة',sentCopy:'الفرع هيراجع رسالتكم ويرد لتأكيد الطلب أو الحجز. الحجز لا يتأكد إلا بعد رد الفرع.',
+  handoffTitle:'باقي خطوة أخيرة على واتساب',handoffCopy:'لو ما ضغطتش إرسال في واتساب، افتحه وابعت الرسالة. بعد الإرسال ارجع واضغط «أرسلت الرسالة». فتح واتساب وحده لا يرسل الطلب.',
+  handoffStatus:'الرسالة جاهزة. بعد إرسالها في واتساب، أكّد هنا.',confirmSent:'أرسلت الرسالة على واتساب',reopenWA:'افتح واتساب لإرسال الرسالة',returnSite:'العودة للموقع',sentStatus:'أكدت إرسال الرسالة. طلبك الآن بانتظار رد الفرع.'
+ }:{
+  sentTitle:'Thanks for confirming you sent the message',sentCopy:'The branch will review your message and reply to confirm the order or reservation. A reservation is confirmed only after the branch replies.',
+  handoffTitle:'One last step in WhatsApp',handoffCopy:'If you have not tapped Send in WhatsApp yet, open it and send the message. Then return here and tap “I sent the message.” Opening WhatsApp alone does not send your request.',
+  handoffStatus:'Your message is ready. After sending it in WhatsApp, confirm here.',confirmSent:'I sent the WhatsApp message',reopenWA:'Open WhatsApp to send the message',returnSite:'Return to the website',sentStatus:'You confirmed the message was sent. Your request is now awaiting the branch reply.'
+ };
  
  const title=kind==='res'?(ar?'راجع حجزك قبل الإرسال':'Review your booking'):
              kind==='ev'?(ar?'راجع تفاصيل مناسبتك':'Review your celebration'):
              (ar?'راجع طلبك قبل الإرسال':'Review your order');
  
-  const sub=d.handoff?(ar?'واتساب اتفتح في تبويب آخر. أرسل الرسالة هناك، وانتظر رد الفرع لتأكيد الحجز أو الطلب.':'WhatsApp opened in another tab. Send the message there, then wait for the branch to confirm your request.'):(ar?'تأكد من التفاصيل، ثم أرسلها إلى الفرع عبر واتساب. الحجز أو الطلب لا يتأكد إلا بعد رد الفرع.':'Check the details, then send them to the branch on WhatsApp. Your request is confirmed after the branch replies.');
+ const sub=confirmed?copy.sentCopy:d.handoff?copy.handoffCopy:(ar?'تأكد من التفاصيل، ثم أرسلها إلى الفرع عبر واتساب. الحجز أو الطلب لا يتأكد إلا بعد رد الفرع.':'Check the details, then send them to the branch on WhatsApp. Your request is confirmed after the branch replies.');
 
  const summaryHeading=kind==='res'?(ar?'ملخص بيانات الحجز':'Booking Summary'):
                       kind==='ev'?(ar?'ملخص بيانات المناسبة':'Event Summary'):
                       (ar?'ملخص بيانات الطلب':'Order Summary');
  const progressLabels=kind==='ev'?(ar?['تفاصيل المناسبة','مراجعة','واتساب']:['Event details','Review','WhatsApp']):kind==='res'?(ar?['بيانات الحجز','مراجعة','واتساب']:['Booking details','Review','WhatsApp']):(ar?['بيانات الطلب','مراجعة','واتساب']:['Order details','Review','WhatsApp']);
 
- return `<div class="wrap done-wrap" style="padding-block:clamp(18px,4vw,44px) 56px;max-width:760px"><div class="card form ok done-card" style="padding:clamp(20px,4vw,40px);text-align:center">
-   <ol class="steps form-steps done-steps" aria-label="${ar?'خطوات الإرسال':'Send steps'}">${progressLabels.map((label,i)=>`<li class="${i===0?'done':i===(d.handoff?2:1)?'cur':''}"><span>${i===0?'✓':i+1}</span>${label}</li>`).join('')}</ol>
-  <div class="done-wa-icon" aria-hidden="true">${ico.wa}</div>
-   <h1 class="disp h2" style="margin:0;font-size:clamp(24px,4vw,32px);line-height:1.2;color:var(--ink)">${d.handoff?(ar?'تم فتح واتساب':'WhatsApp opened'):title}</h1>
+ return `<div class="wrap done-wrap" style="padding-block:clamp(18px,4vw,44px) 56px;max-width:760px"><div class="card form ok done-card ${confirmed?'is-confirmed':''}" style="padding:clamp(20px,4vw,40px);text-align:center">
+  ${confirmed&&d.confetti?`<div class="done-confetti" aria-hidden="true">${Array.from({length:28},(_,i)=>`<i style="--x:${(i*37)%100}%;--delay:${(i%7)*.08}s;--drift:${((i%9)-4)*13}px;--color:${['#d9ae48','#72c86e','#fff1d0','#ee8c54'][i%4]}"></i>`).join('')}</div>`:''}
+   <ol class="steps form-steps done-steps" aria-label="${ar?'خطوات الإرسال':'Send steps'}">${progressLabels.map((label,i)=>{const done=i===0||(confirmed&&i>0),current=!confirmed&&i===(d.handoff?2:1);return `<li class="${done?'done':current?'cur':''}"><span>${done?'✓':i+1}</span>${label}</li>`}).join('')}</ol>
+  <div class="done-wa-icon" aria-hidden="true">${confirmed?ico.chk:ico.wa}</div>
+   <h1 class="disp h2" style="margin:0;font-size:clamp(24px,4vw,32px);line-height:1.2;color:var(--ink)">${confirmed?copy.sentTitle:d.handoff?copy.handoffTitle:title}</h1>
   <p class="lead done-sub" style="margin:8px auto 16px;max-width:440px;font-size:14.5px;line-height:1.6;color:var(--mist)">${sub}</p>
 
   <div class="done-summary-box" style="background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:start;margin-bottom:18px">
@@ -1748,10 +1774,10 @@ function vDone(){
     <div class="done-details-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px 14px;font-size:13.5px">
       ${dt.service?`<div class="done-detail"><span>${ar?'الخدمة':'Service'}</span><b>${esc(dt.service)}</b></div>`:''}
       ${dt.branch?`<div class="done-detail"><span>${ar?'الفرع':'Branch'}</span><b>${esc(dt.branch)}</b></div>`:''}
-      ${dt.pick?`<div class="done-detail"><span>${ar?'ميعاد الاستلام':'Pickup time'}</span><b>${esc(dt.pick)}</b></div>`:''}
+      ${dt.pick?`<div class="done-detail"><span>${ar?'ميعاد الاستلام':'Pickup time'}</span><b>${esc(formatDisplayTime(dt.pick))}</b></div>`:''}
       ${dt.table?`<div class="done-detail"><span>${ar?'رقم الطاولة':'Table number'}</span><b>${esc(dt.table)}</b></div>`:''}
       ${dt.date?`<div class="done-detail"><span>${ar?'التاريخ':'Date'}</span><b>${esc(dt.date)}</b></div>`:''}
-      ${dt.time?`<div class="done-detail"><span>${ar?'الوقت':'Time'}</span><b>${esc(dt.time)}</b></div>`:''}
+      ${dt.time?`<div class="done-detail"><span>${ar?'الوقت':'Time'}</span><b>${esc(formatDisplayTime(dt.time))}</b></div>`:''}
       ${dt.party?`<div class="done-detail"><span>${ar?'عدد الأفراد':'Party size'}</span><b>${esc(String(dt.party))} ${ar?'أفراد':'guests'}</b></div>`:''}
       ${dt.name?`<div class="done-detail"><span>${ar?'الاسم':'Guest name'}</span><b>${esc(dt.name)}</b></div>`:''}
       ${dt.phone?`<div class="done-detail"><span>${ar?'رقم الموبايل':'Phone'}</span><b dir="ltr">${esc(dt.phone)}</b></div>`:''}
@@ -1760,14 +1786,13 @@ function vDone(){
       ${dt.type?`<div class="done-detail"><span>${ar?'نوع المناسبة':'Event type'}</span><b>${esc(dt.type)}</b></div>`:''}
       ${dt.notes?`<div class="done-detail wide"><span>${ar?'ملاحظات':'Notes'}</span><i>${esc(dt.notes)}</i></div>`:''}
     </div>
-    ${kind==='ev'&&S.cart.length?`<div class="done-attached-order"><b>${ar?'الأصناف المضافة للمناسبة':'Items attached to this event request'}</b>${summaryBlock()}<div class="tot big"><span>${T.total}</span><b>${money(cartTotal())}</b></div></div>`:''}
+    ${S.cart.length?`<details class="done-review-items"><summary><span><b>${kind==='res'?(ar?'أصناف مرفقة بالحجز (اختياري)':'Items attached to the reservation (optional)'):kind==='ev'?(ar?'أصناف مرفقة بالاستفسار (اختياري)':'Items attached to the inquiry (optional)'):(ar?'مراجعة أصناف الطلب':'Review order items')}</b><small>${num(cartCount())} ${T.items} · ${money(cartTotal())}${kind==='res'||kind==='ev'?(ar?' · اختياري':' · optional'):''}</small></span><span class="done-review-chevron" aria-hidden="true">⌄</span></summary><div class="done-review-items-body">${summaryBlock()}<div class="tot big"><span>${kind==='res'||kind==='ev'?(ar?'إجمالي الأصناف المرفقة':'Attached items subtotal'):T.sub}</span><b>${money(cartTotal())}</b></div>${kind==='ord'&&S.service==='delivery'?`<p class="done-review-fee">${ar?'رسوم التوصيل يحددها الفرع':'Delivery fee is set by the branch'}</p>`:''}</div></details>`:''}
   </div>
 
-   ${d.handoff?`<div class="handoff-status" role="status">${ico.chk} ${ar?'الرسالة جاهزة في تبويب واتساب. ارجع للموقع بعد إرسالها.':'Your message is ready in the WhatsApp tab. Return here after sending it.'}</div>`:`<a class="btn w lg done-main-cta" href="${d.link}" data-act="whatsapp-handoff" target="_blank" rel="noopener">${ico.wa} ${ar?'إرسال للفرع عبر واتساب':'Send to the branch on WhatsApp'}</a><p class="done-whatsapp-note">${ar?'ستُفتح رسالة جاهزة للمراجعة والإرسال. لن يتم إرسالها تلقائيًا.':'A prepared message will open for you to review and send. It will not be sent automatically.'}</p>`}
+   ${confirmed?`<div class="handoff-status" role="status">${ico.chk} ${copy.sentStatus}</div>`:d.handoff?`<div class="handoff-status" role="status">${ico.chk} ${copy.handoffStatus}</div><a class="btn w lg done-main-cta" href="${d.link}" data-act="whatsapp-handoff" target="_blank" rel="noopener">${ico.wa} ${copy.reopenWA}</a><button class="btn g lg done-confirm-cta" type="button" data-act="confirm-handoff">${ico.chk} ${copy.confirmSent}</button><p class="done-whatsapp-note">${ar?'أكد فقط بعد ما تضغط إرسال في واتساب.':'Please confirm only after you tap Send in WhatsApp.'}</p>`:`<a class="btn w lg done-main-cta" href="${d.link}" data-act="whatsapp-handoff" target="_blank" rel="noopener">${ico.wa} ${ar?'إرسال للفرع عبر واتساب':'Send to the branch on WhatsApp'}</a><p class="done-whatsapp-note">${ar?'ستُفتح رسالة جاهزة للمراجعة والإرسال. لن يتم إرسالها تلقائيًا.':'A prepared message will open for you to review and send. It will not be sent automatically.'}</p>`}
 
   <div class="done-actions" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-    <button class="btn gh sm" style="flex:1;min-width:140px;justify-content:center;font-size:13px" data-act="edit-order">${T.editOrder}</button>
-    <button class="btn gh sm" style="flex:1;min-width:140px;justify-content:center;font-size:13px;opacity:.75" data-act="restart">${T.newOrder}</button>
+    ${confirmed?`<button class="btn g sm" style="flex:1;min-width:140px;justify-content:center;font-size:13px" data-act="restart">${T.newOrder}</button><button class="btn gh sm" style="flex:1;min-width:140px;justify-content:center;font-size:13px" data-act="return-home">${copy.returnSite}</button>`:`<button class="btn gh sm" style="flex:1;min-width:140px;justify-content:center;font-size:13px" data-act="edit-order">${T.editOrder}</button><button class="btn gh sm" style="flex:1;min-width:140px;justify-content:center;font-size:13px;opacity:.75" data-act="restart">${T.newOrder}</button>`}
   </div>
  </div></div>`;
 }
@@ -1775,9 +1800,9 @@ function vReserve(){
  const T=t();
  if(S.done)return vDone();
  const today=new Date().toISOString().slice(0,10);
-  return `<div class="wrap form-page" style="padding-block:clamp(24px,4vw,48px) 96px"><p class="eyebrow">${T.resEye}</p><header class="form-page-head"><h1 class="disp h2">${T.resT}</h1><p class="form-page-intro">${AR()?'اختار الفرع والموعد، وسنرسل طلب الحجز للفرع للمراجعة والتأكيد.':'Choose a branch and time. The branch will review your booking request and confirm with you.'}</p></header>${steps(S.resStep===2?2:1,AR()?['بيانات الحجز','مراجعة','واتساب']:['Booking details','Review','WhatsApp'])}
+ return `<div class="wrap form-page" style="padding-block:clamp(24px,4vw,48px) 96px"><p class="eyebrow">${T.resEye}</p><header class="form-page-head"><h1 class="disp h2">${T.resT}</h1><p class="form-page-intro">${AR()?'اختاروا الفرع والموعد وعدد الأفراد. ده طلب حجز قعدة؛ لو قاعدين بالفعل وعايزين تطلبوا أكل، اختاروا «اطلبوا أكل لطاولتكم» من السلة.':'Choose the branch, time and party size. This is for reserving a table; if you are already seated and want food, choose “Order food to my table” in the cart.'}</p></header>${steps(1,AR()?['بيانات الحجز','مراجعة','واتساب']:['Booking details','Review','WhatsApp'])}
  <div class="layout2" style="margin-top:28px"><form class="card form final-form" id="resf" novalidate>
-   ${S.cart.length?`<details class="att"><summary><span class="ai">🧾</span><span class="at"><b>${S.lang==='ar'?'أصناف هتطلبها مع الطاولة':'Items to order with your table'}</b><small>${num(cartCount())} ${S.lang==='ar'?'أصناف':'items'} · ${money(cartTotal())}</small></span><span class="ac">${S.lang==='ar'?'عرض الطلب':'View order'}</span></summary><div class="ab">${summaryBlock()}<button type="button" class="btn gh sm" data-act="cart">${S.lang==='ar'?'تعديل الطلب':'Edit order'}</button></div></details>`:''}
+   ${S.cart.length?`<details class="att"><summary><span class="ai">🧾</span><span class="at"><b>${T.attached}</b><small>${num(cartCount())} ${T.items} · ${money(cartTotal())}</small></span><span class="ac">${S.lang==='ar'?'عرض الطلب':'View order'}</span></summary><div class="ab">${summaryBlock()}<button type="button" class="btn gh sm" data-act="cart">${S.lang==='ar'?'تعديل الطلب':'Edit order'}</button></div></details>`:''}
   <div class="fld"><label>${T.branch}</label><div class="seg" style="display:flex">${['cc','lo'].map(b=>`<button type="button" style="flex:1" data-act="branch" data-v="${b}" class="${S.branch===b?'on':''}">${T.brs[b]}</button>`).join('')}</div></div>
   <div class="row2">${field('date',T.date,'date',`min="${today}"`)}${field('time',T.time,'time')}</div>
   <div class="fld"><label>${T.party}</label><div class="stp" style="display:flex;justify-content:space-between;min-height:56px;border-radius:12px"><button type="button" data-act="party" data-v="-1" aria-label="-">−</button><span style="align-self:center;font-size:17px">${num(S.party)} ${T.guests}</span><button type="button" data-act="party" data-v="1" aria-label="+">+</button></div></div>
@@ -1785,7 +1810,7 @@ function vReserve(){
   ${field('notes',T.notes,'textarea')}
   <div class="note">${ico.warn}<div>${AR()?'للمجموعات الكبيرة: الحجز بيتم قبلها بـ ٢٤ ساعة على الأقل. للمناسبات والحفلات كلمنا من صفحة':'Large groups: please request at least 24 hours ahead. For events and celebrations, use the'} <button type="button" class="lnkb" data-go="events">${T.nav.events}</button></div></div>
   <div class="note warn">${ico.warn}<div><b>${T.resNote}</b></div></div>
-   ${S.resStep===2?`<section class="reservation-review" aria-live="polite"><h2>${AR()?'مراجعة طلب الحجز':'Review your reservation'}</h2><dl><div><dt>${T.branch}</dt><dd>${T.brs[S.branch]}</dd></div><div><dt>${T.date}</dt><dd>${esc(S.form.date||'')}</dd></div><div><dt>${T.time}</dt><dd>${esc(S.form.time||'')}</dd></div><div><dt>${T.party}</dt><dd>${num(S.party)} ${T.guests}</dd></div><div><dt>${T.name}</dt><dd>${esc(S.form.name||'')}</dd></div><div><dt>${T.phone}</dt><dd>${esc(S.form.phone||'')}</dd></div></dl><button type="button" class="btn gh" data-act="res-edit">${AR()?'تعديل البيانات':'Edit details'}</button></section><div class="reservation-review-actions"><button class="btn gh" type="button" data-act="res-edit">${AR()?'رجوع لبيانات الحجز':'Back to details'}</button><button class="btn w lg" type="submit">${ico.wa}${T.sendReq}</button></div>`:`<button class="btn g lg reservation-next" type="button" data-act="res-review">${AR()?'مراجعة الحجز':'Review reservation'} ${ico.arr()}</button>`}</form>
+   <button class="btn g lg reservation-next" type="submit">${AR()?'راجعوا طلب الحجز':'Review reservation request'} ${ico.arr()}</button></form>
  <aside class="card sum rsum"><div class="disp" style="font-size:24px">${T.resT}</div>
   <div class="tot"><span>${T.branch}</span><b style="color:var(--ink)">${T.brs[S.branch]}</b></div><div class="tot"><span>${T.party}</span><b style="color:var(--ink)">${num(S.party)}</b></div>
   <div style="height:1px;background:var(--line)"></div>
@@ -1920,8 +1945,8 @@ function formWhatsAppMessage(kind){
  const T=t(),W=T.ww,F=S.form;
  if(kind==='ord')return `${T.waHello} - ${T.wTitleOrder}\n\n${W.items}:\n${orderLines()}\n${W.total}: ${cartTotal()} ${T.currency} (${taxTxt()})\n\n${W.svc}: ${T.svcName[S.service]}\n${W.name}: ${F.name}\n${W.phone}: ${F.phone}`
   +(S.service==='delivery'?`\n${W.area}: ${F.area}\n${W.address}: ${F.address}`:`\n${W.branch}: ${T.brs[S.branch]}`)
-  +(S.service==='table'?`\n${W.table}: ${F.table}`:'')+(S.service==='takeaway'&&F.pick?`\n${W.pick}: ${F.pick}`:'')+(F.notes?`\n${W.notes}: ${F.notes}`:'');
- if(kind==='res')return `${T.waHello} - ${T.wTitleRes}\n\n${W.branch}: ${T.brs[S.branch]}\n${W.date}: ${F.date}\n${W.time}: ${F.time}\n${W.party}: ${S.party}\n${W.name}: ${F.name}\n${W.phone}: ${F.phone}`+(F.notes?`\n${W.notes}: ${F.notes}`:'')+(S.cart.length?`\n\n${W.items}:\n${orderLines()}\n${W.total}: ${cartTotal()} ${T.currency}`:'');
+  +(S.service==='table'?`\n${W.table}: ${F.table}`:'')+(S.service==='takeaway'&&F.pick?`\n${W.pick}: ${formatDisplayTime(F.pick)}`:'')+(F.notes?`\n${W.notes}: ${F.notes}`:'');
+ if(kind==='res')return `${T.waHello} - ${T.wTitleRes}\n\n${W.branch}: ${T.brs[S.branch]}\n${W.date}: ${F.date}\n${W.time}: ${formatDisplayTime(F.time)}\n${W.party}: ${S.party}\n${W.name}: ${F.name}\n${W.phone}: ${F.phone}`+(F.notes?`\n${W.notes}: ${F.notes}`:'')+(S.cart.length?`\n\n${W.items}:\n${orderLines()}\n${W.total}: ${cartTotal()} ${T.currency}`:'');
  const other=EVT[EVT.length-1][AR()?0:1],eventType=F.evType===other?(F.evOther||F.evType):localizeEventType(F.evType,S.lang==='ar'?0:1,S.lang==='ar'?0:1);
  return `${T.waHello} - ${T.wTitleEv}\n\n${W.branch}: ${T.brs[S.branch]}\n${W.name}: ${F.name}\n${W.phone}: ${F.phone}\n${W.party}: ${F.guestsN}\n${W.type}: ${eventType}`+(F.date?`\n${W.date}: ${F.date}`:'')+(F.notes?`\n${W.notes}: ${F.notes}`:'')+(S.cart.length?`\n\n${W.items}:\n${orderLines()}\n${W.total}: ${cartTotal()} ${T.currency}`:'');
 }
@@ -1989,7 +2014,11 @@ const duelHTML=()=>{const ar=AR();const dots=n=>'<i>'+[1,2,3,4,5].map(k=>`<b cla
     <div class="dd"><div><p>${x.p}</p><div class="dm">${x.m.map(([l,n])=>`<div><span>${l}</span>${dots(n)}</div>`).join('')}</div><p class="dnote">${ar?'وصف مختصر يساعدك تختار؛ تفاصيل الأصناف وأسعارها في المنيو.':'A quick guide to help you choose; see the menu for item details and prices.'}</p><button class="dcta" data-go="cafe" data-ccat="hotc" data-sc="cflist">${ar?'شوف القهوة وأسعارها':'See coffee & prices'}</button></div></div>
    <div class="dpl"><img src="${x.img}" alt="${x.alt}" loading="lazy"></div></div>`).join('')}
  </div>`};
-function backHTML(){return S.view==='home'?'':`<div class="page-back wrap"><button class="btn gh sm" type="button" data-act="back" aria-label="${AR()?'الرجوع للصفحة السابقة':'Go back to the previous page'}">${AR()?'عودة ←':'← Back'}</button></div>`}
+function backHTML(){
+ if(S.done?.sentConfirmed)return '';
+ if(S.done){const label=S.done.kind==='ord'?(AR()?'تعديل الطلب':'Edit order'):(AR()?'تعديل البيانات':'Edit details');return `<div class="page-back wrap"><button class="btn gh sm" type="button" data-act="edit-order" aria-label="${label}">‹ ${label}</button></div>`}
+ return S.view==='home'?'':`<div class="page-back wrap"><button class="btn gh sm" type="button" data-act="back" aria-label="${AR()?'الرجوع للصفحة السابقة':'Go back to the previous page'}">${AR()?'عودة ←':'← Back'}</button></div>`
+}
 function render(){
  const T=t();const _cl=document.getElementById('car');const _cs=_cl?_cl.scrollLeft:null;document.documentElement.classList.toggle('lock',!!(S.cartOpen||S.menuOpen));
  applyTheme();document.documentElement.lang=S.lang;document.documentElement.dir=S.lang==='ar'?'rtl':'ltr';
@@ -2042,7 +2071,7 @@ document.addEventListener('click',e=>{
   soft();return;
  }
  if(act==='branch'){S.branch=el.dataset.v}
- if(el.dataset.go&&cartCount()>0&&el.matches('.branch-actions .order')){S.cartOpen=true;S.menuOpen=false;S.done=null;saveState();render();return} if(el.dataset.go){ if(el.closest('#home-shortcuts-panel'))S.homeShortcutsOpen=false;if(el.dataset.eventType)S.form.evType=el.dataset.eventType; if(el.dataset.service)S.service=el.dataset.service; if(el.dataset.cat!==undefined)S.cat=el.dataset.cat; if(el.dataset.ccat!==undefined){S.ccat=el.dataset.ccat;S.cq=''} if(act==='branch'){S.branch=el.dataset.v} go(el.dataset.go,el.dataset.extra!==undefined?(el.dataset.extra||null):undefined);if(el.dataset.sc){const sc=el.dataset.sc;setTimeout(()=>{const m=document.getElementById(sc);if(m){const h=(document.querySelector('.hdr')||{offsetHeight:76}).offsetHeight,st=(document.getElementById('stick')||document.getElementById('sfstick')||{offsetHeight:0}).offsetHeight;const targetY=m.getBoundingClientRect().top+window.scrollY-h-st-10;window.scrollTo({top:Math.max(0,targetY),behavior:'smooth'})}},80)}return}
+ if(el.dataset.go&&cartCount()>0&&el.matches('.branch-actions .order')){S.cartOpen=true;S.menuOpen=false;S.done=null;saveState();render();return} if(el.dataset.go){ if(el.closest('#home-shortcuts-panel'))S.homeShortcutsOpen=false;if(el.dataset.eventType){activateForm('events');S.form.evType=el.dataset.eventType} if(el.dataset.service)S.service=el.dataset.service; if(el.dataset.cat!==undefined)S.cat=el.dataset.cat; if(el.dataset.ccat!==undefined){S.ccat=el.dataset.ccat;S.cq=''} if(act==='branch'){S.branch=el.dataset.v} go(el.dataset.go,el.dataset.extra!==undefined?(el.dataset.extra||null):undefined);if(el.dataset.sc){const sc=el.dataset.sc;setTimeout(()=>{const m=document.getElementById(sc);if(m){const h=(document.querySelector('.hdr')||{offsetHeight:76}).offsetHeight,st=(document.getElementById('stick')||document.getElementById('sfstick')||{offsetHeight:0}).offsetHeight;const targetY=m.getBoundingClientRect().top+window.scrollY-h-st-10;window.scrollTo({top:Math.max(0,targetY),behavior:'smooth'})}},80)}return}
  if(act==='detail'){S.detailItem=el.dataset.id;saveState();render();return;}
  if(act==='closedetail'||(e.target.classList&&e.target.classList.contains('dish-detail-backdrop'))){S.detailItem=null;saveState();render();return;}
  if(act==='add-modal'){
@@ -2060,8 +2089,6 @@ document.addEventListener('click',e=>{
    return;
  }
  else if(act==='duel'){const w=el.closest('.duel');const v=el.dataset.v;w.dataset.pick=(w.dataset.pick===v)?'':v;w.querySelectorAll('.dpick').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===w.dataset.pick?'true':'false'));return}
-    else if(act==='res-review'){S.errors={};const T=t(),F=S.form;for(const k of ['date','time','name'])if(!(F[k]||'').trim())S.errors[k]=T.eReq;const ph=(F.phone||'').replace(/[\s\-]/g,'').replace(/^\+?2/,'');if(!/^0?1[0-9]{9}$/.test(ph))S.errors.phone=T.ePhone;if(Object.keys(S.errors).length){render();document.querySelector('#resf .fld.bad input')?.focus();return}S.resStep=2}
-    else if(act==='res-edit'){S.resStep=1;S.errors={}}
   else if(act==='whatsapp-handoff'){setTimeout(()=>{if(S.done){S.done.handoff=true;render();window.scrollTo({top:0,behavior:'instant'})}},300);return}
     else if(act==='lang'){const from=S.lang;S.lang=from==='ar'?'en':'ar';const to=S.lang==='ar'?0:1,fromIndex=from==='ar'?0:1;if(S.form.evType)S.form.evType=localizeEventType(S.form.evType,fromIndex,to);if(S.done){const d=S.done.details||{};d.branch=t().brs[S.branch];if(S.done.kind==='ord')d.service=t().svcName[S.service]||'';if(d.type)d.type=localizeEventType(d.type,fromIndex,to);S.done.link=waLink(formWhatsAppMessage(S.done.kind),S.done.kind==='ord'&&S.service==='delivery'?'lo':S.branch)}}
   else if(act==='theme'){THEME.set(THEME.get()==='dark'?'paper':'dark')}
@@ -2106,7 +2133,7 @@ document.addEventListener('click',e=>{
  else if(act==='qty'){const c=S.cart[+el.dataset.i];if(c){S.upsellAccepted=false;c.q+=(+el.dataset.v);if(c.q<=0)S.cart.splice(+el.dataset.i,1)}}
  else if(act==='remove-item'){const i=+el.dataset.i,c=S.cart[i];if(c){S.upsellAccepted=false;S.lastRemoved={item:{...c},index:i};clearTimeout(S.removeUndoTimer);S.removeUndoTimer=setTimeout(()=>{S.lastRemoved=null;if(S.cartOpen)renderDrawer()},7000);S.cart.splice(i,1)}}
  else if(act==='undo-remove'){const r=S.lastRemoved;if(r){S.upsellAccepted=false;const existing=S.cart.find(c=>c.id===r.item.id&&c.o===r.item.o);if(existing)existing.q+=r.item.q;else S.cart.splice(Math.min(r.index,S.cart.length),0,r.item);S.lastRemoved=null;clearTimeout(S.removeUndoTimer)}}
- else if(act==='svc'){S.service=el.dataset.v}
+ else if(act==='svc'){S.service=el.dataset.v;if(S.view==='checkout')activateForm('checkout',S.service);S.errors={}}
  else if(act==='service-continue'){S.service=el.dataset.service;S.cartOpen=true;S.menuOpen=false;S.done=null;saveState();render();return}
  else if(act==='continue'){S.errors={};go(S.service==='reserve'?'reserve':'checkout');return}
   else if(act==='edit-order'){
@@ -2118,7 +2145,8 @@ document.addEventListener('click',e=>{
   else{S.cartOpen=true;}
   saveState();render();return;
 }
-  else if(act==='restart'){S.cart=[];S.done=null;S.form={};S.view='home'}
+ else if(act==='confirm-handoff'){if(S.done&&S.done.handoff){S.done.sentConfirmed=true;S.done.confetti=true;render();window.scrollTo({top:0,behavior:'instant'});setTimeout(()=>{if(S.done)S.done.confetti=false},2400)}return}
+ else if(act==='restart'||act==='return-home'){S.cart=[];S.done=null;S.formBuckets={'order:delivery':{},'order:takeaway':{},'order:table':{},reservation:{},event:{}};S.view='home';activateForm('home');saveState();try{location.hash='home'}catch(e){}render();window.scrollTo({top:0,behavior:'instant'});return}
  else if(act==='smenu'){e.preventDefault();render();const m=document.getElementById('menu-s');m&&m.scrollIntoView({behavior:'smooth'});return}
  else return;
  if(S.cartOpen&&(act==='svc'||act==='qty'||act==='add'||act==='remove-item'||act==='undo-remove')){renderDrawer();soft();return}
@@ -2132,9 +2160,9 @@ document.addEventListener('input',e=>{
  else if(el.id==='sq'){S.sq=el.value;refreshSofia()}
  else if(el.id==='tq'){S.tq=el.value;refreshTahia()}
  else if(el.id==='cq'){S.cq=el.value;refreshCafe()}
- else if(el.dataset.f){S.form[el.dataset.f]=el.value;const ctx=document.getElementById('checkout-context');if(ctx)ctx.innerHTML=checkoutContextHTML()}
+ else if(el.dataset.f){S.form[el.dataset.f]=el.value;syncTimePreview(el);const ctx=document.getElementById('checkout-context');if(ctx)ctx.innerHTML=checkoutContextHTML()}
 });
-document.addEventListener('change',e=>{if(e.target.id==='brsel'){S.branch=e.target.value;render()}else if(e.target.dataset.f){S.form[e.target.dataset.f]=e.target.value;const ctx=document.getElementById('checkout-context');if(ctx)ctx.innerHTML=checkoutContextHTML()}});
+document.addEventListener('change',e=>{if(e.target.id==='brsel'){S.branch=e.target.value;render()}else if(e.target.dataset.f){S.form[e.target.dataset.f]=e.target.value;syncTimePreview(e.target);const ctx=document.getElementById('checkout-context');if(ctx)ctx.innerHTML=checkoutContextHTML()}});
 document.addEventListener('submit',e=>{
  e.preventDefault();const T=t();const f=e.target;S.errors={};
  const F=S.form;const need=(k,m)=>{if(!(F[k]||'').trim())S.errors[k]=m};
@@ -2154,7 +2182,7 @@ document.addEventListener('submit',e=>{
  if(msg){const det={service:f.id==='chk'?T.svcName[S.service]:'',branch:T.brs[S.branch],date:F.date||'',time:F.time||'',pick:F.pick||'',table:F.table||'',party:(kind==='res'?S.party:F.guestsN)||'',name:F.name||'',phone:F.phone||'',notes:F.notes||'',area:F.area||'',address:F.address||'',type:F.evOther&&F.evType===EVT[EVT.length-1][AR()?0:1]?F.evOther:(F.evType||'')};S.done={link:waLink(msg,kind==='ord'&&S.service==='delivery'?'lo':S.branch),kind,details:det}}
  render();window.scrollTo({top:0,behavior:'instant'});
 });
-window.addEventListener('hashchange',()=>{try{const h=location.hash.replace('#','');if(h&&h!==S.view&&['home','kids','menu','delivery','checkout','branches','sofia','tahia','cafe','events','services','contact','privacy','reserve'].includes(h)){if(ROUTE_HISTORY.length){const last=ROUTE_HISTORY[ROUTE_HISTORY.length-1];if(last===h)ROUTE_HISTORY.pop();else ROUTE_HISTORY.push(S.view)}else ROUTE_HISTORY.push(S.view);S.view=h;S.cartOpen=false;S.menuOpen=false;render();window.scrollTo({top:0,behavior:'instant'})}}catch(e){}});
+window.addEventListener('hashchange',()=>{try{const h=location.hash.replace('#','');if(h&&h!==S.view&&['home','kids','menu','delivery','checkout','branches','sofia','tahia','cafe','events','services','contact','privacy','reserve'].includes(h)){if(ROUTE_HISTORY.length){const last=ROUTE_HISTORY[ROUTE_HISTORY.length-1];if(last===h)ROUTE_HISTORY.pop();else ROUTE_HISTORY.push(S.view)}else ROUTE_HISTORY.push(S.view);S.view=h;activateForm(h);S.cartOpen=false;S.menuOpen=false;render();window.scrollTo({top:0,behavior:'instant'})}}catch(e){}});
 
 /* ---------- motion layer ---------- */
 const FX={seen:new Set(),lastView:null,io:null,tilts:[],drifts:[],car:null,dots:null,mx:0,my:0,tx:0,ty:0,moved:false,go:false,hero:null,decos:[],lsy:-1,dirty:true,cT:0,cB:0,
@@ -2164,6 +2192,7 @@ const NOFX=QS.has('nofx');if(NOFX)document.documentElement.classList.add('nofx')
 const NOINTRO=NOFX||QS.has('nointro')||FX.reduced;
 function saveState(){try{localStorage.setItem('pf_state2',JSON.stringify({cart:S.cart,service:S.service,branch:S.branch,lang:S.lang,opt:S.opt}))}catch(e){}}
 try{const x=JSON.parse(localStorage.getItem('pf_state2')||'null');if(x){if(Array.isArray(x.cart))S.cart=x.cart.filter(c=>c&&ITEMS.some(i=>i.id===c.id)&&c.q>0);if(['delivery','takeaway','table','reserve'].includes(x.service))S.service=x.service;if(['cc','lo'].includes(x.branch))S.branch=x.branch;if(['ar','en'].includes(x.lang))S.lang=x.lang;if(x.opt&&typeof x.opt==='object')S.opt=x.opt}}catch(e){}
+activateForm(S.view);
 function predecode(){const im=[...document.querySelectorAll('.stage img')].filter(i=>!i._d&&i.decode);let k=0;(function nxt(){if(k>=im.length)return;const i=im[k++];i._d=1;i.decode().catch(()=>{}).then(()=>{(window.requestIdleCallback||setTimeout)(nxt,{timeout:200})})})()}
 function homeNavFlowTop(el){let top=0;for(let n=el;n&&n!==document.documentElement;n=n.offsetParent)top+=n.offsetTop||0;return Math.max(0,top)}
 const HOME_NAV={y:0,start:0,raf:false,railActive:''};
@@ -3242,6 +3271,7 @@ html.paper .delivery-info-card{box-shadow:0 12px 30px rgba(45,39,26,.08)}
 .reservation-review h2{margin:0 0 12px;font-size:clamp(20px,4vw,26px)}.reservation-review dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 18px;margin:0 0 14px}
 .reservation-review dl>div{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line);min-width:0}.reservation-review dt{color:var(--mist)}.reservation-review dd{margin:0;text-align:end;overflow-wrap:anywhere;font-weight:650}
 .reservation-review-actions{display:flex;gap:10px;flex-wrap:wrap}.reservation-review-actions>*{flex:1 1 220px}.reservation-next{width:100%;margin-top:6px}
+.menu-cart-notice{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:18px 0;padding:14px 16px;border:1px solid color-mix(in srgb,var(--leaf-l) 38%,var(--line));border-radius:16px;background:color-mix(in srgb,var(--leaf) 12%,var(--card));color:var(--ink)}.menu-cart-notice>div{display:grid;gap:4px;min-width:0}.menu-cart-notice b{color:var(--leaf-l)}.menu-cart-notice span{color:var(--mist);font-size:14px;line-height:1.55}.menu-cart-notice .btn{flex:none}
 .services-cart-note{max-width:760px;margin:18px 0 0;padding:14px 16px;border:1px solid color-mix(in srgb,var(--leaf-l) 38%,var(--line));border-radius:14px;background:color-mix(in srgb,var(--leaf) 12%,var(--card));color:var(--ink);line-height:1.65}
 .done-attached-order{display:grid;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}.done-attached-order>b{color:var(--leaf-l)}
 html.paper .services-cart-note{background:#f2f7ed;border-color:#cad8c0;color:#293427}
@@ -3266,6 +3296,23 @@ html.paper .services-cart-note{background:#f2f7ed;border-color:#cad8c0;color:#29
 @media(max-width:800px){.services-overview-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .dish-detail-modal{color:var(--ink)}.dish-detail-modal .dish-detail-cart{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}.dish-detail-cart-label{color:var(--leaf-l);font-size:13px;font-weight:750;white-space:nowrap}.dish-detail-modal .qs{flex:none}.dish-detail-options .chip{max-width:100%;overflow-wrap:anywhere}
 @media(max-width:480px){.dish-detail-backdrop{padding:12px!important}.dish-detail-modal{max-height:calc(100svh - 24px)!important;padding:18px!important;border-radius:20px!important}.dish-detail-modal h2{padding-inline-end:36px}.dish-detail-modal>div:last-child{align-items:flex-start!important;flex-wrap:wrap;gap:12px}.dish-detail-modal>div:last-child>.price{align-self:center}.dish-detail-modal .dish-detail-cart,.dish-detail-modal .add-modal-btn{margin-inline-start:auto}.dish-detail-modal .qs button{width:40px;height:40px}}
-@media(max-width:560px){.services-overview-grid{grid-template-columns:minmax(0,1fr)}.reservation-review dl{grid-template-columns:minmax(0,1fr)}.reservation-review-actions{display:grid;grid-template-columns:minmax(0,1fr)}.reservation-review-actions>*{width:100%;box-sizing:border-box}.services-cart-note{font-size:13px}.done-attached-order .line{grid-template-columns:48px minmax(0,1fr) auto}.done-attached-order .line img{width:48px;height:48px}}
+@media(max-width:560px){.services-overview-grid{grid-template-columns:minmax(0,1fr)}.reservation-review dl{grid-template-columns:minmax(0,1fr)}.reservation-review-actions{display:grid;grid-template-columns:minmax(0,1fr)}.reservation-review-actions>*{width:100%;box-sizing:border-box}.services-cart-note{font-size:13px}.menu-cart-notice{align-items:stretch;flex-direction:column}.menu-cart-notice .btn{width:100%;box-sizing:border-box}.done-attached-order .line{grid-template-columns:48px minmax(0,1fr) auto}.done-attached-order .line img{width:48px;height:48px}}
 @media(prefers-reduced-motion:reduce){.service-overview-card{transition:none!important}.service-overview-card:hover{transform:none!important}}
-</style><style>.kids-welcome-still{display:none!important}.handoff-status{display:flex;justify-content:center;align-items:center;gap:9px;max-width:520px;margin:0 auto 16px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--card2);color:var(--ink);font-weight:650;line-height:1.55}</style><script id="video-download-guards">(()=>{const protect=v=>{if(!v||v.nodeType!==1||v.tagName!=='VIDEO'||v.dataset.downloadUiProtected)return;v.setAttribute('controlsList','nodownload noremoteplayback');v.setAttribute('disablepictureinpicture','');v.disablePictureInPicture=true;v.addEventListener('contextmenu',e=>e.preventDefault());v.dataset.downloadUiProtected='1'};document.querySelectorAll('video').forEach(protect);new MutationObserver(records=>records.forEach(r=>r.addedNodes.forEach(n=>{if(n.nodeType!==1)return;protect(n);n.querySelectorAll&&n.querySelectorAll('video').forEach(protect)}))).observe(document.documentElement,{childList:true,subtree:true})})();</script></body></html>
+.done-review-items{margin-top:16px;border:1px solid var(--line);border-radius:14px;background:var(--card);overflow:hidden;color:var(--ink);text-align:start}
+.done-review-items>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:62px;padding:12px 14px;cursor:pointer;list-style:none}
+.done-review-items>summary::-webkit-details-marker{display:none}
+.done-review-items>summary>span:first-child{display:grid;gap:4px;min-width:0}
+.done-review-items>summary b{font-size:14px;line-height:1.45;color:var(--ink)}.done-review-items>summary small{font-size:12px;color:var(--mist);line-height:1.5}
+.done-review-chevron{display:grid;place-items:center;width:30px;height:30px;flex:none;border:1px solid var(--line);border-radius:50%;color:var(--leaf-l);transition:transform .22s ease,background .22s ease}
+.done-review-items[open] .done-review-chevron{transform:rotate(180deg);background:color-mix(in srgb,var(--leaf-l) 12%,var(--card))}
+.done-review-items-body{display:grid;gap:8px;padding:0 14px 14px;border-top:1px solid var(--line);animation:review-reveal .24s ease both}
+.done-review-items-body .line{grid-template-columns:52px minmax(0,1fr) auto;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}.done-review-items-body .line img{width:52px;height:52px;object-fit:cover;border-radius:11px}
+.done-review-items-body .line .t{line-height:1.4;overflow-wrap:anywhere}.done-review-items-body .line .s{font-size:12px;line-height:1.5;color:var(--mist);overflow-wrap:anywhere}.done-review-items-body .line>b{font-size:13px;white-space:nowrap}
+.done-review-items-body .tot{margin-top:4px}.done-review-items-body .tot.big{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;height:auto;min-height:0;box-sizing:border-box;padding:10px 0 0;border:0;border-top:1px solid var(--line);border-radius:0;background:transparent}.done-review-items-body .tot.big>b{width:auto;height:auto;display:inline;color:var(--leaf-l)}.done-review-fee{margin:0;color:var(--mist);font-size:12px;line-height:1.55}.done-review-items>summary:focus-visible{outline:3px solid var(--gold);outline-offset:-3px}
+html.paper .done-review-items{background:#fffdf8;border-color:#ddd5c4}html.paper .done-review-chevron{color:#357a37}
+@keyframes review-reveal{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:420px){.done-review-items-body .line{grid-template-columns:44px minmax(0,1fr) auto;gap:8px}.done-review-items-body .line img{width:44px;height:44px}.done-review-items-body .line>b{font-size:12px}}
+@media(prefers-reduced-motion:reduce){.done-review-chevron,.done-review-items-body{transition:none!important;animation:none!important}}
+.time-format-preview{display:block;margin-top:-2px;color:var(--mist);font-size:12px;line-height:1.45}
+html.paper .time-format-preview{color:#68705f}
+</style><style>.kids-welcome-still{display:none!important}.handoff-status{display:flex;justify-content:center;align-items:center;gap:9px;max-width:520px;margin:0 auto 16px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--card2);color:var(--ink);font-weight:650;line-height:1.55}.done-card{position:relative}.done-confetti{position:absolute;z-index:2;inset:0 0 auto;height:142px;overflow:hidden;pointer-events:none}.done-confetti i{position:absolute;top:-14px;left:var(--x);width:7px;height:12px;border-radius:2px;background:var(--color);opacity:0;animation:done-confetti-fall 1.9s var(--delay) cubic-bezier(.2,.65,.3,1) forwards}.done-confetti i:nth-child(3n){width:5px;height:8px;border-radius:50%}.done-confetti i:nth-child(4n){width:10px;height:6px}.is-confirmed .done-wa-icon{border-color:color-mix(in srgb,var(--leaf-l) 48%,var(--line));background:color-mix(in srgb,var(--leaf-l) 16%,var(--card));color:var(--leaf-l)}.done-confirm-cta{display:flex;box-sizing:border-box;width:100%;max-width:520px;min-height:58px;margin:0 auto;padding:12px 18px;justify-content:center;align-items:center;gap:8px;border:0;border-radius:15px;font-weight:750;white-space:normal;line-height:1.35;text-align:center;cursor:pointer;box-shadow:0 8px 22px color-mix(in srgb,var(--leaf) 24%,transparent);transition:transform .2s ease,box-shadow .2s ease}.done-confirm-cta:hover{transform:translateY(-2px);box-shadow:0 12px 28px color-mix(in srgb,var(--leaf) 32%,transparent)}@keyframes done-confetti-fall{0%{opacity:0;transform:translate3d(0,-8px,0) rotate(0)}12%{opacity:.95}82%{opacity:.9}100%{opacity:0;transform:translate3d(var(--drift),150px,0) rotate(560deg)}}@media(prefers-reduced-motion:reduce){.done-confetti{display:none!important}.done-confirm-cta{transition:none!important}.done-confirm-cta:hover{transform:none}}</style><script id="video-download-guards">(()=>{const protect=v=>{if(!v||v.nodeType!==1||v.tagName!=='VIDEO'||v.dataset.downloadUiProtected)return;v.setAttribute('controlsList','nodownload noremoteplayback');v.setAttribute('disablepictureinpicture','');v.disablePictureInPicture=true;v.addEventListener('contextmenu',e=>e.preventDefault());v.dataset.downloadUiProtected='1'};document.querySelectorAll('video').forEach(protect);new MutationObserver(records=>records.forEach(r=>r.addedNodes.forEach(n=>{if(n.nodeType!==1)return;protect(n);n.querySelectorAll&&n.querySelectorAll('video').forEach(protect)}))).observe(document.documentElement,{childList:true,subtree:true})})();</script></body></html>
