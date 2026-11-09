@@ -285,6 +285,10 @@ select.ctl{appearance:none;padding-inline:14px 30px;background-image:linear-grad
 .svc b{font-family:var(--display);font-size:18px}
 :root[dir="rtl"] .svc b{font-size:16.5px}
 .svc small{display:block;color:var(--mist);font-size:13px;line-height:1.45;margin-top:2px}
+.svc.disabled,.svc.has-conflict{opacity:.52;cursor:not-allowed;border-style:dashed;border-color:rgba(229,103,95,.42)!important;background:rgba(229,103,95,.04)!important;transition:opacity .2s ease}
+.svc.disabled:hover,.svc.has-conflict:hover{opacity:.65;border-color:rgba(229,103,95,.6)!important}
+.svc.disabled .rd,.svc.has-conflict .rd{border-color:rgba(229,103,95,.45)!important;background:transparent!important}
+.svc.on.shisha-locked{border-color:var(--leaf-l)!important;background:color-mix(in srgb,var(--leaf-l) 14%,var(--card2))!important;box-shadow:0 0 0 1px var(--leaf-l),0 4px 18px rgba(47,125,43,.18)}
 .tot{display:flex;justify-content:space-between;font-size:15px;color:var(--mist)}
 .tot.big{font-size:20px;color:var(--ink);font-weight:700;padding-top:10px;border-top:1px solid var(--line)}
 .tot.big b{color:var(--leaf-l)}
@@ -499,18 +503,6 @@ html:not(.atop) .cue,html.lock .cue,html.intro .cue{opacity:0;pointer-events:non
 .form-cart-accordion[open] .fcp-chevron{transform:rotate(180deg);background:color-mix(in srgb,var(--leaf-l) 14%,var(--card))}
 .fcp-expand-body{padding-top:10px;margin-top:8px;border-top:1px solid var(--line);animation:review-reveal .2s ease both}
 .fcp-footer{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);font-size:13px}
-.celebration-story-fld{background:var(--card2);border:1.5px solid var(--line);border-radius:18px;padding:16px 18px;margin-bottom:18px;transition:border-color .2s}
-.celebration-story-fld:focus-within{border-color:var(--leaf-l)}
-.celebration-story-label{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
-.csl-title{font-size:15px;color:var(--ink);display:flex;align-items:center;gap:6px}
-.csl-badge{font-size:12px;font-weight:700;color:var(--gold);background:rgba(212,175,55,.12);padding:2px 8px;border-radius:999px}
-.celebration-story-hint{margin:0 0 12px;font-size:13px;color:var(--mist);line-height:1.55}
-.celebration-vibe-chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}
-.vibe-chip{font-size:12.5px!important;padding:6px 12px!important;border-radius:999px!important;background:rgba(255,255,255,.05)!important;border:1px solid var(--line)!important;cursor:pointer;transition:all .18s ease}
-.vibe-chip:hover{background:rgba(255,255,255,.1)!important;transform:translateY(-1px)}
-.vibe-chip.on{background:color-mix(in srgb,var(--leaf-l) 16%,var(--card2))!important;border-color:var(--leaf-l)!important;color:var(--leaf-l)!important;font-weight:700}
-.celebration-textarea{width:100%;box-sizing:border-box;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:12px 14px;resize:vertical}
-.celebration-textarea:focus{border-color:var(--leaf-l);outline:none}
 .done-handoff-prompt{display:grid;gap:12px;margin:16px 0 20px}
 .done-choice-card{transition:transform .2s ease,box-shadow .2s ease}
 .done-choice-card:hover{transform:translateY(-2px)}
@@ -854,7 +846,8 @@ html.paper .fm figcaption{color:var(--ink)}
 
 /* ===== DUEL: Cappuccino OR Flat White (brand coffee island, same in both themes) ===== */
 .duel{position:relative;display:flex;border-radius:30px;overflow:hidden;margin:8px 0 30px;min-height:380px;background:#DCAB5F;isolation:isolate;box-shadow:0 18px 40px rgba(90,55,20,.22)}
-.dl{flex:1 1 0;min-width:0;position:relative;display:grid;grid-template-columns:1fr auto;grid-template-rows:auto 1fr;align-items:end;gap:12px;padding:clamp(20px,3.2vw,38px);overflow:hidden;transition:flex-grow .6s cubic-bezier(.2,.8,.2,1)}
+.duel{box-sizing:border-box;max-width:100%;overflow:hidden}
+.dl{flex:1 1 0;min-width:0;max-width:100%;box-sizing:border-box;position:relative;display:grid;grid-template-columns:1fr auto;grid-template-rows:auto 1fr;align-items:end;gap:12px;padding:clamp(16px,2.8vw,34px);overflow:hidden;transition:flex-grow .6s cubic-bezier(.2,.8,.2,1)}
 .dl.a{background:linear-gradient(160deg,#E6B96C,#D49C47);color:#3d1f0f}
 .dl.b{background:linear-gradient(160deg,#FCF5E7,#F0E1C2);color:#6e3114}
 .dpick{position:absolute;inset:0;z-index:2;background:none;border:0;cursor:pointer;width:100%;height:100%}
@@ -875,7 +868,9 @@ html.paper .fm figcaption{color:var(--ink)}
 .dm div{display:flex;align-items:center;gap:10px}.dm span{min-width:84px}
 .dm i{display:inline-flex;gap:4px}.dm i b{width:14px;height:14px;border-radius:50%;background:currentColor;opacity:.22}.dm i b.on{opacity:1}
 .dnote{font-size:12px;opacity:.8;margin:0 0 12px;line-height:1.6}
-.dcta{pointer-events:auto;position:relative;z-index:3;align-self:flex-start;appearance:none;border:0;cursor:pointer;font:inherit;font-weight:800;font-size:14px;white-space:nowrap;min-height:44px;padding:0 18px;border-radius:999px;background:#7A3A1A;color:#fff}
+.dcta{pointer-events:auto;position:relative;z-index:3;align-self:flex-start;appearance:none;border:0;cursor:pointer;font:inherit;font-weight:800;font-size:13.5px;white-space:normal;text-align:center;line-height:1.3;min-height:42px;padding:8px 16px;border-radius:999px;background:#7A3A1A;color:#fff;max-width:100%;box-sizing:border-box}
+.dd{min-width:0;max-width:100%;overflow:hidden}
+.dpl{max-width:45%;box-sizing:border-box;flex-shrink:0}
 .dl.b .dcta{background:#3d1f0f}
 .duel[data-pick=a] .dl.a,.duel[data-pick=b] .dl.b{flex-grow:1.3}
 @media(hover:hover){.duel:not([data-pick]) .dl:hover,.duel[data-pick=""] .dl:hover{flex-grow:1.12}}
@@ -1565,8 +1560,8 @@ function kitchens(){const ar=AR();return [
  {key:'tahia',go:'tahia',cls:'t',img:'ms_th1',eyc:'color:var(--tl,#A3CC3F)',eye:ar?'المنيو الشرقي':'Oriental menu',name:ar?'مطبخ تحية':'Tahia Kitchen',desc:ar?'أكل شرقي بيتي في الفرعين، من الشوربة للطواجن والمحاشي.':'Home-style oriental cooking at both branches, from soups to tagines and stuffed vegetables.',pts:ar?['فراخ وأرانب محمرة وفتة','محاشي وكبدة وسجق إسكندراني','شوربة وطواجن']:['Roasted chicken, rabbit, fatta','Stuffed vegetables, Alexandrian liver and sausage','Soups and tagines'],btn:ar?'اكتشف مطبخ تحية':'Explore Tahia Kitchen',btnc:'t'}]}
 function kmedia(k){const m=KMEDIA[k.key]||{};if(m.src&&/\.gif($|\?)/i.test(m.src))return `<img src="${m.src}" alt="${esc(k.name)}" loading="lazy">`;if(m.src)return `<video muted loop playsinline preload="none" ${m.poster?`poster="${m.poster}"`:''} data-src="${m.src}" aria-label="${esc(k.name)}"></video><button class="snd" data-act="snd" aria-label="Sound">🔇</button>`;const src=READY_KITCHEN_IMAGES[k.key]||IMG[k.img];return `<img class="kb-img" src="${src}" alt="${esc(k.name)}" loading="lazy">`}
 function homeShortcutLinks(cls='mt'){
- const items=[['offers',AR()?'العروض':'Deals','offers'],['menu',AR()?'المنيو':'Menu','menu'],['sofia',AR()?'سوفيا سوشي':'Sofia Sushi','sofia'],['tahia',AR()?'مطبخ تحية':'Tahia Kitchen','tahia'],['drinks',AR()?'المشروبات':'Drinks','cafe'],['shisha',AR()?'الشيشة':'Shisha','shisha-home'],['kids',AR()?'ركن الأطفال':'Kids corner','kids'],['services',AR()?'خدماتنا':'Our services','services'],['branches',AR()?'الفروع':'Branches','branches']];
- return items.map(([k,n,id])=>{const ic=k==='offers'?MOODI.bf:(k==='shisha'?_sv('<path d="M7 20h10M9 20V9h6v11M10 9c0-2 4-2 4-5M15 12h2a2 2 0 0 1 0 4h-2"/>'):(MOODI[k]||MOODI.menu));const isView=['menu','sofia','tahia','cafe','kids','services','branches'].includes(id);return `<button class="${cls}" ${isView?`data-go="${id}" ${id==='cafe'?'data-ccat="all" data-sc="cflist"':''}`:`data-act="homejump" data-v="${id}"`}><i>${ic}</i><b>${n}</b></button>`}).join('');
+ const items=[['offers',AR()?'العروض':'Deals','offers'],['menu',AR()?'المنيو':'Menu','menu'],['sofia',AR()?'سوفيا سوشي':'Sofia Sushi','sofia'],['tahia',AR()?'مطبخ تحية':'Tahia Kitchen','tahia'],['drinks',AR()?'المشروبات':'Drinks','cafe'],['shisha',AR()?'الشيشة':'Shisha','shisha-home'],['kids',AR()?'ركن الأطفال':'Kids corner','kids'],['services',AR()?'خدماتنا':'Our services','services'],['events',AR()?'المناسبات':'Celebrations','events'],['branches',AR()?'الفروع':'Branches','branches']];
+ return items.map(([k,n,id])=>{const ic=k==='offers'?MOODI.bf:(k==='shisha'?_sv('<path d="M7 20h10M9 20V9h6v11M10 9c0-2 4-2 4-5M15 12h2a2 2 0 0 1 0 4h-2"/>'):(k==='events'?(MOODI.events||ico.cal):(MOODI[k]||MOODI.menu)));const isView=['menu','sofia','tahia','cafe','kids','services','events','branches'].includes(id);return `<button class="${cls}" ${isView?`data-go="${id}" ${id==='cafe'?'data-ccat="all" data-sc="cflist"':''}`:`data-act="homejump" data-v="${id}"`}><i>${ic}</i><b>${n}</b></button>`}).join('');
 }
 function vHome(){
  const T=t(),kidItem=ITEMS.find(x=>x.id==='k1'),selectedBranch=T.brs[S.branch];
@@ -1753,7 +1748,12 @@ function isShisha(itemOrId){
  if(!itemOrId)return false;
  const it=typeof itemOrId==='string'?ITEMS.find(x=>x.id===itemOrId):itemOrId;
  if(!it)return false;
- return it.g==='shisha'||it.cat==='shisha'||it.brand==='shisha'||(it.n&&typeof it.n==='object'&&(it.n.ar==='شيشة'||it.n.ar.includes('شيشة')));
+ if(it.g==='shisha'||it.cat==='shisha'||it.brand==='shisha')return true;
+ const nar=typeof it.n==='object'?(it.n?.ar||''):(it.a||'');
+ const nen=typeof it.n==='object'?(it.n?.en||''):(it.e||'');
+ if(typeof nar==='string'&&nar.includes('شيشة'))return true;
+ if(typeof nen==='string'&&nen.toLowerCase().includes('shisha'))return true;
+ return false;
 }
 function cartHasShisha(){
  return S.cart.some(c=>isShisha(c.id));
@@ -1820,7 +1820,8 @@ function vCheckout(){
  const curSv=S.service;
  return `<div class="wrap form-page" style="padding-block:clamp(24px,4vw,48px) 96px"><button class="back" data-act="cart">${ico.arr()==='›'?'‹':'›'} ${T.back}</button>${steps(1,AR()?['بيانات الطلب','مراجعة','واتساب والتأكيد']:['Order details','Review','WhatsApp & Confirm'])}
  <header class="form-page-head"><p class="eyebrow">${T.chkEye[curSv]}</p><h1 class="disp h2">${T.chkT[curSv]}</h1><p class="form-page-intro">${AR()?'أدخلوا بياناتكم بالأسفل. في الخطوة القادمة هتراجعوا طلبكم بالكامل وسلتكم قبل فتح واتساب.':'Enter your details below. In the next step you will review your entire order before opening WhatsApp.'}</p></header>
- <div style="max-width:760px;margin:28px auto 0"><form class="card form final-form" id="chk" novalidate>
+ <div class="layout2" style="margin-top:28px"><form class="card form final-form" id="chk" novalidate>
+  ${formCartPreviewHTML('ord')}
   ${hasShisha?`<div class="note warn" style="border:1.5px solid rgba(229,103,95,.5);background:rgba(229,103,95,.12);border-radius:14px;padding:14px 16px;margin-bottom:18px">
     <div style="display:flex;align-items:center;gap:8px;font-weight:750;font-size:14.5px;color:#ff8e84">
       <span>💨</span> <span>${AR()?'الشيشة متاحة فقط للطلب على الطاولة للضيوف داخل صالة الفرع':'Shisha is strictly available for dine-in guests at the branch'}</span>
@@ -1835,10 +1836,12 @@ function vCheckout(){
   ${sv==='takeaway'?`<div class="row2"><div class="fld"><label>${T.branch}</label><div class="seg" style="display:flex">${['cc','lo'].map(b=>`<button type="button" style="flex:1" data-act="branch" data-v="${b}" class="${S.branch===b?'on':''}">${T.brs[b]}</button>`).join('')}</div></div>${field('pick',T.pickT,'time')}</div>${S.branch==='cc'?`<div class="note">${ico.warn}<div>${AR()?'لو إنت قريب من كامب شيزار، حد من الفريق ممكن يطلعلك الطلب لحد مكانك. الفرع هيأكد معاك على واتساب.':'If you are close to Camp Caesar, a team member can bring the order out to you. The branch will confirm on WhatsApp.'}</div></div>`:''}`:''}
   ${sv==='table'?`<div class="row2"><div class="fld"><label>${T.branch}</label><div class="seg" style="display:flex">${['cc','lo'].map(b=>`<button type="button" style="flex:1" data-act="branch" data-v="${b}" class="${S.branch===b?'on':''}">${T.brs[b]}</button>`).join('')}</div></div>${field('table',T.tableNo)}</div>`:''}
   ${field('notes',T.notes,'textarea')}
-  ${formCartPreviewHTML('ord')}
   <div><button class="btn g lg" type="submit" style="width:100%;justify-content:center;font-size:16px;min-height:52px">${AR()?'متابعة لمراجعة الطلب والسلة':'Continue to review order'} ${ico.arr()}</button>
   <p class="calm" style="margin-top:10px">${AR()?'مفيش دفع أونلاين ولا إرسال تلقائي. هتشوف ملخص طلبك بالكامل في الخطوة التالية قبل فتح واتساب.':'No payment required now. You will review your entire order in the next step before opening WhatsApp.'}</p>
-  </div></form></div></div>`;
+  </div></form>
+ <aside class="card sum"><div class="disp" style="font-size:24px">${T.summary}</div>${summaryBlock()}<div id="checkout-context" class="checkout-context">${checkoutContextHTML()}</div>
+  <div class="tot"><span>${T.sub}</span><span>${money(cartTotal())}</span></div>${sv==='delivery'?`<div class="tot"><span>${T.delFee}</span><span>${T.feeNote}</span></div>`:''}
+  <div class="tot big"><span>${T.total}</span><b>${money(cartTotal())}</b></div><div style="font-size:12.5px;color:var(--dim)">${taxTxt()}</div></aside></div></div>`;
 }
 function checkoutContextHTML(){
  const T=t(),sv=S.service,F=S.form,ar=AR();
@@ -1971,7 +1974,8 @@ function vReserve(){
  if(S.done)return vDone();
  const today=new Date().toISOString().slice(0,10);
  return `<div class="wrap form-page" style="padding-block:clamp(24px,4vw,48px) 96px"><p class="eyebrow">${T.resEye}</p><header class="form-page-head"><h1 class="disp h2">${T.resT}</h1><p class="form-page-intro">${AR()?'اختاروا الفرع والموعد وعدد الأفراد. ده طلب حجز قعدة؛ في الخطوة القادمة هتراجعوا تفاصيل الحجز قبل إرسالها للفرع على واتساب.':'Choose branch, time and party size. This is for table reservation; in the next step you will review your booking details before sending to WhatsApp.'}</p></header>${steps(1,AR()?['بيانات الحجز','مراجعة','واتساب والتأكيد']:['Booking details','Review','WhatsApp & Confirm'])}
- <div style="max-width:760px;margin:28px auto 0"><form class="card form final-form" id="resf" novalidate>
+ <div class="layout2" style="margin-top:28px"><form class="card form final-form" id="resf" novalidate>
+   ${formCartPreviewHTML('res')}
   <div class="fld"><label>${T.branch}</label><div class="seg" style="display:flex">${['cc','lo'].map(b=>`<button type="button" style="flex:1" data-act="branch" data-v="${b}" class="${S.branch===b?'on':''}">${T.brs[b]}</button>`).join('')}</div></div>
   <div class="row2">${field('date',T.date,'date',`min="${today}"`)}${field('time',T.time,'time')}</div>
   <div class="fld"><label>${T.party}</label><div class="stp" style="display:flex;justify-content:space-between;min-height:56px;border-radius:12px"><button type="button" data-act="party" data-v="-1" aria-label="-">−</button><span style="align-self:center;font-size:17px">${num(S.party)} ${T.guests}</span><button type="button" data-act="party" data-v="1" aria-label="+">+</button></div></div>
@@ -1979,10 +1983,13 @@ function vReserve(){
   ${field('notes',T.notes,'textarea')}
   <div class="note">${ico.warn}<div>${AR()?'للمجموعات الكبيرة: الحجز بيتم قبلها بـ ٢٤ ساعة على الأقل. للمناسبات والحفلات كلمنا من صفحة':'Large groups: please request at least 24 hours ahead. For events and celebrations, use the'} <button type="button" class="lnkb" data-go="events">${T.nav.events}</button></div></div>
   <div class="note warn">${ico.warn}<div><b>${T.resNote}</b></div></div>
-  ${formCartPreviewHTML('res')}
-  <div><button class="btn g lg reservation-next" type="submit" style="width:100%;justify-content:center;font-size:16px;min-height:52px">${AR()?'متابعة لمراجعة بيانات الحجز':'Continue to review booking'} ${ico.arr()}</button>
-  <p class="calm" style="margin-top:10px">${AR()?'الحجز لا يُعتمد إلا بعد المراجعة وتأكيد مدير الصالة بالفرع عبر واتساب.':'The booking is confirmed only after review and confirmation by the branch manager on WhatsApp.'}</p>
-  </div></form></div></div>`;
+   <div><button class="btn g lg reservation-next" type="submit" style="width:100%;justify-content:center;font-size:16px;min-height:52px">${AR()?'متابعة لمراجعة بيانات الحجز':'Continue to review booking'} ${ico.arr()}</button>
+   <p class="calm" style="margin-top:10px">${AR()?'الحجز لا يُعتمد إلا بعد المراجعة وتأكيد مدير الصالة بالفرع عبر واتساب.':'The booking is confirmed only after review and confirmation by the branch manager on WhatsApp.'}</p>
+   </div></form>
+ <aside class="card sum rsum"><div class="disp" style="font-size:24px">${T.resT}</div>
+  <div class="tot"><span>${T.branch}</span><b style="color:var(--ink)">${T.brs[S.branch]}</b></div><div class="tot"><span>${T.party}</span><b style="color:var(--ink)">${num(S.party)}</b></div>
+  <div style="height:1px;background:var(--line)"></div>
+  ${S.cart.length?`<div style="font-size:13px;letter-spacing:.1em;color:var(--gold);font-weight:600">${T.attached}</div>${summaryBlock()}<div class="tot big"><span>${T.total}</span><b>${money(cartTotal())}</b></div>`:`<div class="ds">${T.statusW}</div>`}</aside></div></div>`;
 }
 function vBranches(){
  const T=t();
@@ -2095,26 +2102,8 @@ function vEvents(){
 
  ${steps(1,ar?['تفاصيل المناسبة','مراجعة','واتساب والتأكيد']:['Event details','Review','WhatsApp & Confirm'])}<form class="card form final-form" id="evf" novalidate style="max-width:880px"><div class="final-form-head"><span class="final-form-icon" aria-hidden="true">✦</span><div><p class="eyebrow">${ar?'تفاصيل الاحتفال':'CELEBRATION DETAILS'}</p><div class="disp final-form-title">${T.evForm}</div><p class="final-form-hint">${ar?'اكتب التفاصيل الأساسية، وفي الخطوة القادمة هتراجع كل شيء قبل التواصل مع الفرع.':'Share a few details. In the next step you will review everything before connecting with the branch.'}</p></div></div>
  <div class="fld"><label>${T.branch}</label><div class="seg" style="display:flex">${['cc','lo'].map(b=>`<button type="button" style="flex:1" data-act="branch" data-v="${b}" class="${S.branch===b?'on':''}">${T.brs[b]}</button>`).join('')}</div></div>
- <div class="row2">${field('name',T.name)}${field('phone',T.phone,'tel','inputmode="tel"')}</div>${field('guestsN',T.guestsN,'number','min="1"')}${evTypes()}${field('date',T.date,'date')}
- <div class="fld celebration-story-fld">
-  <label for="f_notes" class="celebration-story-label">
-   <span class="csl-title">✨ <b>${ar?'احكيلنا عن تفاصيل مناسبتك':'Tell us your celebration story'}</b></span>
-   <span class="csl-badge">${ar?'هنرتبها لك على ذوقك':'Customized for you'}</span>
-  </label>
-  <p class="celebration-story-hint">${ar?'حابب الأجواء تكون إزاي؟ تورتة وشمع مفاجأة، طاولة رايقة على الفيو، ديكور خاص، أو تجهيز أطباق معينة؟ شاركنا أي فكرة في بالك وفريق بورتوفينو هيرتبها لك بكل حب:':'How do you imagine the vibe? Birthday cake & candles, a quiet table with a view, custom decor, or special dishes? Share your ideas and the Portofino team will arrange it with love:'}</p>
-  <div class="celebration-vibe-chips" role="group" aria-label="${ar?'أفكار وتفاصيل سريعة لمناسبتك':'Quick ideas for your celebration'}">
-   ${[
-    ['🎂',ar?'تورتة وشمع مفاجأة':'Surprise cake & candles'],
-    ['🕯️',ar?'أجواء هادية ورومانسية':'Quiet & romantic vibe'],
-    ['🎈',ar?'تزيين وديكور بالونات':'Balloons & decor'],
-    ['🎵',ar?'أغنية خاصة وقت الاحتفال':'Special celebration song'],
-    ['📸',ar?'طاولة مميزة للتصوير':'Great table for photos'],
-    ['🍽️',ar?'تجهيز منيو وأكل مسبق':'Pre-arranged menu']
-   ].map(([emoji,text])=>`<button type="button" class="chip sm vibe-chip ${(S.form.notes||'').includes(text)?'on':''}" data-act="vibe-tag" data-tag="${text}">${emoji} ${text}</button>`).join('')}
-  </div>
-  <textarea id="f_notes" data-f="notes" rows="4" class="celebration-textarea" placeholder="${ar?'اكتب هنا كل اللي في خاطرك لليوم ده، مثلاً: بنحتفل بعيد ميلاد وعايزين تورتة وشمع بعد العشاء، وترابيزة مميزة قريبة من الفيو...':'Tell us what you wish for, e.g., We are celebrating a birthday and would love a surprise cake with candles after dinner, at a nice table near the view...'}" style="min-height:115px;line-height:1.65;font-size:14.5px">${esc(S.form.notes||'')}</textarea>
- </div>
  ${formCartPreviewHTML('ev')}
+ <div class="row2">${field('name',T.name)}${field('phone',T.phone,'tel','inputmode="tel"')}</div>${field('guestsN',T.guestsN,'number','min="1"')}${evTypes()}${field('date',T.date,'date')}${field('notes',T.details,'textarea')}
  <div><button class="btn g lg" type="submit" style="width:100%;justify-content:center;font-size:16px;min-height:52px">${AR()?'متابعة لمراجعة تفاصيل المناسبة':'Continue to review celebration'} ${ico.arr()}</button>
  <p class="calm" style="margin-top:10px">${AR()?'مفيش دفع ولا إرسال تلقائي. هتراجع كل تفاصيل مناسبتك وسلتك في الخطوة الجاية قبل فتح واتساب.':'No payment or auto-send. You will review all celebration details before opening WhatsApp.'}</p>
  <p class="ds" style="margin-top:12px">${T.evNote}</p></div></form></div>`;
@@ -2190,7 +2179,7 @@ function cartUndoHTML(){const r=S.lastRemoved;if(!r)return '';const it=ITEMS.fin
   const isConflict=hasShisha&&k!=='table';
   const badge=isConflict?` <small style="color:#ff8e84">(${AR()?'داخل الصالة فقط':'Dine-in only'})</small>`:(hasShisha&&k==='table'?` <small style="color:var(--leaf-l)">(${AR()?'متاح للشيشة ✓':'For shisha ✓'})</small>`:'');
   const subText=isConflict?(AR()?'الشيشة متاحة فقط للطلب على الطاولة داخل الصالة':'Shisha is strictly dine-in at your table'):s[1];
-  return `<button class="svc ${S.service===k?'on':''} ${isConflict?'disabled has-conflict':''}" data-act="svc" data-v="${k}" ${isConflict?'aria-disabled="true"':''}><span class="rd"></span><span><b>${s[0]}${badge}</b><small>${subText}</small></span></button>`;
+  return `<button class="svc ${S.service===k?'on':''} ${isConflict?'disabled has-conflict':(hasShisha&&k==='table'?'shisha-locked':'')}" data-act="svc" data-v="${k}" ${isConflict?'aria-disabled="true"':''}><span class="rd"></span><span><b>${s[0]}${badge}</b><small>${subText}</small></span></button>`;
  }).join('');
  const shishaWarnHTML=hasShisha?`<div class="note warn" style="margin-top:12px;font-size:12.5px;border-color:rgba(229,103,95,.45);color:#ff9e96;line-height:1.55;background:rgba(229,103,95,.08);padding:10px 14px;border-radius:12px;text-align:start"><b style="display:flex;align-items:center;gap:6px">💨 ${AR()?'الشيشة متاحة فقط داخل صالة الفرع (طلب على الطاولة)':'Shisha is strictly dine-in at your table'}</b><div style="font-size:11.5px;color:var(--ink);margin-top:3px">${AR()?'سلتكم تتضمن أصناف شيشة لا تتوفر في الدليفري أو التيك أواي أو الحجز المسبق. تم ضبط الطلب تلقائياً على «طلب على الطاولة» للضيوف داخل الفرع.':'Your cart contains shisha, which cannot be ordered for delivery, takeaway or booking. Order is set to Table Order.'}</div></div>`:'';
  return `<div class="ov" data-act="cart"></div><aside class="drawer" role="dialog" aria-label="${T.cartT}"><div class="hd"><div class="disp" style="font-size:26px">${T.cartT} ${cnt?`<small style="font-family:var(--body);font-size:14px;color:var(--mist);font-weight:500">· ${num(cnt)} ${T.items}</small>`:''}</div><button class="ctl" style="width:44px;justify-content:center;padding:0" data-act="cart" aria-label="Close">${ico.x}</button></div>
@@ -2406,22 +2395,6 @@ document.addEventListener('click',e=>{
   else{S.cartOpen=true;}
   saveState();render();return;
 }
- else if(act==='vibe-tag'){
-  const tag=el.dataset.tag;
-  const ta=document.getElementById('f_notes');
-  if(ta){
-   const cur=ta.value.trim();
-   if(!cur){
-    ta.value='- ' + tag;
-   } else if(!cur.includes(tag)){
-    ta.value=cur + '\n- ' + tag;
-   }
-   S.form.notes=ta.value;
-   el.classList.add('on');
-   saveState();
-  }
-  return;
- }
  else if(act==='confirm-handoff'){if(S.done&&S.done.handoff){S.done.sentConfirmed=true;S.done.confetti=true;render();window.scrollTo({top:0,behavior:'instant'});setTimeout(()=>{if(S.done)S.done.confetti=false},2400)}return}
  else if(act==='restart'||act==='return-home'){S.cart=[];S.done=null;S.formBuckets={'order:delivery':{},'order:takeaway':{},'order:table':{},reservation:{},event:{}};S.view='home';activateForm('home');saveState();try{location.hash='home'}catch(e){}render();window.scrollTo({top:0,behavior:'instant'});return}
  else if(act==='smenu'){e.preventDefault();render();const m=document.getElementById('menu-s');m&&m.scrollIntoView({behavior:'smooth'});return}
@@ -2484,6 +2457,7 @@ const NOFX=QS.has('nofx');if(NOFX)document.documentElement.classList.add('nofx')
 const NOINTRO=NOFX||QS.has('nointro')||FX.reduced;
 function saveState(){try{localStorage.setItem('pf_state2',JSON.stringify({cart:S.cart,service:S.service,branch:S.branch,lang:S.lang,opt:S.opt}))}catch(e){}}
 try{const x=JSON.parse(localStorage.getItem('pf_state2')||'null');if(x){if(Array.isArray(x.cart))S.cart=x.cart.filter(c=>c&&ITEMS.some(i=>i.id===c.id)&&c.q>0);if(['delivery','takeaway','table','reserve'].includes(x.service))S.service=x.service;if(['cc','lo'].includes(x.branch))S.branch=x.branch;if(['ar','en'].includes(x.lang))S.lang=x.lang;if(x.opt&&typeof x.opt==='object')S.opt=x.opt}}catch(e){}
+if(cartHasShisha()&&S.service!=='table'){S.service='table';saveState();}
 activateForm(S.view);
 function predecode(){const im=[...document.querySelectorAll('.stage img')].filter(i=>!i._d&&i.decode);let k=0;(function nxt(){if(k>=im.length)return;const i=im[k++];i._d=1;i.decode().catch(()=>{}).then(()=>{(window.requestIdleCallback||setTimeout)(nxt,{timeout:200})})})()}
 function homeNavFlowTop(el){let top=0;for(let n=el;n&&n!==document.documentElement;n=n.offsetParent)top+=n.offsetTop||0;return Math.max(0,top)}
@@ -2802,14 +2776,15 @@ html.paper .kids-welcome-gate{background:rgba(248,244,232,.7);border-color:rgba(
 @media(prefers-reduced-motion:reduce){.kids-welcome-overlay,.kids-welcome-gate{transition:none}}
 </style>
 <style id="kids-home-image-fit-final">#kids-home .kidsfeature .kidsmedia{align-self:center!important;min-height:0!important;height:auto!important;aspect-ratio:2.16/1!important;overflow:hidden}#kids-home .kidsfeature .kidsmedia .kids-home-link{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;min-height:0!important;aspect-ratio:2.16/1!important;overflow:hidden}#kids-home .kidsfeature .kidsmedia .kids-home-link img.kids-home-poster{position:absolute!important;inset:0!important;top:0!important;right:0!important;bottom:0!important;left:0!important;width:100%!important;height:100%!important;min-height:0!important;max-width:none!important;aspect-ratio:auto!important;object-fit:contain!important;object-position:center!important;transform:none!important;filter:none!important}#kids-home .kidsfeature .kidsmedia .kids-home-link:hover img.kids-home-poster,#kids-home .kidsfeature .kidsmedia .kids-home-link:focus-visible img.kids-home-poster{transform:none!important;filter:none!important}@media(max-width:800px){#kids-home .kidsfeature .kidsmedia{aspect-ratio:2.16/1!important;min-height:0!important}#kids-home .kidsfeature .kidsmedia .kids-home-link img.kids-home-poster{height:100%!important;top:0!important}}</style><style id="kids-home-card-polish">#kids-home .kidsfeature{gap:clamp(14px,2.4vw,28px)!important;padding:clamp(12px,2vw,22px)!important;border-radius:30px!important;border-color:color-mix(in srgb,var(--line) 82%,var(--leaf) 18%)!important;box-shadow:0 14px 34px rgba(0,0,0,.14)!important;transition:transform .28s ease,border-color .28s ease,box-shadow .28s ease!important}#kids-home .kidsfeature .kidsmedia{border-radius:23px!important;border:1px solid rgba(255,255,255,.14)!important;box-shadow:0 10px 28px rgba(0,0,0,.2)!important;transition:box-shadow .28s ease,border-color .28s ease!important}#kids-home .kidsfeature .kids-home-link:after{background:linear-gradient(180deg,transparent 55%,rgba(4,10,17,.22) 100%)!important}#kids-home .kidsfeature .kids-home-link .kids-cta{inset-inline-start:14px!important;inset-inline-end:auto!important;bottom:14px!important;width:auto!important;max-width:calc(100% - 28px)!important;min-height:42px;padding:10px 16px!important;display:inline-flex!important;align-items:center;justify-content:center!important;gap:10px;border:1px solid rgba(255,255,255,.38)!important;border-radius:999px!important;background:#237d32!important;color:#fff!important;box-shadow:0 7px 18px rgba(13,55,22,.3)!important;font-size:14px!important;font-weight:800;line-height:1.25;transition:transform .22s ease,background .22s ease,box-shadow .22s ease!important}#kids-home .kidsfeature .kids-home-link:hover .kids-cta,#kids-home .kidsfeature .kids-home-link:focus-visible .kids-cta{transform:translateY(-2px)!important;background:#2f913d!important;box-shadow:0 10px 24px rgba(13,55,22,.4)!important}#kids-home .kidsfeature .kids-home-link .kids-home-poster{transition:filter .28s ease!important;transform:none!important}#kids-home .kidsfeature .kids-home-link:hover .kids-home-poster,#kids-home .kidsfeature .kids-home-link:focus-visible .kids-home-poster{transform:none!important;filter:saturate(1.06) brightness(1.025)!important}#kids-home .kidsfeature .kidsbody{border-radius:23px!important;border-color:var(--line)!important;background:linear-gradient(145deg,rgba(46,125,50,.12),transparent 72%),var(--card)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}@media(hover:hover){#kids-home .kidsfeature:hover{transform:translateY(-2px);border-color:rgba(90,180,92,.56)!important;box-shadow:0 19px 42px rgba(0,0,0,.2)!important}#kids-home .kidsfeature:hover .kidsmedia{border-color:rgba(123,201,111,.5)!important;box-shadow:0 14px 32px rgba(0,0,0,.24)!important}}html.paper #kids-home .kidsfeature .kids-home-link .kids-cta{background:#267d34!important;color:#fff!important}html.paper #kids-home .kidsfeature{box-shadow:0 14px 34px rgba(45,39,26,.1)!important}@media(max-width:540px){#kids-home .kidsfeature{padding:10px!important;gap:12px!important;border-radius:25px!important}#kids-home .kidsfeature .kidsmedia{border-radius:19px!important}#kids-home .kidsfeature .kids-home-link .kids-cta{inset-inline-start:12px!important;bottom:12px!important;min-height:38px;padding:8px 13px!important;font-size:13px!important}#kids-home .kidsfeature .kidsbody{padding:20px!important;border-radius:19px!important}}@media(prefers-reduced-motion:reduce){#kids-home .kidsfeature,#kids-home .kidsfeature .kidsmedia,#kids-home .kidsfeature .kids-home-link .kids-cta{transition:none!important}}</style><style id="home-drinks-and-shisha">
-.drink-hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(280px,.95fr);gap:clamp(18px,3.2vw,42px);align-items:center;padding:clamp(12px,1.8vw,20px);margin:0 0 clamp(30px,4vw,48px);border:1px solid var(--line);border-radius:30px;background:linear-gradient(135deg,rgba(46,155,58,.09),transparent 60%),var(--card);box-shadow:0 16px 40px rgba(0,0,0,.09)}
+.drink-hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(260px,.95fr);gap:clamp(16px,2.8vw,36px);align-items:center;padding:clamp(12px,1.8vw,20px);margin:0 0 clamp(30px,4vw,48px);border:1px solid var(--line);border-radius:30px;background:linear-gradient(135deg,rgba(46,155,58,.09),transparent 60%),var(--card);box-shadow:0 16px 40px rgba(0,0,0,.09);overflow:hidden;box-sizing:border-box;max-width:100%}
 .drink-hero-photo{min-width:0;overflow:hidden;border-radius:22px;aspect-ratio:1.48/1;background:#332719}.drink-hero-photo img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 56%;transition:transform .5s ease,filter .4s ease}.drink-hero-photo:hover img{transform:scale(1.035);filter:saturate(1.06)}
 .drink-hero-copy{padding:clamp(8px,2.5vw,30px)}.drink-hero-copy .eyebrow{margin:0 0 10px}.drink-hero-copy h2{font-size:clamp(30px,4.4vw,58px);line-height:1.12;margin:0 0 12px}.drink-hero-copy p:last-child{font-size:clamp(15px,1.5vw,18px);line-height:1.8;color:var(--mist);max-width:46ch;margin:0}
 .drink-pick-heading{margin-bottom:18px}.drink-pick-heading .eyebrow{margin:0 0 5px}.drink-pick-heading h3{font:inherit;font-size:clamp(22px,3vw,32px);font-weight:850;margin:0 0 5px}.drink-pick-heading .lead{margin:0}
 .drink-groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:0 0 26px}.drink-group{min-width:0;padding:0;overflow:hidden;border:1px solid var(--line);border-radius:22px;background:var(--card);box-shadow:0 8px 22px rgba(0,0,0,.055)}.drink-group-photo{width:100%;aspect-ratio:2.35/1;overflow:hidden;background:color-mix(in srgb,var(--card) 78%,var(--leaf) 22%)}.drink-group-photo img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 52%;transition:transform .45s ease,filter .35s ease}.drink-group-photo:hover img{transform:scale(1.035);filter:saturate(1.06)}.drink-group-content{padding:clamp(14px,1.8vw,20px)}.drink-group-head h3{font-size:clamp(18px,2vw,22px);line-height:1.25;margin:0 0 3px}.drink-group-head p{margin:0;color:var(--mist);font-size:13px}.drink-group-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:9px;margin-top:14px}
 .drink-cat{position:relative;min-width:0;display:grid;grid-template-columns:34px minmax(0,1fr);grid-template-rows:auto auto;align-items:center;column-gap:10px;row-gap:2px;padding:10px 36px 10px 11px;text-align:start;font:inherit;color:inherit;border:1px solid var(--line);border-radius:14px;background:color-mix(in srgb,var(--card) 84%,var(--leaf) 16%);cursor:pointer;transition:border-color .2s ease,background-color .2s ease,box-shadow .2s ease}.drink-cat:hover,.drink-cat:focus-visible{border-color:var(--leaf-l);background:color-mix(in srgb,var(--card) 74%,var(--leaf) 26%);box-shadow:0 5px 14px rgba(0,0,0,.1);outline:none}.drink-cat-icon{grid-row:1/3;width:34px;height:34px;display:grid;place-items:center;border-radius:11px;color:var(--leaf-l);background:rgba(46,155,58,.13)}.drink-cat-icon svg{width:21px;height:21px}.drink-cat-name{min-width:0;font-size:14px;font-weight:800;line-height:1.3;overflow-wrap:anywhere}.drink-cat small{grid-column:2;grid-row:2;font-size:11.5px;color:var(--mist);font-weight:650;white-space:normal;line-height:1.35}.drink-cat-go{position:absolute;inset-inline-end:13px;top:50%;translate:0 -50%;font-size:18px;color:var(--leaf-l)}
 .drink-duel{margin-top:22px}.drink-duel .duelcap{margin-bottom:6px}.drink-duel .duel{min-height:300px;margin:0 0 24px}
-.drink-menu-cta{margin-top:18px;min-height:48px}
+.drink-menu-cta{margin-top:18px;min-height:48px;max-width:100%;white-space:normal;text-align:center;line-height:1.35;box-sizing:border-box;word-break:normal;overflow-wrap:break-word}
+.drink-hero-copy{padding:clamp(8px,2.5vw,30px);min-width:0;box-sizing:border-box;overflow:hidden}
 .drink-duel-heading{margin:0 0 12px}.drink-duel-heading .eyebrow{margin:0 0 5px}.drink-duel-heading h3{font:inherit;font-size:clamp(23px,3vw,34px);font-weight:850;margin:0 0 5px}.drink-duel-heading>p:last-child{margin:0;color:var(--mist);font-size:14px;line-height:1.7}
 .sweet-feature{display:grid;grid-template-columns:minmax(220px,.8fr) minmax(0,1.2fr);align-items:center;gap:clamp(18px,3vw,36px);overflow:hidden;margin:clamp(24px,4vw,42px) 0;padding:clamp(12px,1.8vw,20px);border:1px solid var(--line);border-radius:26px;background:linear-gradient(125deg,rgba(196,91,30,.12),transparent 64%),var(--card);box-shadow:0 12px 30px rgba(0,0,0,.08)}
 .sweet-feature-photo{aspect-ratio:1.65/1;overflow:hidden;border-radius:19px;background:color-mix(in srgb,var(--card) 75%,var(--ember) 25%)}.sweet-feature-photo img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 48%;transition:transform .45s ease,filter .35s ease}.sweet-feature-photo:hover img{transform:scale(1.035);filter:saturate(1.06)}
@@ -2817,7 +2792,7 @@ html.paper .kids-welcome-gate{background:rgba(248,244,232,.7);border-color:rgba(
 .shisha-feature{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(300px,.88fr);gap:clamp(18px,3vw,36px);align-items:center;padding:clamp(12px,2vw,22px);border-radius:30px;border:1px solid color-mix(in srgb,var(--line) 68%,#b78342 32%);background:linear-gradient(145deg,rgba(193,133,58,.12),transparent 56%),var(--card);box-shadow:0 16px 40px rgba(0,0,0,.1)}
 .shisha-visual{position:relative;overflow:hidden;border-radius:23px;aspect-ratio:1.7/1;background:#18120e}.shisha-video{display:block;width:100%;height:100%;object-fit:cover;object-position:center}.shisha-tag{position:absolute;inset-inline-start:14px;inset-block-end:14px;padding:8px 13px;border:1px solid rgba(255,255,255,.25);border-radius:999px;background:rgba(18,17,15,.76);color:#fff;font-size:11px;font-weight:800;letter-spacing:.08em;backdrop-filter:blur(8px)}.shisha-copy{padding:clamp(8px,2.5vw,28px)}.shisha-copy .eyebrow{margin:0 0 9px;color:#bd8d4c}.shisha-copy h2{font-size:clamp(30px,4vw,50px);line-height:1.12;margin:0 0 10px}.shisha-copy .lead{max-width:44ch;margin:0 0 18px}.shisha-meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 20px;color:var(--mist);font-size:13px}.shisha-meta strong{color:var(--ink);padding:7px 11px;border:1px solid var(--line);border-radius:999px;background:color-mix(in srgb,var(--card) 78%,#c28b46 22%)}.shisha-copy .btn{min-height:48px}
 html.paper .shisha-feature{background:linear-gradient(145deg,rgba(190,129,50,.13),transparent 56%),var(--card)}
-@media(max-width:760px){.drink-hero{grid-template-columns:1fr;gap:0;border-radius:24px;padding:10px}.drink-hero-photo{aspect-ratio:1.9/1;border-radius:17px}.drink-hero-copy{padding:18px 10px 12px}.drink-hero-copy h2{font-size:clamp(30px,8vw,42px)}.drink-groups{gap:10px}.drink-group{padding:0;border-radius:19px}.drink-group-photo{aspect-ratio:2.6/1}.drink-group-content{padding:14px}.drink-group-options{grid-template-columns:1fr;gap:8px;margin-top:11px}.drink-cat{padding:9px 32px 9px 9px;column-gap:8px}.drink-cat-name{font-size:13px}.drink-cat small{font-size:10.5px}.drink-duel .duel{min-height:260px}.shisha-feature{grid-template-columns:1fr;gap:0;border-radius:24px;padding:10px}.shisha-visual{aspect-ratio:1.65/1;border-radius:18px}.shisha-copy{padding:20px 10px 12px}.shisha-copy h2{font-size:clamp(29px,7vw,40px)}}
+@media(max-width:860px){.drink-hero{grid-template-columns:1fr;gap:0;border-radius:24px;padding:10px}.drink-hero-photo{aspect-ratio:1.85/1;border-radius:17px}.drink-hero-copy{padding:18px 10px 12px}.drink-hero-copy h2{font-size:clamp(30px,8vw,42px)}.drink-groups{gap:10px}.drink-group{padding:0;border-radius:19px}.drink-group-photo{aspect-ratio:2.6/1}.drink-group-content{padding:14px}.drink-group-options{grid-template-columns:1fr;gap:8px;margin-top:11px}.drink-cat{padding:9px 32px 9px 9px;column-gap:8px}.drink-cat-name{font-size:13px}.drink-cat small{font-size:10.5px}.drink-duel .duel{min-height:260px}.shisha-feature{grid-template-columns:1fr;gap:0;border-radius:24px;padding:10px}.shisha-visual{aspect-ratio:1.65/1;border-radius:18px}.shisha-copy{padding:20px 10px 12px}.shisha-copy h2{font-size:clamp(29px,7vw,40px)}}
 @media(max-width:760px){.drink-menu-cta{width:100%;justify-content:center}.sweet-feature{grid-template-columns:1fr;gap:0;border-radius:22px;padding:10px}.sweet-feature-photo{aspect-ratio:1.8/1;border-radius:16px}.sweet-feature-copy{padding:18px 10px 12px}.sweet-feature-copy .btn{width:100%;justify-content:center}}
 @media(max-width:440px){.drink-groups{grid-template-columns:1fr}.drink-group-options{grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr))}.drink-group{padding:0}.drink-group-photo{aspect-ratio:2.75/1}.drink-group-content{padding:15px}.shisha-visual{aspect-ratio:1.45/1}}
  @media(prefers-reduced-motion:reduce){.drink-hero-photo img,.drink-cat,.sweet-feature-photo img{transition:none!important}}
