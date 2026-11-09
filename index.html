@@ -914,11 +914,11 @@ html.paper .fm figcaption{color:var(--ink)}
 .dl{padding:clamp(14px,2vw,24px)}
 .dw{font-size:clamp(20px,2.6vw,38px)}
 .dn{font-size:clamp(14px,1.4vw,18px);margin-top:6px}
-.dpl{width:clamp(76px,10vw,120px);border-width:4px}
+.dpl{width:clamp(120px,15vw,180px);border-width:4.5px}
 .dd p{font-size:14px;margin:10px 0 8px}.dm{margin-bottom:8px}
 .dor{width:56px;height:56px;font-size:18px;border-width:3px}
 .duelcap{margin:0 0 8px;font-size:15px;color:var(--mist);font-weight:700}
-@media(max-width:760px){.dl{min-height:112px}.dl.b{padding-top:34px}.dw{font-size:clamp(18px,5vw,23px)}.dpl{width:clamp(60px,17vw,78px)}.dor{width:46px;height:46px;font-size:15px}}
+@media(max-width:760px){.dl{min-height:150px}.dl.b{padding-top:34px}.dw{font-size:clamp(18px,5vw,23px)}.dpl{width:clamp(88px,24vw,125px)}.dor{width:48px;height:48px;font-size:16px}}
 
 /* Studio-inspired home layout: preserve Portofino content and interactions */
 /* Keep offer cards crisp while hovering; avoid 3D tilt raster blur */
@@ -1400,7 +1400,8 @@ const ico={
  trash:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>',
  chk:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" style="width:32px;height:32px"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
  warn:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" style="color:var(--warn);margin-top:2px"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg>',
- arr:()=>S.lang==='ar'?'‹':'›'
+ diamond:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5h12l4 6.5-10 11L2 10l4-6.5z"/><path d="M2 10h20"/><path d="M10 3.5l-2 6.5 4 11 4-11-2-6.5"/></svg>',
+  arr:()=>S.lang==='ar'?'‹':'›'
 };
 const sushiSVG=(w=260)=>`<svg viewBox="0 0 260 200" width="${w}" style="max-width:100%;height:auto" role="img" aria-label="Sushi illustration"><defs><radialGradient id="rg"><stop offset="0" stop-color="#F2EBDD"/><stop offset="1" stop-color="#D9CFBC"/></radialGradient></defs>
  <ellipse cx="130" cy="176" rx="112" ry="12" fill="#000" opacity=".35"/><g stroke="#C9A24B" stroke-width="3.5" stroke-linecap="round"><path d="M92 188L246 150"/><path d="M96 197L250 159"/></g><g><ellipse cx="226" cy="118" rx="26" ry="10" fill="#1A1A1A"/><ellipse cx="226" cy="115" rx="21" ry="7" fill="#3A1F14"/><circle cx="212" cy="108" r="6" fill="#7BB661"/></g>
@@ -2111,7 +2112,7 @@ function vEvents(){
  ${steps(1,ar?['تفاصيل المناسبة','مراجعة','واتساب والتأكيد']:['Event details','Review','WhatsApp & Confirm'])}
  <div class="layout2" style="margin-top:28px">
   <form class="card form final-form" id="evf" novalidate>
-   <div class="final-form-head"><span class="final-form-icon" aria-hidden="true">✦</span><div><p class="eyebrow">${ar?'تفاصيل الاحتفال':'CELEBRATION DETAILS'}</p><div class="disp final-form-title">${T.evForm}</div><p class="final-form-hint">${ar?'اكتب التفاصيل الأساسية، وفي الخطوة القادمة هتراجع كل شيء قبل التواصل مع الفرع.':'Share a few details. In the next step you will review everything before connecting with the branch.'}</p></div></div>
+   <div class="final-form-head"><span class="final-form-icon" aria-hidden="true">${ico.diamond}</span><div><p class="eyebrow">${ar?'تفاصيل الاحتفال':'CELEBRATION DETAILS'}</p><div class="disp final-form-title">${T.evForm}</div><p class="final-form-hint">${ar?'اكتب التفاصيل الأساسية، وفي الخطوة القادمة هتراجع كل شيء قبل التواصل مع الفرع.':'Share a few details. In the next step you will review everything before connecting with the branch.'}</p></div></div>
    <div class="fld"><label>${T.branch}</label><div class="seg" style="display:flex">${['cc','lo'].map(b=>`<button type="button" style="flex:1" data-act="branch" data-v="${b}" class="${S.branch===b?'on':''}">${T.brs[b]}</button>`).join('')}</div></div>
    <div class="row2">${field('name',T.name)}${field('phone',T.phone,'tel','inputmode="tel"')}</div>${field('guestsN',T.guestsN,'number','min="1"')}${evTypes()}${field('date',T.date,'date')}${field('notes',T.details,'textarea')}
    <div><button class="btn g lg" type="submit" style="width:100%;justify-content:center;font-size:16px;min-height:52px">${AR()?'متابعة لمراجعة تفاصيل المناسبة':'Continue to review celebration'} ${ico.arr()}</button>
@@ -3299,7 +3300,8 @@ html[dir="rtl"] #services-home .svcc-arrow{animation-name:service-arrow-nudge-rt
 .final-form{position:relative;gap:20px;overflow:hidden;max-width:100%;box-shadow:0 16px 42px rgba(0,0,0,.12);animation:form-enter .48s cubic-bezier(.2,.7,.2,1) both}
 .final-form:before{content:"";position:absolute;inset-block:0;inset-inline-start:0;width:3px;background:linear-gradient(180deg,var(--gold),var(--leaf-l),transparent);opacity:.8}
 .final-form-head{display:flex;align-items:flex-start;gap:14px;padding-bottom:16px;border-bottom:1px solid var(--line)}
-.final-form-icon{display:grid;place-items:center;width:42px;height:42px;flex:none;border:1px solid color-mix(in srgb,var(--gold) 38%,var(--line));border-radius:14px;background:color-mix(in srgb,var(--gold) 12%,var(--card));color:var(--gold);font-size:22px}
+.final-form-icon{display:grid;place-items:center;width:44px;height:44px;flex:none;border:1px solid color-mix(in srgb,var(--gold) 45%,var(--line));border-radius:14px;background:color-mix(in srgb,var(--gold) 14%,var(--card));color:var(--gold);box-shadow:0 4px 14px rgba(212,175,55,.14)}
+.final-form-icon .ic{width:24px;height:24px;display:block;stroke:var(--gold)}
 .final-form-head .eyebrow{margin:0 0 4px}.final-form-title{font-size:clamp(23px,3vw,30px);line-height:1.2;color:var(--ink)}
 .final-form-hint{margin:6px 0 0;color:var(--mist);font-size:14px;line-height:1.6}
 .final-form .fld{min-width:0}.final-form .fld label{font-size:14px}.final-form .fld input,.final-form .fld select,.final-form .fld textarea{box-sizing:border-box;transition:border-color .2s ease,box-shadow .2s ease,background-color .2s ease}
