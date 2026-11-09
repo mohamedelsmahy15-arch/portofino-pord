@@ -506,7 +506,7 @@ html:not(.atop) .cue,html.lock .cue,html.intro .cue{opacity:0;pointer-events:non
 .done-handoff-prompt{display:grid;gap:12px;margin:16px 0 20px}
 .done-choice-card{transition:transform .2s ease,box-shadow .2s ease}
 .done-choice-card:hover{transform:translateY(-2px)}
-@media (max-width:860px){.layout2>aside.rsum{display:none}}
+/* aside.rsum visible on mobile */
 @media (max-width:600px){
  .wafab{width:50px;height:50px}
  .wafab.up{display:none}
@@ -1821,7 +1821,6 @@ function vCheckout(){
  return `<div class="wrap form-page" style="padding-block:clamp(24px,4vw,48px) 96px"><button class="back" data-act="cart">${ico.arr()==='›'?'‹':'›'} ${T.back}</button>${steps(1,AR()?['بيانات الطلب','مراجعة','واتساب والتأكيد']:['Order details','Review','WhatsApp & Confirm'])}
  <header class="form-page-head"><p class="eyebrow">${T.chkEye[curSv]}</p><h1 class="disp h2">${T.chkT[curSv]}</h1><p class="form-page-intro">${AR()?'أدخلوا بياناتكم بالأسفل. في الخطوة القادمة هتراجعوا طلبكم بالكامل وسلتكم قبل فتح واتساب.':'Enter your details below. In the next step you will review your entire order before opening WhatsApp.'}</p></header>
  <div class="layout2" style="margin-top:28px"><form class="card form final-form" id="chk" novalidate>
-  ${formCartPreviewHTML('ord')}
   ${hasShisha?`<div class="note warn" style="border:1.5px solid rgba(229,103,95,.5);background:rgba(229,103,95,.12);border-radius:14px;padding:14px 16px;margin-bottom:18px">
     <div style="display:flex;align-items:center;gap:8px;font-weight:750;font-size:14.5px;color:#ff8e84">
       <span>💨</span> <span>${AR()?'الشيشة متاحة فقط للطلب على الطاولة للضيوف داخل صالة الفرع':'Shisha is strictly available for dine-in guests at the branch'}</span>
@@ -1842,6 +1841,16 @@ function vCheckout(){
  <aside class="card sum"><div class="disp" style="font-size:24px">${T.summary}</div>${summaryBlock()}<div id="checkout-context" class="checkout-context">${checkoutContextHTML()}</div>
   <div class="tot"><span>${T.sub}</span><span>${money(cartTotal())}</span></div>${sv==='delivery'?`<div class="tot"><span>${T.delFee}</span><span>${T.feeNote}</span></div>`:''}
   <div class="tot big"><span>${T.total}</span><b>${money(cartTotal())}</b></div><div style="font-size:12.5px;color:var(--dim)">${taxTxt()}</div></aside></div></div>`;
+}
+function eventsContextHTML(){
+ const ar=AR(),T=t(),F=S.form;
+ const evType=F.evType||(ar?'يُحدد في النموذج':'Chosen in form');
+ const guests=F.guestsN?(num(F.guestsN)+' '+(ar?'أفراد':'guests')):(ar?'يُحدد في النموذج':'In form');
+ const date=F.date||(ar?'يُحدد في النموذج':'In form');
+ return `<div class="tot"><span>${T.branch}</span><b style="color:var(--ink)">${T.brs[S.branch]}</b></div>
+<div class="tot"><span>${ar?'نوع المناسبة':'Event type'}</span><b style="color:var(--ink)">${esc(evType)}</b></div>
+<div class="tot"><span>${ar?'عدد الأفراد':'Guests'}</span><b style="color:var(--ink)">${guests}</b></div>
+<div class="tot"><span>${T.date}</span><b style="color:var(--ink)">${date}</b></div>`;
 }
 function checkoutContextHTML(){
  const T=t(),sv=S.service,F=S.form,ar=AR();
@@ -1975,7 +1984,6 @@ function vReserve(){
  const today=new Date().toISOString().slice(0,10);
  return `<div class="wrap form-page" style="padding-block:clamp(24px,4vw,48px) 96px"><p class="eyebrow">${T.resEye}</p><header class="form-page-head"><h1 class="disp h2">${T.resT}</h1><p class="form-page-intro">${AR()?'اختاروا الفرع والموعد وعدد الأفراد. ده طلب حجز قعدة؛ في الخطوة القادمة هتراجعوا تفاصيل الحجز قبل إرسالها للفرع على واتساب.':'Choose branch, time and party size. This is for table reservation; in the next step you will review your booking details before sending to WhatsApp.'}</p></header>${steps(1,AR()?['بيانات الحجز','مراجعة','واتساب والتأكيد']:['Booking details','Review','WhatsApp & Confirm'])}
  <div class="layout2" style="margin-top:28px"><form class="card form final-form" id="resf" novalidate>
-   ${formCartPreviewHTML('res')}
   <div class="fld"><label>${T.branch}</label><div class="seg" style="display:flex">${['cc','lo'].map(b=>`<button type="button" style="flex:1" data-act="branch" data-v="${b}" class="${S.branch===b?'on':''}">${T.brs[b]}</button>`).join('')}</div></div>
   <div class="row2">${field('date',T.date,'date',`min="${today}"`)}${field('time',T.time,'time')}</div>
   <div class="fld"><label>${T.party}</label><div class="stp" style="display:flex;justify-content:space-between;min-height:56px;border-radius:12px"><button type="button" data-act="party" data-v="-1" aria-label="-">−</button><span style="align-self:center;font-size:17px">${num(S.party)} ${T.guests}</span><button type="button" data-act="party" data-v="1" aria-label="+">+</button></div></div>
@@ -2100,13 +2108,24 @@ function vEvents(){
   </header>
    <aside class="events-kids-bridge"><div><p class="eyebrow">${ar?'وللصغيرين احتفالهم':'A little celebration for little guests'}</p><h2>${ar?'عيد ميلادهم له ركنه':'Their birthday has its own happy place'}</h2><p>${ar?'شوفوا أنشطة الأطفال وصور حفلاتهم، واطلبوا ترتيب احتفالهم في ركن الأطفال.':'Explore kids activities and party ideas, then request a celebration in the Kids Corner.'}</p></div><button class="btn g" type="button" data-go="kids">${ar?'اكتشف حفلات الأطفال':'Explore kids celebrations'} ${ico.arr()}</button></aside>
 
- ${steps(1,ar?['تفاصيل المناسبة','مراجعة','واتساب والتأكيد']:['Event details','Review','WhatsApp & Confirm'])}<form class="card form final-form" id="evf" novalidate style="max-width:880px"><div class="final-form-head"><span class="final-form-icon" aria-hidden="true">✦</span><div><p class="eyebrow">${ar?'تفاصيل الاحتفال':'CELEBRATION DETAILS'}</p><div class="disp final-form-title">${T.evForm}</div><p class="final-form-hint">${ar?'اكتب التفاصيل الأساسية، وفي الخطوة القادمة هتراجع كل شيء قبل التواصل مع الفرع.':'Share a few details. In the next step you will review everything before connecting with the branch.'}</p></div></div>
- <div class="fld"><label>${T.branch}</label><div class="seg" style="display:flex">${['cc','lo'].map(b=>`<button type="button" style="flex:1" data-act="branch" data-v="${b}" class="${S.branch===b?'on':''}">${T.brs[b]}</button>`).join('')}</div></div>
- ${formCartPreviewHTML('ev')}
- <div class="row2">${field('name',T.name)}${field('phone',T.phone,'tel','inputmode="tel"')}</div>${field('guestsN',T.guestsN,'number','min="1"')}${evTypes()}${field('date',T.date,'date')}${field('notes',T.details,'textarea')}
- <div><button class="btn g lg" type="submit" style="width:100%;justify-content:center;font-size:16px;min-height:52px">${AR()?'متابعة لمراجعة تفاصيل المناسبة':'Continue to review celebration'} ${ico.arr()}</button>
- <p class="calm" style="margin-top:10px">${AR()?'مفيش دفع ولا إرسال تلقائي. هتراجع كل تفاصيل مناسبتك وسلتك في الخطوة الجاية قبل فتح واتساب.':'No payment or auto-send. You will review all celebration details before opening WhatsApp.'}</p>
- <p class="ds" style="margin-top:12px">${T.evNote}</p></div></form></div>`;
+ ${steps(1,ar?['تفاصيل المناسبة','مراجعة','واتساب والتأكيد']:['Event details','Review','WhatsApp & Confirm'])}
+ <div class="layout2" style="margin-top:28px">
+  <form class="card form final-form" id="evf" novalidate>
+   <div class="final-form-head"><span class="final-form-icon" aria-hidden="true">✦</span><div><p class="eyebrow">${ar?'تفاصيل الاحتفال':'CELEBRATION DETAILS'}</p><div class="disp final-form-title">${T.evForm}</div><p class="final-form-hint">${ar?'اكتب التفاصيل الأساسية، وفي الخطوة القادمة هتراجع كل شيء قبل التواصل مع الفرع.':'Share a few details. In the next step you will review everything before connecting with the branch.'}</p></div></div>
+   <div class="fld"><label>${T.branch}</label><div class="seg" style="display:flex">${['cc','lo'].map(b=>`<button type="button" style="flex:1" data-act="branch" data-v="${b}" class="${S.branch===b?'on':''}">${T.brs[b]}</button>`).join('')}</div></div>
+   <div class="row2">${field('name',T.name)}${field('phone',T.phone,'tel','inputmode="tel"')}</div>${field('guestsN',T.guestsN,'number','min="1"')}${evTypes()}${field('date',T.date,'date')}${field('notes',T.details,'textarea')}
+   <div><button class="btn g lg" type="submit" style="width:100%;justify-content:center;font-size:16px;min-height:52px">${AR()?'متابعة لمراجعة تفاصيل المناسبة':'Continue to review celebration'} ${ico.arr()}</button>
+   <p class="calm" style="margin-top:10px">${AR()?'مفيش دفع ولا إرسال تلقائي. هتراجع كل تفاصيل مناسبتك وسلتك في الخطوة الجاية قبل فتح واتساب.':'No payment or auto-send. You will review all celebration details before opening WhatsApp.'}</p>
+   <p class="ds" style="margin-top:12px">${T.evNote}</p></div>
+  </form>
+  <aside class="card sum evsum">
+   <div class="disp" style="font-size:24px">${ar?'ملخص المناسبة':'Celebration summary'}</div>
+   <div id="events-context">${eventsContextHTML()}</div>
+   <div style="height:1px;background:var(--line);margin:10px 0"></div>
+   ${S.cart.length?`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><div style="font-size:13px;letter-spacing:.05em;color:var(--gold);font-weight:700">${ar?'أصناف مقترحة للمناسبة (اختياري)':'Suggested items for celebration (optional)'}</div><button type="button" class="btn gh sm" data-act="cart" style="font-size:12px;padding:2px 8px;min-height:26px">${ar?'تعديل':'Edit'}</button></div>${summaryBlock()}<div class="tot big"><span>${ar?'إجمالي الأصناف المرفقة':'Attached items subtotal'}</span><b>${money(cartTotal())}</b></div>`:`<div class="ds" style="font-size:13px;color:var(--mist)">${ar?'مفيش أصناف مضافة من السلة. تقدروا تختاروا أصناف من المنيو لاحقاً أو الترتيب مع إدارة الفرع.':'No dishes attached from cart. You can select dishes later with the branch team.'}</div>`}
+   <div style="font-size:12px;color:var(--dim);margin-top:12px">${ar?'مفيش دفع أونلاين. تفاصيل الحجز وتوافر الصالة بيأكدها الفرع على واتساب.':'No payment now. Details & availability confirmed on WhatsApp.'}</div>
+  </aside>
+ </div></div>`;
 }
 const EVT=[['عيد ميلاد','Birthday'],['ذكرى سنوية','Anniversary'],['خطوبة / كتب كتاب','Engagement / wedding'],['عزومة عائلية','Family gathering'],['لمّة أصحاب','Friends get-together'],['حفلة أطفال','Kids party'],['تخرج / نجاح','Graduation / achievement'],['اجتماع عمل / شركة','Business / corporate'],['مناسبة أخرى','Other']];
 function localizeEventType(value,from,to){const i=EVT.findIndex(x=>x[from]===value);return i<0?value:EVT[i][to]}
@@ -2269,7 +2288,7 @@ document.addEventListener('click',e=>{
   else{const i=S.cart.findIndex(c=>c.id===id&&c.o===+el.dataset.o);if(i>=0){S.cart[i].q+=(+el.dataset.v);if(S.cart[i].q<=0)S.cart.splice(i,1)}}
   soft();return;
  }
- if(act==='branch'){S.branch=el.dataset.v}
+ if(act==='branch'){S.branch=el.dataset.v;el.parentElement.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.v===S.branch));const cctx=document.getElementById('checkout-context');if(cctx)cctx.innerHTML=checkoutContextHTML();const ectx=document.getElementById('events-context');if(ectx)ectx.innerHTML=eventsContextHTML();const rctx=document.querySelector('.rsum .tot b');if(rctx)rctx.textContent=t().brs[S.branch]}
  if(el.dataset.go&&cartCount()>0&&el.matches('.branch-actions .order')){S.cartOpen=true;S.menuOpen=false;S.done=null;saveState();render();return} if(el.dataset.go){ if(el.closest('#home-shortcuts-panel'))S.homeShortcutsOpen=false;if(el.dataset.eventType){activateForm('events');S.form.evType=el.dataset.eventType} if(el.dataset.service){
   if(cartHasShisha()&&el.dataset.service!=='table'){
    S.service='table';
@@ -2313,7 +2332,7 @@ document.addEventListener('click',e=>{
  else if(act==='shortcuts-toggle'){S.homeShortcutsOpen=!S.homeShortcutsOpen}
   else if(act==='jump'){const m=document.getElementById(el.dataset.v);if(m){const nav=document.querySelector('.menu-nav'),hh=(document.querySelector('.hdr')||{offsetHeight:76}).offsetHeight+(nav?nav.offsetHeight:0)+12;scrollTo({top:Math.max(0,m.getBoundingClientRect().top+scrollY-hh),behavior:'smooth'})}return}
  else if(act==='down'){const m=document.querySelector('.marq');m&&scrollTo({top:m.getBoundingClientRect().top+scrollY-70,behavior:'smooth'});return}
- else if(act==='evt'){S.form.evType=el.dataset.v;S.errors.evType=''}
+ else if(act==='evt'){S.form.evType=el.dataset.v;S.errors.evType='';el.parentElement.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.v===el.dataset.v));const ectx=document.getElementById('events-context');if(ectx)ectx.innerHTML=eventsContextHTML()}
  else if(act==='ph'){toast(AR()?'رابط الحساب هيتضاف بعد التأكيد':'Account link will be added once confirmed');return}
  else if(act==='snd'){const v=el.parentElement.querySelector('video');if(v){v.muted=!v.muted;el.textContent=v.muted?'🔇':'🔊'}return}
  else if(act==='kids-audio'){const v=document.getElementById('kids-video');if(v){v.muted=!v.muted;if(!v.muted&&v.paused)v.play().catch(()=>{});el.setAttribute('aria-pressed',String(!v.muted));el.textContent=v.muted?(AR()?'🔇 تشغيل الصوت':'🔇 Enable sound'):(AR()?'🔊 كتم الصوت':'🔊 Mute sound')}return}
@@ -2418,9 +2437,9 @@ document.addEventListener('input',e=>{
  else if(el.id==='sq'){S.sq=el.value;refreshSofia()}
  else if(el.id==='tq'){S.tq=el.value;refreshTahia()}
  else if(el.id==='cq'){S.cq=el.value;refreshCafe()}
- else if(el.dataset.f){S.form[el.dataset.f]=el.value;syncTimePreview(el);const ctx=document.getElementById('checkout-context');if(ctx)ctx.innerHTML=checkoutContextHTML()}
+ else if(el.dataset.f){S.form[el.dataset.f]=el.value;syncTimePreview(el);const ctx=document.getElementById('checkout-context');if(ctx)ctx.innerHTML=checkoutContextHTML();const ectx=document.getElementById('events-context');if(ectx)ectx.innerHTML=eventsContextHTML()}
 });
-document.addEventListener('change',e=>{if(e.target.id==='brsel'){S.branch=e.target.value;render()}else if(e.target.dataset.f){S.form[e.target.dataset.f]=e.target.value;syncTimePreview(e.target);const ctx=document.getElementById('checkout-context');if(ctx)ctx.innerHTML=checkoutContextHTML()}});
+document.addEventListener('change',e=>{if(e.target.id==='brsel'){S.branch=e.target.value;render()}else if(e.target.dataset.f){S.form[e.target.dataset.f]=e.target.value;syncTimePreview(e.target);const ctx=document.getElementById('checkout-context');if(ctx)ctx.innerHTML=checkoutContextHTML();const ectx=document.getElementById('events-context');if(ectx)ectx.innerHTML=eventsContextHTML()}});
 document.addEventListener('submit',e=>{
  e.preventDefault();const T=t();const f=e.target;S.errors={};
  const F=S.form;const need=(k,m)=>{if(!(F[k]||'').trim())S.errors[k]=m};
