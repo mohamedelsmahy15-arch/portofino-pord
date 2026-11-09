@@ -265,11 +265,11 @@ select.ctl{appearance:none;padding-inline:14px 30px;background-image:linear-grad
 
 /* drawer */
 .ov{position:fixed;inset:0;z-index:70;background:rgba(3,7,14,.6);backdrop-filter:blur(3px)}
-.drawer.nan,:root[dir=rtl] .drawer.nan{animation:none!important}
 .drawer{overscroll-behavior:contain;position:fixed;top:0;bottom:0;inset-inline-end:0;z-index:71;width:min(480px,100%);background:var(--bg2);border-inline-start:1px solid var(--line);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);animation:slide .25s ease-out}
 @keyframes slide{from{transform:translateX(30px)}to{transform:none}}
 :root[dir="rtl"] .drawer{animation-name:slideR}
 @keyframes slideR{from{transform:translateX(-30px)}to{transform:none}}
+.drawer.nan,:root[dir="rtl"] .drawer.nan,:root[dir="ltr"] .drawer.nan,[dir="rtl"] .drawer.nan,[dir="ltr"] .drawer.nan{animation:none!important;-webkit-animation:none!important;transition:none!important;transform:none!important}
 .drawer .hd{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid var(--line)}
 .drawer .bd{flex:1;overflow:auto;padding:18px 22px;display:flex;flex-direction:column;gap:14px}
 .drawer .ft{padding:18px 22px calc(18px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);display:flex;flex-direction:column;gap:12px;background:var(--bg2)}
@@ -483,6 +483,22 @@ html:not(.atop) .cue,html.lock .cue,html.intro .cue{opacity:0;pointer-events:non
 .form-cart-preview-lines .mid .t{font-size:13.5px;font-weight:600;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .form-cart-preview-lines .mid .s{font-size:12px;color:var(--mist);line-height:1.4}
 .form-cart-preview-lines .line>b{font-size:13px;white-space:nowrap;color:var(--leaf-l)}
+.form-cart-preview-compact{padding:8px 14px!important;background:var(--card2);border:1px solid var(--line);border-radius:14px;margin-bottom:18px}
+.form-cart-accordion{width:100%}
+.form-cart-summary{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;list-style:none;-webkit-appearance:none;padding:4px 0;user-select:none}
+.form-cart-summary::-webkit-details-marker{display:none}
+.form-cart-summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:8px}
+.fcp-left{display:flex;align-items:center;gap:10px;min-width:0}
+.fcp-icon{color:var(--leaf-l);display:grid;place-items:center;flex:none}
+.fcp-meta{display:flex;flex-direction:column;gap:2px;text-align:start;min-width:0}
+.fcp-title{font-size:13.5px;color:var(--ink);font-weight:700;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fcp-sub{font-size:12px;color:var(--mist);line-height:1.35}
+.fcp-right{display:flex;align-items:center;gap:8px;flex:none}
+.fcp-edit-btn{font-size:11.5px!important;padding:4px 10px!important;min-height:30px!important;border-radius:8px!important}
+.fcp-chevron{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.05);color:var(--mist);font-size:13px;line-height:1;transition:transform .2s ease}
+.form-cart-accordion[open] .fcp-chevron{transform:rotate(180deg);background:color-mix(in srgb,var(--leaf-l) 14%,var(--card))}
+.fcp-expand-body{padding-top:10px;margin-top:8px;border-top:1px solid var(--line);animation:review-reveal .2s ease both}
+.fcp-footer{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);font-size:13px}
 .done-handoff-prompt{display:grid;gap:12px;margin:16px 0 20px}
 .done-choice-card{transition:transform .2s ease,box-shadow .2s ease}
 .done-choice-card:hover{transform:translateY(-2px)}
@@ -1733,9 +1749,36 @@ function cartHasShisha(){
 function formCartPreviewHTML(kind){
  const T=t(),ar=AR();
  if(!S.cart.length)return '';
+ const isOptional=kind==='res'||kind==='ev';
  const heading=kind==='res'?(ar?'أصناف مرفقة بالحجز (اختياري)':'Items attached to reservation (optional)'):
                kind==='ev'?(ar?'أصناف مقترحة للمناسبة (اختياري)':'Suggested items for celebration (optional)'):
                (ar?'طلباتك في السلة':'Your cart items');
+ if(isOptional){
+  return `<div class="form-cart-preview form-cart-preview-compact">
+   <details class="form-cart-accordion">
+    <summary class="form-cart-summary">
+     <div class="fcp-left">
+      <span class="fcp-icon">${ico.cart}</span>
+      <div class="fcp-meta">
+       <b class="fcp-title">${heading}</b>
+       <span class="fcp-sub">${num(cartCount())} ${T.items} • <strong style="color:var(--leaf-l)">${money(cartTotal())}</strong></span>
+      </div>
+     </div>
+     <div class="fcp-right">
+      <button type="button" class="btn gh sm fcp-edit-btn" data-act="cart" onclick="event.stopPropagation()">${ar?'تعديل السلة':'Edit'}</button>
+      <span class="fcp-chevron" aria-hidden="true">▾</span>
+     </div>
+    </summary>
+    <div class="fcp-expand-body">
+     <div class="form-cart-preview-lines">${summaryBlock()}</div>
+     <div class="fcp-footer">
+      <span>${ar?'إجمالي الأصناف المقترحة:':'Attached items subtotal:'}</span>
+      <b style="color:var(--leaf-l)">${money(cartTotal())}</b>
+     </div>
+    </div>
+   </details>
+  </div>`;
+ }
  return `<div class="form-cart-preview">
   <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px">
     <b style="color:var(--leaf-l);font-size:14px;display:flex;align-items:center;gap:6px">${ico.cart} ${heading} <small style="color:var(--mist);font-weight:normal">(${num(cartCount())} ${T.items})</small></b>
@@ -1743,7 +1786,7 @@ function formCartPreviewHTML(kind){
   </div>
   <div class="form-cart-preview-lines">${summaryBlock()}</div>
   <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);font-size:13.5px">
-    <span>${kind==='res'||kind==='ev'?(ar?'إجمالي الأصناف المرفقة:':'Attached items subtotal:'):T.sub+':'}</span>
+    <span>${T.sub+':'}</span>
     <b style="color:var(--leaf-l);font-size:15px">${money(cartTotal())}</b>
   </div>
  </div>`;
@@ -2296,7 +2339,22 @@ document.addEventListener('click',e=>{
    toast(AR()?'⚠️ الشيشة متاحة فقط للطلب على الطاولة للضيوف داخل صالة الفرع.':'⚠️ Shisha is only available dine-in at your table.');
    return;
   }
-  S.service=el.dataset.v;if(S.view==='checkout')activateForm('checkout',S.service);S.errors={};
+  S.service=el.dataset.v;
+  if(S.view==='checkout')activateForm('checkout',S.service);
+  S.errors={};
+  saveState();
+  const drawerEl=document.querySelector('.drawer');
+  if(drawerEl){
+   drawerEl.querySelectorAll('.svc').forEach(b=>{
+    b.classList.toggle('on',b.dataset.v===S.service);
+   });
+   const cta=drawerEl.querySelector('.btn[data-act="continue"]');
+   if(cta){
+    cta.innerHTML=`${t().cont[S.service]} ${ico.arr()}`;
+   }
+  }
+  soft();
+  return;
  }
  else if(act==='service-continue'){
   if(cartHasShisha()&&el.dataset.service!=='table'){
@@ -2329,7 +2387,7 @@ document.addEventListener('click',e=>{
  else if(act==='restart'||act==='return-home'){S.cart=[];S.done=null;S.formBuckets={'order:delivery':{},'order:takeaway':{},'order:table':{},reservation:{},event:{}};S.view='home';activateForm('home');saveState();try{location.hash='home'}catch(e){}render();window.scrollTo({top:0,behavior:'instant'});return}
  else if(act==='smenu'){e.preventDefault();render();const m=document.getElementById('menu-s');m&&m.scrollIntoView({behavior:'smooth'});return}
  else return;
- if(S.cartOpen&&(act==='svc'||act==='qty'||act==='add'||act==='remove-item'||act==='undo-remove')){
+ if(S.cartOpen&&(act==='qty'||act==='add'||act==='remove-item'||act==='undo-remove')){
   saveState();
   renderDrawer();
   if(S.done||S.view==='checkout'||S.view==='reserve'||S.view==='events'){
