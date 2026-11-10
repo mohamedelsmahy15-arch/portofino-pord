@@ -1480,8 +1480,8 @@ function renderPortofinoPickerModal(){
 
  if(DT_STATE.picker==='time'){
   const time24=to24hStr(DT_STATE.hour12, DT_STATE.min, DT_STATE.isPM);
-  const liveDisplay=formatDisplayTime(time24);
-  const subLabel=ar?(DT_STATE.isPM?'الفترة المسائية (الليل)':'الفترة الصباحية (الصبح)'):(DT_STATE.isPM?'Evening / Night':'Morning');
+  const liveDisplay=ar ? (formatDisplayTime(time24) + ' (' + DT_STATE.hour12 + ':' + DT_STATE.min + ' ' + (DT_STATE.isPM?'PM':'AM') + ')') : (formatDisplayTime(time24) + ' (' + num(DT_STATE.hour12) + ':' + num(DT_STATE.min) + ' ' + (DT_STATE.isPM?'م':'ص') + ')');
+  const subLabel=ar?(DT_STATE.isPM?'الفترة المسائية (الليل) · PM':'الفترة الصباحية (الصبح) · AM'):(DT_STATE.isPM?'Evening / Night · م':'Morning · ص');
 
   root.innerHTML=`<div class="dt-modal-backdrop" role="dialog" aria-modal="true" aria-label="${ar?'اختيار ميعاد الحضور':'Select Time'}">
    <div class="dt-modal-sheet">
@@ -1498,11 +1498,11 @@ function renderPortofinoPickerModal(){
     <div class="dt-period-row">
      <button type="button" class="dt-period-btn ${!DT_STATE.isPM?'on':''}" data-dt-set-period="AM">
       <span class="period-emoji">☀️</span>
-      <span class="period-label">${ar?'ص (الصبح)':'AM (Morning)'}</span>
+      <span class="period-label">AM · ص (الصبح)</span>
      </button>
      <button type="button" class="dt-period-btn ${DT_STATE.isPM?'on':''}" data-dt-set-period="PM">
       <span class="period-emoji">🌙</span>
-      <span class="period-label">${ar?'م (الليل)':'PM (Night)'}</span>
+      <span class="period-label">PM · م (الليل)</span>
      </button>
     </div>
 
@@ -1557,8 +1557,8 @@ function renderPortofinoPickerModal(){
    days.push({day:i, isCurrent:false, dateStr, isPast:dateStr<todayStr, isSelected:dateStr===DT_STATE.dateStr});
   }
 
-  const weekdays=ar?['سبت','أحد','اثنين','ثلاثاء','أربعاء','خميس','جمعة']:['Sat','Sun','Mon','Tue','Wed','Thu','Fri'];
-  const monthTitle=ar?(arMonths[mo]+' '+num(y)):(enMonths[mo]+' '+y);
+  const weekdays=['Sat · س','Sun · ح','Mon · ن','Tue · ث','Wed · ر','Thu · خ','Fri · ج'];
+  const monthTitle=ar?(arMonths[mo]+' '+num(y)+' ('+enMonths[mo]+' '+y+')'):(enMonths[mo]+' '+y+' ('+arMonths[mo]+' '+y+')');
   const liveDateDisplay=DT_STATE.dateStr?formatDisplayDate(DT_STATE.dateStr):(ar?'اختار يوماً':'Select a day');
 
   root.innerHTML=`<div class="dt-modal-backdrop" role="dialog" aria-modal="true" aria-label="${ar?'اختيار التاريخ':'Select Date'}">
@@ -2067,9 +2067,9 @@ function vCheckout(){
  const hasShisha=cartHasShisha();
  if(hasShisha&&S.service!=='table'){S.service='table';activateForm('checkout','table');}
  const curSv=S.service;
- return `<div class="wrap form-page" style="padding-block:clamp(24px,4vw,48px) 96px"><button class="back" data-act="cart">${ico.arr()==='›'?'‹':'›'} ${T.back}</button>${steps(1,AR()?['بيانات الطلب','مراجعة','واتساب والتأكيد']:['Order details','Review','WhatsApp & Confirm'])}
+ return `<div class="wrap form-page" style="padding-block:clamp(24px,4vw,48px) 96px">${steps(1,AR()?['بيانات الطلب','مراجعة','واتساب والتأكيد']:['Order details','Review','WhatsApp & Confirm'])}
  <header class="form-page-head"><p class="eyebrow">${T.chkEye[curSv]}</p><h1 class="disp h2">${T.chkT[curSv]}</h1><p class="form-page-intro">${AR()?'أدخلوا بياناتكم بالأسفل. في الخطوة القادمة هتراجعوا طلبكم بالكامل وسلتكم قبل فتح واتساب.':'Enter your details below. In the next step you will review your entire order before opening WhatsApp.'}</p></header>
- <div class="layout2" style="margin-top:28px"><form class="card form final-form" id="chk" novalidate>
+ <div class="layout2" style="margin-top:28px"><form class="card form final-form" id="chk" novalidate onsubmit="event.preventDefault();">
   ${hasShisha?`<div class="note warn" style="border:1.5px solid rgba(229,103,95,.5);background:rgba(229,103,95,.12);border-radius:14px;padding:14px 16px;margin-bottom:18px">
     <div style="display:flex;align-items:center;gap:8px;font-weight:750;font-size:14.5px;color:#ff8e84">
       <span>💨</span> <span>${AR()?'الشيشة متاحة فقط للطلب على الطاولة للضيوف داخل صالة الفرع':'Shisha is strictly available for dine-in guests at the branch'}</span>
@@ -2155,6 +2155,61 @@ function evPerks(){
   </div>
  </div>`;
 }
+function eventsCartBanner(){
+ const ar=AR();
+ if(!S.cart.length)return '';
+ return `<div class="events-cart-badge" role="status">
+  <div class="events-cart-badge-body">
+   <span class="events-cart-badge-icon" aria-hidden="true">🛍️</span>
+   <div class="events-cart-badge-text">
+    <strong>${ar?`معاك ${num(cartCount())} أصناف محفوظة في السلة لأوردرات الأكل`:`You have ${num(cartCount())} items saved in your food cart`}</strong>
+    <p>${ar?'طلب المناسبة مخصص لحجز المكان وتنسيق الاحتفال مع الفرع؛ وأصناف سلتك محفوظة بأمان لأي أوردر.':'This request is for venue booking & celebration planning; your food cart is safely kept.'}</p>
+   </div>
+  </div>
+  <button type="button" class="btn gh sm" data-act="cart" style="font-size:12.5px;padding:6px 14px;min-height:34px;border-radius:99px;white-space:nowrap">${ar?'عرض السلة':'View cart'}</button>
+ </div>`;
+}
+function evPerks(){
+ const ar=AR();
+ const selected=Array.isArray(S.form.perks)?S.form.perks:[];
+ const count=selected.length;
+ const triggerLabel=count===0
+   ?(ar?'اختر التجهيزات واللمسات الخاصة (تورتة، فيو بحر، بالونات...) ▾':'Select celebration touches (cake, sea view, decor...) ▾')
+   :(ar?`تم اختيار ${num(count)} تجهيزات ملكية: `+selected.map(id=>getPerkName(id,true).split(' ')[1]||getPerkName(id,true)).slice(0,2).join('، ')+(count>2?` (+${num(count-2)})`:'')
+       :`${num(count)} perks chosen: `+selected.map(id=>getPerkName(id,false).split(' ')[1]||getPerkName(id,false)).slice(0,2).join(', ')+(count>2?` (+${num(count-2)})`:''));
+
+ return `<div class="fld perks-dropdown-fld" style="margin-bottom:16px">
+  <label style="display:flex;align-items:center;justify-content:space-between">
+   <span>${ar?'التجهيزات واللمسات الخاصة (اختياري)':'VIP celebration touches (optional)'}</span>
+   <small style="color:var(--gold);font-weight:700">${count>0?(ar?`${num(count)} مختارة ✓`:`${num(count)} selected ✓`):(ar?'اضغط للاختيار ⌄':'Tap to select ⌄')}</small>
+  </label>
+  
+  <div class="perks-dropdown-wrapper">
+   <button type="button" class="perks-dropdown-trigger ${count>0?'has-selection':''}" data-act="toggle-perks-dd" aria-expanded="${!!S.perksOpen}" aria-controls="perks-dd-menu">
+    <div class="perks-trigger-info">
+     <span class="perks-trigger-sparkle" aria-hidden="true">✨</span>
+     <span class="perks-trigger-label" id="perks-trigger-text">${esc(triggerLabel)}</span>
+    </div>
+    <span class="perks-trigger-arrow" aria-hidden="true">${S.perksOpen?'▴':'▾'}</span>
+   </button>
+
+   <div class="perks-dropdown-menu ${S.perksOpen?'open':''}" id="perks-dd-menu" role="group" aria-label="${ar?'قائمة التجهيزات':'Perks list'}">
+    <div class="perks-dd-grid">
+     ${CELEBRATION_PERKS.map(p=>{
+      const isOn=selected.includes(p.id);
+      return `<button type="button" class="perks-dd-item ${isOn?'on':''}" data-act="ev-perk" data-v="${p.id}" role="checkbox" aria-checked="${isOn}">
+       <span class="perks-dd-check" aria-hidden="true">${isOn?'✓':'+'}</span>
+       <div class="perks-dd-text">
+        <strong class="perks-dd-name">${ar?p.ar:p.en}</strong>
+        <span class="perks-dd-hint">${ar?p.hintAr:p.hintEn}</span>
+       </div>
+      </button>`;
+     }).join('')}
+    </div>
+   </div>
+  </div>
+ </div>`;
+}
 function downloadGoldenTicket(){
  const ar=AR(),T=t(),F=S.form;
  const ticketEl=document.querySelector('.events-invitation-ticket');
@@ -2162,7 +2217,7 @@ function downloadGoldenTicket(){
   ticketEl.classList.add('is-scanning');
   const hud=document.createElement('div');
   hud.className='ticket-scan-hud';
-  hud.innerHTML=`<span class="ticket-laser-line"></span><div class="ticket-scan-badge"><span class="scan-laser-sparkle">✦</span><span>${(S.done&&S.done.sentConfirmed)?(ar?'جاري استخراج البوليصة المعتمدة بختم الفرع...':'Extracting Sealed VIP Ticket...'):(ar?'جاري استخراج بوليصة المراجعة المبدئية...':'Scanning VIP Preview Pass...')}</span></div>`;
+  hud.innerHTML=`<span class="ticket-laser-line"></span><div class="ticket-scan-badge"><span class="scan-laser-sparkle">✦</span><span>${(S.done&&S.done.sentConfirmed)?(ar?'جاري حفظ كارت الحجز كصورة...':'Saving VIP Booking Card...'):(ar?'جاري حفظ كارت الحجز كصورة...':'Saving VIP Booking Card...')}</span></div>`;
   ticketEl.appendChild(hud);
   setTimeout(()=>{ticketEl.classList.remove('is-scanning');hud.remove();},1300);
  }
@@ -2251,12 +2306,12 @@ function downloadGoldenTicket(){
 
  ctx.fillStyle='#F5EFE0';
  ctx.font='bold 34px "Cinzel", "Cairo", serif, sans-serif';
- const headerTitle=isConfirmed?(ar?'بوليصة دعوة واحتفال ملكية معتمدة':'OFFICIALLY CONFIRMED VIP INVITATION'):(ar?'بوليصة مراجعة مبدئية (قيد التأكيد)':'VIP PREVIEW PASS (PENDING CONFIRMATION)');
+ const headerTitle=isConfirmed?(ar?'كارت دعوة واحتفال بورتوفينو 🌊':'PORTOFINO VIP CELEBRATION INVITATION'):(ar?'كارت حجز واحتفال بورتوفينو 🌊':'PORTOFINO CELEBRATION INVITATION');
  ctx.fillText(headerTitle, W/2, 146);
 
  ctx.fillStyle=isConfirmed?'#E3C36E':'rgba(201,162,75,0.9)';
  ctx.font=isConfirmed?'bold 16px "Cairo", sans-serif':'15px "Cairo", sans-serif';
- const headerSub=isConfirmed?(ar?'👑 بوليصة مؤكدة ومعتمدة رسمياً بختم الفرع':'👑 Officially Sealed & Verified by Portofino'):(ar?'⏳ قيد التأكيد مع الفرع · يتم تفعيل الختم الملكي فور الإرسال عبر واتساب':'⏳ Preliminary Draft · Official Branch Seal Activates upon WhatsApp Sending');
+ const headerSub=isConfirmed?(ar?'كافيه ومطعم على بحر الإسكندرية 🌊':'Cafe & Restaurant by the Sea · Alexandria'):(ar?'⏳ قيد التأكيد مع الفرع · يتم تفعيل الختم الملكي فور الإرسال عبر واتساب':'⏳ Preliminary Draft · Official Branch Seal Activates upon WhatsApp Sending');
  ctx.fillText(headerSub, W/2, 182);
 
  // Dashed separator
@@ -2442,7 +2497,7 @@ function downloadGoldenTicket(){
   ctx.textAlign='center';
   ctx.fillStyle='#C9A24B';
   ctx.font='bold 20px "Cairo", sans-serif';
-  ctx.fillText(ar?'⏳  بوليصة مراجعة مبدئية (قيد التأكيد مع الفرع)  ⏳':'⏳  PREVIEW VIP PASS · PENDING BRANCH CONFIRMATION  ⏳', W/2, sy+36);
+  ctx.fillText(ar?'✦  كارت حجز واحتفال بورتوفينو على البحر  ✦':'✦  PORTOFINO CELEBRATION INVITATION  ✦', W/2, sy+36);
 
   ctx.fillStyle='#F5EFE0';
   ctx.font='14.5px "Cairo", sans-serif';
@@ -2468,7 +2523,7 @@ function downloadGoldenTicket(){
 
  ctx.fillStyle='#A9B4C4';
  ctx.font='14.5px "Cairo", sans-serif';
- const footerNote=isConfirmed?(ar?'هذه البوليصة الرسمية معتمدة ومؤكدة للاحتفال. نتمنى لكم أسعد الأوقات!':'This official ticket is verified. We look forward to welcoming you!'):(ar?'بوليصة مراجعة مبدئية لتأكيد تفاصيل مناسبتك مع إدارة الفرع عبر واتساب.':'Preliminary preview ticket for coordination with the branch manager on WhatsApp.');
+ const footerNote=isConfirmed?(ar?'نتمنى لكم أسعد الأوقات والاحتفالات في بورتوفينو على بحر الإسكندرية 🌊':'This official ticket is verified. We look forward to welcoming you!'):(ar?'نتمنى لكم أسعد الأوقات والاحتفالات في بورتوفينو على بحر الإسكندرية 🌊':'Preliminary preview ticket for coordination with the branch manager on WhatsApp.');
  ctx.fillText(footerNote, W/2, fy+78);
 
  ctx.fillStyle='#C9A24B';
@@ -2484,7 +2539,7 @@ function downloadGoldenTicket(){
   document.body.appendChild(link);
   link.click();
   setTimeout(()=>{document.body.removeChild(link);if(url.startsWith('blob:'))URL.revokeObjectURL(url)},2000);
-  toast(isConfirmed?(ar?'📥 تم حفظ البوليصة المعتمدة بختم الفرع':'📥 Sealed VIP ticket saved'):(ar?'📥 تم حفظ بوليصة المراجعة كصورة':'📥 Preview ticket image saved'));
+  toast(isConfirmed?(ar?'📥 تم حفظ كارت الحجز كصورة':'📥 Booking card saved as image'):(ar?'📥 تم حفظ كارت الحجز كصورة':'📥 Booking card saved as image'));
  }
 
  if(canvas.toBlob){
@@ -2494,8 +2549,8 @@ function downloadGoldenTicket(){
    try{
     if(navigator.canShare&&navigator.canShare({files:[new File([blob],fileName,{type:'image/png'})]})){
      navigator.share({
-      title:ar?'بوليصة احتفال بورتوفينو':'Portofino VIP Celebration Ticket',
-      text:isConfirmed?(ar?'بوليصة احتفال رسمية معتمدة ومؤكدة بختم الفرع في بورتوفينو':'Confirmed sealed VIP ticket at Portofino'):(ar?'بوليصة مراجعة مبدئية لاحتفال بورتوفينو':'Preview VIP celebration ticket at Portofino'),
+      title:ar?'كارت حجز بورتوفينو':'Portofino VIP Celebration Ticket',
+      text:isConfirmed?(ar?'كارت حجز واحتفال بورتوفينو على بحر الإسكندرية 🌊':'VIP celebration card at Portofino'):(ar?'كارت حجز واحتفال بورتوفينو على بحر الإسكندرية 🌊':'VIP celebration card at Portofino'),
       files:[new File([blob],fileName,{type:'image/png'})]
      }).catch(()=>{triggerDirectDownload(blobUrl)});
      return;
@@ -2510,7 +2565,6 @@ function downloadGoldenTicket(){
 function eventsContextHTML(opts={}){
  const ar=AR(),T=t(),F=S.form;
  const isReview=!!opts.isReview;
- const isConfirmed=!!opts.isConfirmed||(S.done&&!!S.done.sentConfirmed);
  const d=S.done||{};
  const dt=d.details||{};
  const branchName=(isReview&&dt.branch)?dt.branch:(T.brs[S.branch]||(ar?'كامب شيزار':'Camp Caesar'));
@@ -2535,30 +2589,21 @@ function eventsContextHTML(opts={}){
  }).filter(Boolean);
  const attachedTotal=attachedItems.reduce((acc,x)=>acc+x.price,0);
 
- return `<div class="events-invitation-ticket ${isConfirmed?'is-confirmed':''}" role="region" aria-label="${ar?'بوليصة دعوة واحتفال بورتوفينو':'Portofino VIP Invitation'}">
+ return `<div class="events-invitation-ticket" role="region" aria-label="${ar?'تيكت حجز واحتفال بورتوفينو':'Portofino VIP Invitation'}">
   <div class="ticket-header">
    <div class="ticket-brand">
     <span class="ticket-diamond" aria-hidden="true">${ico.diamond}</span>
     <div>
-     <span class="ticket-seal-text">${isConfirmed?(ar?'بورتوفينو · بوليصة معتمدة ومؤكدة بختم الفرع':'PORTOFINO · OFFICIALLY CONFIRMED TICKET'):(ar?'بورتوفينو · بوليصة مراجعة مبدئية':'PORTOFINO · VIP PREVIEW TICKET')}</span>
+     <span class="ticket-seal-text">${ar?'بورتوفينو · كافيه ومطعم على البحر 🌊':'PORTOFINO · CAFE & RESTAURANT BY THE SEA'}</span>
      <h3 class="ticket-guest-title">${esc(guestName)}</h3>
     </div>
    </div>
    <div class="ticket-header-actions">
-    <div class="ticket-status-pill ${isConfirmed?'is-confirmed':'is-review'}">${isConfirmed?('👑 '+(ar?'معتمدة ومؤكدة ✓':'Confirmed ✓')):('⏳ '+(ar?'قيد التأكيد مع الفرع':'Pending WhatsApp'))}</div>
+    <div class="ticket-status-pill is-review">${ar?'⏳ تفاصيل الحجز للمراجعة':'⏳ Booking Details for Review'}</div>
    </div>
   </div>
 
   <div class="ticket-divider" aria-hidden="true"><span class="ticket-notch left"></span><span class="ticket-dash"></span><span class="ticket-notch right"></span></div>
-
-  ${!isConfirmed?`
-  <div class="ticket-status-note">
-    <span class="note-icon" aria-hidden="true">⏳</span>
-    <div>
-      <b>${ar?'بوليصة مراجعة مبدئية (قيد الاعتماد مع الفرع)':'Preliminary VIP Pass (Under Confirmation)'}</b>
-      <small>${ar?'يتم الاعتماد وتفعيل الختم الملكي للفرع فور الضغط على «إرسال عبر واتساب» بالأسفل.':'Official branch seal activates upon sending via WhatsApp below.'}</small>
-    </div>
-  </div>`:''}
 
   <div class="ticket-grid">
    <div class="ticket-col">
@@ -2609,24 +2654,11 @@ function eventsContextHTML(opts={}){
    <p class="ticket-notes-text">${esc(notes)}</p>
   </div>`:''}
 
-  ${isConfirmed?`
-  <div class="ticket-royal-seal-banner">
-   <div class="ticket-seal-stamp">
-    <span class="stamp-icon">👑</span>
-    <div class="stamp-details">
-     <b>${ar?'معتمدة ومؤكدة رسمياً بختم فرع بورتوفينو':'OFFICIALLY CONFIRMED & SEALED BY PORTOFINO'}</b>
-     <small>${ar?'تم التنسيق والاعتماد عبر واتساب · صالحة للاستقبال الملكي في الفرع':'Confirmed via WhatsApp · Present this sealed ticket upon arrival'}</small>
-    </div>
-   </div>
-   <div class="ticket-seal-code">#PORTOFINO-VIP-SEALED</div>
-  </div>`:''}
-
-  <div class="ticket-footer">
-   <div style="display:flex;align-items:center;gap:6px"><span>${ico.diamond}</span><p style="margin:0">${isConfirmed?(ar?'بوليصة احتفال معتمدة ومؤكدة بختم الفرع. نتمنى لكم أسعد الأوقات في بورتوفينو.':'Officially sealed VIP pass. We look forward to welcoming you to Portofino.'):(ar?'بوليصة مراجعة مبدئية تُرسل لإدارة الفرع على واتساب لتأكيد التوافر وتفعيل الاعتماد.':'Preliminary ticket sent to branch management on WhatsApp for confirmation.')}</p></div>
-   <button type="button" class="ticket-scan-action-link" data-act="download-ticket" title="${isConfirmed?(ar?'مسح ضوئي واستخراج البوليصة المعتمدة بختم الفرع كصورة':'Scan and extract confirmed sealed ticket image'):(ar?'مسح ضوئي واستخراج بوليصة المراجعة كصورة للذكرى':'Scan and extract preview ticket image')}">
-     <span class="scan-laser-glow" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></svg></span>
-     <span>${isConfirmed?(ar?'مسح وتحميل البوليصة المعتمدة بختم الفرع 📥':'Scan & Download Sealed Ticket 📥'):(ar?'مسح وحفظ بوليصة المراجعة كصورة 📥':'Scan & Save Preview Ticket 📥')}</span>
-    </button>
+  <div class="ticket-footer" style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:14px;border-top:1px dashed rgba(201,162,75,.35);margin-top:14px;font-size:12px;color:var(--mist)">
+   <div style="display:flex;align-items:center;gap:6px"><span>${ico.diamond}</span><p style="margin:0">${ar?'بورتوفينو · أجواء استثنائية على بحر الإسكندرية':'Portofino · Memorable moments by the sea'}</p></div>
+   <button type="button" class="btn gh sm download-ticket-btn" data-act="download-ticket" style="font-size:11.5px;padding:4px 10px;min-height:30px;border-radius:8px">
+     <span>${ico.arr()==='›'?'📥':'📥'} ${ar?'حفظ كارت الحجز كصورة':'Save booking card'}</span>
+   </button>
   </div>
  </div>`;
 }
@@ -2643,126 +2675,132 @@ function vDone(){
  const confirmed=!!d.sentConfirmed;
  const canSend=kind!=='ord'||S.cart.length>0;
  const waUrl=currentWhatsAppLink(kind);
+
  const copy=ar?{
-  sentTitle:kind==='ev'?'🎉 ألف مبروك! تم اعتماد بوليصة مناسبتك بنجاح':'🎉 ألف مبروك! تم تأكيد إرسال طلبك بنجاح',
-  sentCopy:kind==='ev'?'تم اعتماد بوليصة الاحتفال وتأكيدها مع إدارة الفرع. فريق بورتوفينو استلم تفاصيل مناسبتك بالكامل وستقوم الإدارة بالتواصل معك على واتساب لإتمام كافة الترتيبات والاستقبال الملكي.':'رسالتكم وصلت للفرع بنجاح، وفريق بورتوفينو يراجع طلبكم وسيقوم بالرد على واتساب لتأكيد كل التفاصيل في أقرب وقت.',
-  handoffTitle:kind==='ev'?'رجعت من واتساب؟ طمّنا على بوليصة مناسبتك':'رجعت من واتساب؟ طمّنا على طلبك',
-  handoffCopy:kind==='ev'?'إذا ضغطت «إرسال» داخل واتساب، أكّد هنا لاعتماد بوليصتك وختمها رسمياً. وإذا لم تكن أرسلتها بعد، يمكنك إعادة فتح واتساب.':'إذا ضغطت «إرسال» داخل واتساب، أكّد هنا لتسجيل طلبك. وإذا لم تكن أرسلتها بعد، يمكنك إعادة فتح واتساب.',
-  handoffStatus:kind==='ev'?'بانتظار تأكيدك بعد إرسال البوليصة في واتساب':'بانتظار تأكيدك بعد الإرسال في واتساب',
-  confirmSent:kind==='ev'?'أرسلت البوليصة على واتساب (اعتماد وتأكيد الحجز) ✓':'أرسلت الرسالة على واتساب (تأكيد الطلب) ✓',
+  sentTitle:'🎉 ألف مبروك وسعداء بوجودك معانا!',
+  sentHeading:'نورت بورتوفينو على بحر الإسكندرية 🌊',
+  sentCopy:'فريقنا في الفرع استلم رسالتك على واتساب، وبنجهزلك أحلى تجربة على البحر.. الإدارة هتتواصل مع حضرتك حالاً لتأكيد كل طلباتك وترتيب يوم مميز يليق بيك ✨',
+  sentStatus:'✓ تم تأكيد استلام الحجز في الفرع بنجاح',
+  handoffTitle:kind==='ev'?'رجعت من واتساب؟ طمّنا على إرسال الحجز':'رجعت من واتساب؟ طمّنا على طلبك',
+  handoffCopy:'إذا ضغطت «إرسال» داخل واتساب، اضغط تأكيد لتسجيل حجزك رسمياً في الفرع. وإذا لم تكن أرسلتها بعد، يمكنك إعادة فتح واتساب.',
+  handoffStatus:'بانتظار تأكيدك بعد الإرسال في واتساب',
+  confirmSent:kind==='ev'?'أرسلت الحجز على واتساب (تأكيد الطلب) ✓':'أرسلت الرسالة على واتساب (تأكيد الطلب) ✓',
   reopenWA:'لسه مبعتهاش؟ افتح واتساب مرة ثانية',
-  returnSite:'العودة للموقع',
-  sentStatus:kind==='ev'?'تم اعتماد بوليصة مناسبتك رسمياً · احتفظ بالصورة المعتمدة بختم الفرع لإبرازها عند الوصول.':'أكدت إرسال الرسالة · طلبك الآن بانتظار رد وتأكيد الفرع.'
+  returnSite:'العودة للرئيسية'
  }:{
-  sentTitle:kind==='ev'?'🎉 Congratulations! Your celebration ticket is confirmed':'🎉 Congratulations! Request sent successfully',
-  sentCopy:kind==='ev'?'Your VIP celebration ticket has been officially confirmed and sealed. The branch team has received all details and will follow up on WhatsApp.':'Your message was delivered to the branch. The team will review your order and reply on WhatsApp shortly to confirm.',
-  handoffTitle:kind==='ev'?'Back from WhatsApp? Update your ticket status':'Back from WhatsApp? Update your status',
-  handoffCopy:kind==='ev'?'If you tapped Send in WhatsApp, confirm below to officially seal your ticket. If not yet sent, you can reopen WhatsApp.':'If you tapped Send in WhatsApp, confirm below. If not yet sent, you can reopen WhatsApp.',
-  handoffStatus:kind==='ev'?'Waiting for your confirmation after sending ticket in WhatsApp':'Waiting for your confirmation after sending in WhatsApp',
-  confirmSent:kind==='ev'?'I sent the ticket in WhatsApp (Confirm & Seal) ✓':'I sent the WhatsApp message (Confirm) ✓',
+  sentTitle:'🎉 Congratulations & Welcome!',
+  sentHeading:'Portofino by the Mediterranean Sea 🌊',
+  sentCopy:'Our branch team has received your message on WhatsApp and is preparing a wonderful seaside experience for you. Management will follow up shortly to confirm every detail ✨',
+  sentStatus:'✓ Booking successfully acknowledged by branch',
+  handoffTitle:'Back from WhatsApp? Let us know',
+  handoffCopy:'If you tapped Send in WhatsApp, confirm below to finalize your booking. If not yet sent, you can reopen WhatsApp.',
+  handoffStatus:'Waiting for your confirmation after sending in WhatsApp',
+  confirmSent:'I sent the message on WhatsApp (Confirm) ✓',
   reopenWA:'Haven’t sent yet? Reopen WhatsApp',
-  returnSite:'Return to website',
-  sentStatus:kind==='ev'?'Your celebration ticket is officially verified & sealed · Present it upon arrival.':'Message confirmed · Your request is awaiting branch confirmation.'
+  returnSite:'Return to home'
  };
 
- const title=kind==='res'?(ar?'راجع بيانات حجزك قبل الإرسال':'Review your booking details'):
-             kind==='ev'?(confirmed?copy.sentTitle:d.handoff?copy.handoffTitle:(ar?'بوليصة مناسبتك الملكية جاهزة للمراجعة':'Your Royal Celebration Ticket is Ready')):
+ const title=kind==='res'?(ar?'راجع تفاصيل حجزك قبل الإرسال':'Review your booking details'):
+             kind==='ev'?(confirmed?copy.sentTitle:d.handoff?copy.handoffTitle:(ar?'راجع تفاصيل حجزك بضغطة سريعة 🌊':'Quickly review your booking details 🌊')):
              (ar?'راجع تفاصيل طلبك وسلتك قبل الإرسال':'Review your order and cart');
 
- const sub=confirmed?copy.sentCopy:d.handoff?copy.handoffCopy:(kind==='ev'?(ar?'راجع بيانات بوليصتك المبدئية بالأعلى، ثم اضغط «إرسال للفرع عبر واتساب» لتأكيد التوافر وتفعيل الاعتماد والختم الملكي رسمياً.':'Review your preliminary VIP pass above, then tap “Send to branch on WhatsApp” to verify availability and activate your official seal.'):(ar?'تأكد من صحة بياناتك وأصنافك بالأسفل، ثم اضغط «إرسال للفرع عبر واتساب» لفتح المحادثة الرسمية.':'Check your details and items below, then tap “Send to branch on WhatsApp” to open the chat.'));
+ const sub=confirmed?copy.sentCopy:d.handoff?copy.handoffCopy:(kind==='ev'?(ar?'اطمّن على كل طلباتك، واضغط «إرسال للفرع عبر واتساب» لتأكيد القعدة مع الإدارة مباشرة.':'Check your details, then tap “Send to branch on WhatsApp” to confirm directly with our team.'):(ar?'تأكد من صحة بياناتك وأصنافك بالأسفل، ثم اضغط «إرسال للفرع عبر واتساب» لفتح المحادثة الرسمية.':'Check your details and items below, then tap “Send to branch on WhatsApp” to open the chat.'));
 
  const summaryHeading=kind==='res'?(ar?'ملخص بيانات الحجز':'Booking Summary'):
                       kind==='ev'?(ar?'ملخص تفاصيل المناسبة':'Event Summary'):
                       (ar?'ملخص بيانات الطلب':'Order Summary');
 
- const progressLabels=kind==='ev'?(ar?['تفاصيل المناسبة','مراجعة البوليصة','واتساب والختم المعتمد']:['Event details','Review ticket','WhatsApp & Sealed Ticket']):
-                      kind==='res'?(ar?['بيانات الحجز','مراجعة','واتساب والتأكيد']:['Booking details','Review','WhatsApp & Confirm']):
-                      (ar?['بيانات الطلب','مراجعة','واتساب والتأكيد']:['Order details','Review','WhatsApp & Confirm']);
+ const progressLabels=kind==='ev'?(ar?['تفاصيل المناسبة','مراجعة الحجز','تأكيد واتساب']:['Event details','Review booking','WhatsApp confirmation']):
+                      kind==='res'?(ar?['بيانات الحجز','مراجعة الحجز','تأكيد واتساب']:['Booking details','Review booking','WhatsApp confirmation']):
+                      (ar?['بيانات الطلب','مراجعة الطلب','تأكيد واتساب']:['Order details','Review order','WhatsApp confirmation']);
 
- return `<div class="wrap done-wrap" style="max-width:760px"><div class="card form ok done-card ${confirmed?'is-confirmed':''}" style="text-align:center">
+ return `<div class="wrap done-wrap" style="max-width:720px"><div class="card form ok done-card ${confirmed?'is-confirmed':''}" style="text-align:center">
   ${confirmed&&d.confetti?`<div class="done-confetti" aria-hidden="true">${Array.from({length:28},(_,i)=>`<i style="--x:${(i*37)%100}%;--delay:${(i%7)*.08}s;--drift:${((i%9)-4)*13}px;--color:${['#d9ae48','#72c86e','#fff1d0','#ee8c54'][i%4]}"></i>`).join('')}</div>`:''}
-   <ol class="steps form-steps done-steps" aria-label="${ar?'خطوات الطلب':'Process steps'}">${progressLabels.map((label,i)=>{const done=confirmed||(i===0)||(d.handoff&&i===1);const current=!confirmed&&(i===(d.handoff?2:1));return `<li class="${done?'done':current?'cur':''}"><span>${done?'✓':i+1}</span>${label}</li>`}).join('')}</ol>
-  <div class="done-wa-icon" aria-hidden="true" style="${confirmed?'background:color-mix(in srgb,var(--leaf-l) 18%,var(--card));border-color:var(--leaf-l);color:var(--leaf-l)':''}"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
-   <h1 class="disp h2" style="margin:0;font-size:clamp(24px,4vw,32px);line-height:1.2;color:var(--ink)">${confirmed?copy.sentTitle:d.handoff?copy.handoffTitle:title}</h1>
-  <p class="lead done-sub" style="margin:8px auto 16px;max-width:480px;font-size:14.5px;line-height:1.6;color:var(--mist)">${sub}</p>
-
-  ${kind==='ev'?`
-   <div class="done-events-ticket-wrap" style="margin-bottom:20px;text-align:start">
-     ${eventsContextHTML({isReview:true,isConfirmed:confirmed})}
-   </div>
-  `:`
-   <div class="done-summary-box" style="background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:start;margin-bottom:18px">
-     <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)">
-       <b style="color:var(--leaf-l);font-size:14px;display:flex;align-items:center;gap:6px">${ico.chk} ${summaryHeading}</b>
-       <span style="font-size:12px;color:var(--mist)">${ar?'مراجعة البيانات':'Review details'}</span>
-     </div>
-     <div class="done-details-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px 14px;font-size:13.5px">
-       ${dt.service?`<div class="done-detail"><span>${ar?'الخدمة':'Service'}</span><b>${esc(dt.service)}</b></div>`:''}
-       ${dt.branch?`<div class="done-detail"><span>${ar?'الفرع':'Branch'}</span><b>${esc(dt.branch)}</b></div>`:''}
-       ${dt.pick?`<div class="done-detail"><span>${ar?'ميعاد الاستلام':'Pickup time'}</span><b>${esc(formatDisplayTime(dt.pick))}</b></div>`:''}
-       ${dt.table?`<div class="done-detail"><span>${ar?'رقم الطاولة':'Table number'}</span><b>${esc(dt.table)}</b></div>`:''}
-       ${dt.date?`<div class="done-detail"><span>${ar?'التاريخ':'Date'}</span><b>${esc(formatDisplayDate(dt.date))}</b></div>`:''}
-       ${dt.time?`<div class="done-detail"><span>${ar?'الوقت':'Time'}</span><b>${esc(formatDisplayTime(dt.time))}</b></div>`:''}
-       ${dt.party?`<div class="done-detail"><span>${ar?'عدد الأفراد':'Party size'}</span><b>${esc(String(dt.party))} ${ar?'أفراد':'guests'}</b></div>`:''}
-       ${dt.name?`<div class="done-detail"><span>${ar?'الاسم':'Guest name'}</span><b>${esc(dt.name)}</b></div>`:''}
-       ${dt.phone?`<div class="done-detail"><span>${ar?'رقم الموبايل':'Phone'}</span><b dir="ltr">${esc(dt.phone)}</b></div>`:''}
-       ${dt.area?`<div class="done-detail"><span>${ar?'المنطقة':'Area'}</span><b>${esc(dt.area)}</b></div>`:''}
-       ${dt.address?`<div class="done-detail"><span>${ar?'العنوان':'Address'}</span><b>${esc(dt.address)}</b></div>`:''}
-       ${dt.type?`<div class="done-detail"><span>${ar?'نوع المناسبة':'Event type'}</span><b>${esc(dt.type)}</b></div>`:''}
-       ${dt.perks&&dt.perks.length?`<div class="done-detail wide"><span>${ar?'التجهيزات المقترحة المطلوبة':'Requested celebration perks'}</span><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px">${dt.perks.map(p=>`<span class="chip on" style="font-size:12.5px;padding:4px 10px">${esc(p)}</span>`).join('')}</div></div>`:''}
-       ${dt.notes?`<div class="done-detail wide"><span>${ar?'ملاحظات':'Notes'}</span><i>${esc(dt.notes)}</i></div>`:''}
-     </div>
-     ${S.cart.length?`<details class="done-review-items" open><summary><span><b>${kind==='res'?(ar?'أصناف مرفقة بالحجز (اختياري)':'Items attached to reservation (optional)'):(ar?'مراجعة أصناف الطلب والسلة':'Review order items & cart')}</b><small>${num(cartCount())} ${T.items} · ${money(cartTotal())}${kind==='res'||kind==='ev'?(ar?' · اختياري':' · optional'):''}</small></span><span class="done-review-chevron" aria-hidden="true">⌄</span></summary><div class="done-review-items-body">${summaryBlock()}<div class="tot big"><span>${kind==='res'||kind==='ev'?(ar?'إجمالي الأصناف المرفقة':'Attached items subtotal'):T.sub}</span><b>${money(cartTotal())}</b></div>${kind==='ord'&&S.service==='delivery'?`<p class="done-review-fee">${ar?'رسوم التوصيل يحددها الفرع':'Delivery fee is set by the branch'}</p>`:''}</div></details>`:''}
-   </div>
-  `}
+  
+  <ol class="steps form-steps done-steps" aria-label="${ar?'خطوات الطلب':'Process steps'}">${progressLabels.map((label,i)=>{const done=confirmed||(i===0)||(d.handoff&&i===1);const current=!confirmed&&(i===(d.handoff?2:1));return `<li class="${done?'done':current?'cur':''}"><span>${done?'✓':i+1}</span>${label}</li>`}).join('')}</ol>
 
   ${confirmed?`
-   <div class="handoff-status is-confirmed" role="status" style="border-color:color-mix(in srgb,var(--leaf-l) 45%,var(--line));background:color-mix(in srgb,var(--leaf-l) 14%,var(--card2));font-size:14px;padding:14px 18px">
-     ${ico.chk} ${copy.sentStatus}
-   </div>
-  `:d.handoff?`
-   <div class="done-handoff-prompt" style="display:grid;gap:12px;margin:16px 0 20px">
-     <div class="done-choice-card" style="background:color-mix(in srgb,var(--leaf-l) 12%,var(--card2));border:1.5px solid var(--leaf-l);border-radius:16px;padding:16px;text-align:center">
-       <button class="btn g lg done-confirm-cta" type="button" data-act="confirm-handoff" style="width:100%;min-height:56px;justify-content:center;font-size:16px;box-shadow:0 8px 24px rgba(46,125,50,.28)">
-         ${ico.chk} ${copy.confirmSent}
-       </button>
-       <p style="margin:8px 0 0;font-size:12.5px;color:var(--ink);line-height:1.5">${ar?'اضغط هنا لتسجيل تأكيد الإرسال والاطمئنان على وصول طلبك للفرع.':'Tap here after sending in WhatsApp to confirm your request with the branch.'}</p>
-     </div>
-     <div class="done-choice-card" style="background:var(--card2);border:1px solid var(--line);border-radius:16px;padding:12px 16px;text-align:center">
-       ${canSend?`<a class="btn w lg done-main-cta" href="${waUrl}" data-act="whatsapp-handoff" target="_blank" rel="noopener" style="width:100%;min-height:48px;justify-content:center;font-size:14.5px">
-         ${ico.wa} ${copy.reopenWA}
-       </a>`:`<button class="btn o lg done-main-cta" type="button" data-go="menu" style="width:100%;min-height:48px;justify-content:center;font-size:14px;font-weight:700">
-         ${ico.cart} ${ar?'إضافة أصناف للسلة أولاً ›':'Add items to cart first ›'}
-       </button>`}
-       <p style="margin:6px 0 0;font-size:12px;color:var(--mist)">${ar?'لو التطبيق مفتحش معاك أو حبيت تراجع الرسالة قبل الإرسال.':'If WhatsApp did not open or you want to review the message before sending.'}</p>
-     </div>
+   <!-- FINAL CONFIRMED STAGE: Simple, memorable, heartfelt thank-you card without repeating order details -->
+   <div class="done-confirmed-celebration" style="padding:16px 10px 8px">
+    <div class="done-wa-icon" aria-hidden="true" style="margin:0 auto 16px;background:rgba(46,155,58,.18);border:2px solid var(--leaf-l);color:var(--leaf-l);width:68px;height:68px;display:grid;place-items:center;border-radius:50%"><svg class="ic" viewBox="0 0 24 24" style="width:34px;height:34px"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+    <h1 class="disp h2" style="margin:0 0 8px;font-size:clamp(24px,4vw,32px);color:var(--ink)">${copy.sentTitle}</h1>
+    <h2 style="margin:0 0 16px;font-size:clamp(16px,3vw,20px);color:var(--gold);font-weight:700">${copy.sentHeading}</h2>
+    <div style="max-width:540px;margin:0 auto 20px;background:var(--card2);border:1.5px solid rgba(201,162,75,.3);border-radius:18px;padding:22px 20px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.2)">
+      <p style="margin:0 0 14px;font-size:16px;line-height:1.75;color:var(--ink);font-weight:600">${copy.sentCopy}</p>
+      <div style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:99px;background:rgba(46,155,58,.12);border:1px solid var(--leaf-l);color:var(--leaf-l);font-size:13.5px;font-weight:750">
+        ${copy.sentStatus}
+      </div>
+    </div>
    </div>
   `:`
-   ${!canSend?`
-    <div class="note warn" style="margin:16px 0;border:1.5px solid rgba(229,103,95,.5);background:rgba(229,103,95,.1);color:#ff9e96;padding:16px;border-radius:14px;text-align:start">
-      <b style="font-size:15px;display:flex;align-items:center;gap:6px">⚠️ ${ar?'السلة فارغة حالياً!':'Cart is currently empty!'}</b>
-      <p style="margin:8px 0 0;font-size:13.5px;line-height:1.6;color:var(--ink)">
-        ${ar?'تم حذف جميع الأصناف من السلة. لا يمكن إرسال طلب '+(dt.service||'التوصيل')+' بدون وجود أصناف. يرجى اختيار الأصناف التي ترغب بها أولاً.':'All items were removed from the cart. Cannot place an order without items. Please add items to your cart first.'}
-      </p>
+   <!-- STAGE 1: REVIEW DETAILS -->
+   <div class="done-wa-icon" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+   <h1 class="disp h2" style="margin:0;font-size:clamp(24px,4vw,32px);line-height:1.2;color:var(--ink)">${d.handoff?copy.handoffTitle:title}</h1>
+   <p class="lead done-sub" style="margin:8px auto 16px;max-width:480px;font-size:14.5px;line-height:1.6;color:var(--mist)">${sub}</p>
+
+   ${kind==='ev'?`
+    <div class="done-events-ticket-wrap" style="margin-bottom:20px;text-align:start">
+      ${eventsContextHTML({isReview:true,isConfirmed:false})}
     </div>
-    <button class="btn o lg done-main-cta" type="button" data-go="menu" style="width:100%;min-height:56px;justify-content:center;gap:8px;font-size:16px;font-weight:700">
-      ${ico.cart} ${ar?'اختيار أصناف من المنيو والسلة ›':'Choose items from menu & cart ›'}
-    </button>
    `:`
-    <div class="done-wa-explain" style="background:rgba(37,211,102,.08);border:1px solid rgba(37,211,102,.25);border-radius:14px;padding:14px 16px;margin:16px 0;text-align:start">
-      <div style="display:flex;align-items:center;gap:8px;color:var(--wa);font-weight:700;font-size:14px;margin-bottom:6px">${ico.wa} <span>${ar?'كيف يتم تأكيد الطلب؟':'How is your request confirmed?'}</span></div>
-      <p style="margin:0;font-size:13px;line-height:1.6;color:var(--ink)">${kind==='ev'?(ar?'بالضغط على الزر بالأسفل، سيفتح المتصفح محادثة واتساب الرسمية مع الفرع وفيها نص رسالة مجهزة تلقائياً بكافة بيانات بوليصتك وتجهيزاتك. ما عليك سوى الضغط على زر الإرسال داخل واتساب.':'Tapping below opens the official WhatsApp chat with the branch with a pre-filled message with your celebration ticket. Simply tap Send inside WhatsApp.'):(ar?'بالضغط على الزر بالأسفل، سيفتح المتصفح محادثة واتساب الرسمية مع الفرع وفيها نص رسالة مجهزة تلقائياً بكافة بياناتك وسلتك. ما عليك سوى الضغط على زر الإرسال داخل واتساب.':'Tapping below opens the official WhatsApp chat with the branch with a pre-filled message with your details and cart. Simply tap Send inside WhatsApp.')}</p>
+    <div class="done-summary-box" style="background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:start;margin-bottom:18px">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)">
+        <b style="color:var(--leaf-l);font-size:14px;display:flex;align-items:center;gap:6px">${ico.chk} ${summaryHeading}</b>
+        <span style="font-size:12px;color:var(--mist)">${ar?'مراجعة البيانات':'Review details'}</span>
+      </div>
+      <div class="done-details-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px 14px;font-size:13.5px">
+        ${dt.service?`<div class="done-detail"><span>${ar?'الخدمة':'Service'}</span><b>${esc(dt.service)}</b></div>`:''}
+        ${dt.branch?`<div class="done-detail"><span>${ar?'الفرع':'Branch'}</span><b>${esc(dt.branch)}</b></div>`:''}
+        ${dt.pick?`<div class="done-detail"><span>${ar?'ميعاد الاستلام':'Pickup time'}</span><b>${esc(formatDisplayTime(dt.pick))}</b></div>`:''}
+        ${dt.table?`<div class="done-detail"><span>${ar?'رقم الطاولة':'Table number'}</span><b>${esc(dt.table)}</b></div>`:''}
+        ${dt.date?`<div class="done-detail"><span>${ar?'التاريخ':'Date'}</span><b>${esc(formatDisplayDate(dt.date))}</b></div>`:''}
+        ${dt.time?`<div class="done-detail"><span>${ar?'الوقت':'Time'}</span><b>${esc(formatDisplayTime(dt.time))}</b></div>`:''}
+        ${dt.party?`<div class="done-detail"><span>${ar?'عدد الأفراد':'Party size'}</span><b>${esc(String(dt.party))} ${ar?'أفراد':'guests'}</b></div>`:''}
+        ${dt.name?`<div class="done-detail"><span>${ar?'الاسم':'Guest name'}</span><b>${esc(dt.name)}</b></div>`:''}
+        ${dt.phone?`<div class="done-detail"><span>${ar?'رقم الموبايل':'Phone'}</span><b dir="ltr">${esc(dt.phone)}</b></div>`:''}
+        ${dt.area?`<div class="done-detail"><span>${ar?'المنطقة':'Area'}</span><b>${esc(dt.area)}</b></div>`:''}
+        ${dt.address?`<div class="done-detail"><span>${ar?'العنوان':'Address'}</span><b>${esc(dt.address)}</b></div>`:''}
+        ${dt.type?`<div class="done-detail"><span>${ar?'نوع المناسبة':'Event type'}</span><b>${esc(dt.type)}</b></div>`:''}
+        ${dt.perks&&dt.perks.length?`<div class="done-detail wide"><span>${ar?'التجهيزات المقترحة المطلوبة':'Requested celebration perks'}</span><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px">${dt.perks.map(p=>`<span class="chip on" style="font-size:12.5px;padding:4px 10px">${esc(p)}</span>`).join('')}</div></div>`:''}
+        ${dt.notes?`<div class="done-detail wide"><span>${ar?'ملاحظات':'Notes'}</span><i>${esc(dt.notes)}</i></div>`:''}
+      </div>
+      ${S.cart.length?`<details class="done-review-items" open><summary><span><b>${kind==='res'?(ar?'أصناف مرفقة بالحجز (اختياري)':'Items attached to reservation (optional)'):(ar?'مراجعة أصناف الطلب والسلة':'Review order items & cart')}</b><small>${num(cartCount())} ${T.items} · ${money(cartTotal())}${kind==='res'||kind==='ev'?(ar?' · اختياري':' · optional'):''}</small></span><span class="done-review-chevron" aria-hidden="true">⌄</span></summary><div class="done-review-items-body">${summaryBlock()}<div class="tot big"><span>${kind==='res'||kind==='ev'?(ar?'إجمالي الأصناف المرفقة':'Attached items subtotal'):T.sub}</span><b>${money(cartTotal())}</b></div></div></details>`:''}
     </div>
-    <a class="btn w lg done-main-cta" href="${waUrl}" data-act="whatsapp-handoff" target="_blank" rel="noopener" style="width:100%;min-height:56px;justify-content:center;font-size:16px">${ico.wa} ${kind==='ev'?(ar?'إرسال بوليصة المناسبة للفرع عبر واتساب':'Send celebration ticket to branch on WhatsApp'):(ar?'إرسال للفرع عبر واتساب':'Send to the branch on WhatsApp')}</a>
-    <p class="done-whatsapp-note" style="margin-top:8px">${ar?'ستُفتح رسالة جاهزة للمراجعة والإرسال. لن يتم إرسالها تلقائيًا.':'A prepared message will open for you to review and send. It will not be sent automatically.'}</p>
+   `}
+
+   ${d.handoff?`
+    <div class="done-handoff-box" style="background:rgba(201,162,75,.08);border:1.5px solid rgba(201,162,75,.35);border-radius:16px;padding:20px;margin:18px 0;text-align:center">
+      <div style="font-size:14.5px;color:#F7E7A9;margin-bottom:14px;font-weight:700">${copy.handoffStatus}</div>
+      <button class="btn g lg done-main-cta" type="button" data-act="confirm-sent" style="width:100%;min-height:56px;justify-content:center;font-size:16px;font-weight:700">
+        ${ico.chk} ${copy.confirmSent}
+      </button>
+      <div style="margin-top:14px">
+        <a href="${waUrl}" data-act="whatsapp-handoff" target="_blank" rel="noopener" style="font-size:13.5px;color:var(--wa);text-decoration:underline;font-weight:600">${copy.reopenWA}</a>
+        <p style="margin:4px 0 0;font-size:12px;color:var(--mist)">${ar?'لو التطبيق مفتحش معاك أو حبيت تراجع الرسالة قبل الإرسال.':'If WhatsApp did not open or you want to review the message before sending.'}</p>
+      </div>
+    </div>
+   `:`
+    ${!canSend?`
+     <div class="note warn" style="margin:16px 0;border:1.5px solid rgba(229,103,95,.5);background:rgba(229,103,95,.1);color:#ff9e96;padding:16px;border-radius:14px;text-align:start">
+       <b style="font-size:15px;display:flex;align-items:center;gap:6px">⚠️ ${ar?'السلة فارغة حالياً!':'Cart is currently empty!'}</b>
+       <p style="margin:8px 0 0;font-size:13.5px;line-height:1.6;color:var(--ink)">
+         ${ar?'تم حذف جميع الأصناف من السلة. لا يمكن إرسال طلب '+(dt.service||'التوصيل')+' بدون وجود أصناف. يرجى اختيار الأصناف التي ترغب بها أولاً.':'All items were removed from the cart. Cannot place an order without items. Please add items to your cart first.'}
+       </p>
+     </div>
+     <button class="btn o lg done-main-cta" type="button" data-go="menu" style="width:100%;min-height:56px;justify-content:center;gap:8px;font-size:16px;font-weight:700">
+       ${ico.cart} ${ar?'اختيار أصناف من المنيو والسلة ›':'Choose items from menu & cart ›'}
+     </button>
+    `:`
+     <a class="btn w lg done-main-cta" href="${waUrl}" data-act="whatsapp-handoff" target="_blank" rel="noopener" style="width:100%;min-height:56px;justify-content:center;font-size:16px">${ico.wa} ${kind==='ev'?(ar?'إرسال تفاصيل الحجز للفرع عبر واتساب':'Send booking details to branch on WhatsApp'):(ar?'إرسال للفرع عبر واتساب':'Send to the branch on WhatsApp')}</a>
+     <p class="done-whatsapp-note" style="margin-top:8px">${ar?'ستُفتح محادثة واتساب الرسمية مع الفرع وفيها بيانات حجزك جاهزة للإرسال.':'A prepared message will open for you to review and send.'}</p>
+    `}
    `}
   `}
 
-  <div class="done-actions" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px">
+  <div class="done-actions" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px">
     ${confirmed?`
-      ${kind==='ev'?`<button class="btn g sm" style="flex:1 1 220px;min-width:200px;justify-content:center;font-size:13.5px;background:linear-gradient(135deg,#d9ae48,#b38628);border-color:#d9ae48;color:#0b130e;font-weight:800;padding:10px 18px" data-act="download-ticket"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-inline-end:6px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>${ar?'تحميل البوليصة المعتمدة بختم الفرع 📥':'Download Sealed Ticket 📥'}</button>`:''}
-      <button class="btn g sm" style="flex:1;min-width:140px;justify-content:center;font-size:13px" data-act="restart">${T.newOrder}</button>
-      <button class="btn gh sm" style="flex:1;min-width:140px;justify-content:center;font-size:13px" data-act="return-home">${copy.returnSite}</button>
+      <button class="btn g sm" style="flex:1;min-width:140px;justify-content:center;font-size:13.5px;min-height:44px" data-act="restart">${T.newOrder}</button>
+      <button class="btn gh sm" style="flex:1;min-width:140px;justify-content:center;font-size:13.5px;min-height:44px" data-act="return-home">${copy.returnSite}</button>
     `:`
       <button class="btn gh sm" style="flex:1;min-width:140px;justify-content:center;font-size:13px" data-act="edit-order">${T.editOrder}</button>
       <button class="btn gh sm" style="flex:1;min-width:140px;justify-content:center;font-size:13px;opacity:.75" data-act="restart">${T.newOrder}</button>
@@ -2775,7 +2813,7 @@ function vReserve(){
  if(S.done)return vDone();
  const today=new Date().toISOString().slice(0,10);
  return `<div class="wrap form-page" style="padding-block:clamp(24px,4vw,48px) 96px"><p class="eyebrow">${T.resEye}</p><header class="form-page-head"><h1 class="disp h2">${T.resT}</h1><p class="form-page-intro">${AR()?'اختاروا الفرع والموعد وعدد الأفراد. ده طلب حجز قعدة؛ في الخطوة القادمة هتراجعوا تفاصيل الحجز قبل إرسالها للفرع على واتساب.':'Choose branch, time and party size. This is for table reservation; in the next step you will review your booking details before sending to WhatsApp.'}</p></header>${steps(1,AR()?['بيانات الحجز','مراجعة','واتساب والتأكيد']:['Booking details','Review','WhatsApp & Confirm'])}
- <div class="layout2" style="margin-top:28px"><form class="card form final-form" id="resf" novalidate>
+ <div class="layout2" style="margin-top:28px"><form class="card form final-form" id="resf" novalidate onsubmit="event.preventDefault();">
   <div class="fld"><label>${T.branch}</label><div class="seg" style="display:flex">${['cc','lo'].map(b=>`<button type="button" style="flex:1" data-act="branch" data-v="${b}" class="${S.branch===b?'on':''}">${T.brs[b]}</button>`).join('')}</div></div>
   <div class="row2">${field('date',T.date,'date',`min="${today}"`)}${field('time',T.time,'time')}</div>
   <div class="fld"><label>${T.party}</label><div class="stp" style="display:flex;justify-content:space-between;min-height:56px;border-radius:12px"><button type="button" data-act="party" data-v="-1" aria-label="-">−</button><span style="align-self:center;font-size:17px">${num(S.party)} ${T.guests}</span><button type="button" data-act="party" data-v="1" aria-label="+">+</button></div></div>
@@ -2964,17 +3002,17 @@ function vEvents(){
    </figure>
   </div>
 
-  ${steps(1,ar?['تفاصيل المناسبة','مراجعة البوليصة','واتساب والتأكيد']:['Event details','Review ticket','WhatsApp & Confirm'])}
+  ${steps(1,ar?['تفاصيل المناسبة','مراجعة الحجز','تأكيد واتساب']:['Event details','Review booking','WhatsApp confirmation'])}
 
   <div class="events-form-wrapper">
    ${eventsCartBanner()}
 
-   <form class="card form final-form events-lean-form" id="evf" novalidate>
+   <form class="card form final-form events-lean-form" id="evf" novalidate onsubmit="event.preventDefault();">
     <div class="events-form-head">
      <span class="events-form-icon" aria-hidden="true">${ico.diamond}</span>
      <div>
       <div class="disp events-form-title">${T.evForm}</div>
-      <p class="events-form-sub">${ar?'اختر المقر وتفاصيل يومك، وفي الخطوة التالية تراجع بوليصتك وتعتمدها':'Select venue & details, then review your verified ticket'}</p>
+      <p class="events-form-sub">${ar?'اختر المقر وتفاصيل يومك، وفي الخطوة التالية تراجع تفاصيل حجزك قبل التواصل مع الفرع':'Select venue & details, then review your verified ticket'}</p>
      </div>
     </div>
 
@@ -3028,9 +3066,9 @@ function vEvents(){
     <!-- 8. زر الإرسال والمتابعة للمراجعة -->
     <div class="canvas-submit-box">
      <button class="btn g lg canvas-submit-btn" type="submit" style="width:100%;justify-content:center;font-size:16.5px;min-height:54px">
-      <span>${ar?'متابعة لمراجعة بوليصة المناسبة':'Continue to review celebration ticket'}</span> ${ico.arr()}
+      <span>${ar?'متابعة لمراجعة تفاصيل الحجز ›':'Continue to review celebration ticket'}</span> ${ico.arr()}
      </button>
-     <p class="calm canvas-submit-note" style="margin-top:10px;text-align:center">${ar?'✨ مفيش دفع أونلاين ولا إرسال تلقائي. هتراجع بوليصة مناسبتك بكافة تفاصيلها وتعتمدها قبل فتح محادثة واتساب الرسمية مع إدارة الفرع.':'✨ No online payment or auto-send. You will review and confirm all ticket details before opening WhatsApp.'}</p>
+     <p class="calm canvas-submit-note" style="margin-top:10px;text-align:center">${ar?'✨ مفيش دفع أونلاين ولا إرسال تلقائي. هتراجع تفاصيل حجزك وتطمّن عليها قبل فتح محادثة واتساب مع إدارة الفرع.':'✨ No online payment or auto-send. You will review and confirm all ticket details before opening WhatsApp.'}</p>
      <p class="ds" style="margin-top:8px;text-align:center">${T.evNote}</p>
     </div>
    </form>
@@ -3203,6 +3241,7 @@ function soft(){
  const show=cartCount()>0;const wf=$('.wafab');if(wf)wf.classList.toggle('up',show);
  S.bump=false;FX.dirty=true;saveState();
 }
+document.addEventListener('submit',e=>e.preventDefault(),true);
 document.addEventListener('click',e=>{
  const dtBox=e.target.closest('[data-dt-picker]');
  if(dtBox){
@@ -3349,7 +3388,14 @@ document.addEventListener('click',e=>{
  }
  else if(act==='duel'){const w=el.closest('.duel');const v=el.dataset.v;w.dataset.pick=(w.dataset.pick===v)?'':v;w.querySelectorAll('.dpick').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===w.dataset.pick?'true':'false'));return}
   else if(act==='whatsapp-handoff'){if(S.done){S.done.handoff=true;saveState();setTimeout(()=>{render();window.scrollTo({top:0,behavior:'instant'})},400)}return}
-    else if(act==='lang'){const from=S.lang;S.lang=from==='ar'?'en':'ar';const to=S.lang==='ar'?0:1,fromIndex=from==='ar'?0:1;if(S.form.evType)S.form.evType=localizeEventType(S.form.evType,fromIndex,to);if(S.done){const d=S.done.details||{};d.branch=t().brs[S.branch];if(S.done.kind==='ord')d.service=t().svcName[S.service]||'';if(d.type)d.type=localizeEventType(d.type,fromIndex,to);if(d.perks&&Array.isArray(S.form.perks))d.perks=S.form.perks.map(p=>getPerkName(p,S.lang==='ar'));S.done.link=waLink(formWhatsAppMessage(S.done.kind),S.done.kind==='ord'&&S.service==='delivery'?'lo':S.branch)}}
+    else if(act==='lang'){const from=S.lang;S.lang=from==='ar'?'en':'ar';
+  document.querySelectorAll('.dt-display-input').forEach(inp=>{
+   const fid=inp.dataset.f;
+   if(fid&&S.form[fid]){
+    if(inp.dataset.dtType==='time')inp.value=formatDisplayTime(S.form[fid]);
+    else if(inp.dataset.dtType==='date')inp.value=formatDisplayDate(S.form[fid]);
+   }
+  });const to=S.lang==='ar'?0:1,fromIndex=from==='ar'?0:1;if(S.form.evType)S.form.evType=localizeEventType(S.form.evType,fromIndex,to);if(S.done){const d=S.done.details||{};d.branch=t().brs[S.branch];if(S.done.kind==='ord')d.service=t().svcName[S.service]||'';if(d.type)d.type=localizeEventType(d.type,fromIndex,to);if(d.perks&&Array.isArray(S.form.perks))d.perks=S.form.perks.map(p=>getPerkName(p,S.lang==='ar'));S.done.link=waLink(formWhatsAppMessage(S.done.kind),S.done.kind==='ord'&&S.service==='delivery'?'lo':S.branch)}}
   else if(act==='theme'){THEME.set(THEME.get()==='dark'?'paper':'dark')}
  else if(act==='cart'){S.cartOpen=!S.cartOpen}
  else if(act==='menu'){S.menuOpen=!S.menuOpen}
@@ -3516,7 +3562,7 @@ document.addEventListener('click',e=>{
   else{S.cartOpen=true;}
   saveState();render();return;
 }
- else if(act==='confirm-handoff'){if(S.done&&S.done.handoff){S.done.sentConfirmed=true;S.done.confetti=true;render();window.scrollTo({top:0,behavior:'instant'});setTimeout(()=>{if(S.done)S.done.confetti=false},2400)}return}
+ else if(act==='confirm-handoff'||act==='confirm-sent'){if(S.done){S.done.sentConfirmed=true;S.done.confetti=true;saveState();render();window.scrollTo({top:0,behavior:'instant'});setTimeout(()=>{if(S.done)S.done.confetti=false},2400)}return}
  else if(act==='restart'||act==='return-home'){S.cart=[];S.done=null;S.formBuckets={'order:delivery':{},'order:takeaway':{},'order:table':{},reservation:{},event:{}};S.view='home';activateForm('home');saveState();try{location.hash='home'}catch(e){}render();window.scrollTo({top:0,behavior:'instant'});return}
  else if(act==='smenu'){e.preventDefault();render();const m=document.getElementById('menu-s');m&&m.scrollIntoView({behavior:'smooth'});return}
  else return;
@@ -4904,6 +4950,46 @@ html.paper .ks.t .kb .btn{border:1px solid #c8d69b!important;background:#edf3dc!
 @media(max-width:1000px){html.paper .kshow{grid-template-columns:repeat(2,minmax(0,1fr))!important}html.paper .ks,html.paper .ks.p,html.paper .ks.s,html.paper .ks.t{min-height:500px!important}.cgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){html.paper .kshow{grid-template-columns:1fr!important;gap:14px!important}html.paper .ks,html.paper .ks.p,html.paper .ks.s,html.paper .ks.t{min-height:0!important;height:auto!important;border-radius:21px!important}html.paper .ks .km{aspect-ratio:16/9!important}html.paper .ks .kb{gap:8px!important;padding:18px!important}html.paper .ks .kb h3{font-size:29px!important}html.paper .ks .kb .lead{font-size:14px!important}.cgrid{grid-template-columns:1fr!important}}
 @media(prefers-reduced-motion:reduce){html.paper .ks,html.paper .ks .km img,html.paper .ks .kb .btn{transition:none!important}}
+
+/* Coffee Duel Flat White & Cappuccino Enlargement & Responsiveness */
+.dpl{width:clamp(135px,22vw,210px)!important;aspect-ratio:1/1!important;border-radius:50%!important;overflow:hidden!important;box-shadow:0 12px 32px rgba(0,0,0,.45),0 0 0 3.5px rgba(201,162,75,.45)!important;flex-shrink:0!important;background:#0d1627!important}
+.dpl img{width:100%!important;height:100%!important;object-fit:cover!important;display:block!important;transform:scale(1.06)!important;transition:transform .3s ease!important}
+.dl:hover .dpl img{transform:scale(1.15)!important}
+@media(max-width:760px){
+  .duel{flex-direction:column!important;min-height:0!important;gap:14px!important;border-radius:22px!important}
+  .dl{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:space-between!important;gap:14px!important;padding:16px 18px!important;min-height:140px!important}
+  .dpl{width:clamp(105px,30vw,140px)!important;height:clamp(105px,30vw,140px)!important;aspect-ratio:1/1!important}
+  .dw{font-size:clamp(18px,5vw,22px)!important}
+  .dn{font-size:15px!important}
+  .dd p{font-size:13px!important;line-height:1.5!important}
+}
+
+/* Day Mode (Paper Theme) High Contrast Luxury Overrides */
+html.paper .ticket-val.gold{color:#8F6B17!important;font-weight:800}
+html.paper .ticket-attached-total{color:#1F7A2B!important;font-weight:800}
+html.paper .attached-chip-price{color:#8F6B17!important;font-weight:800}
+html.paper .tot.big b,html.paper .tot.big>b{color:#1F7A2B!important;font-weight:800}
+html.paper .events-invitation-ticket{background:#FAF8F3!important;border-color:#C9A24B!important;box-shadow:0 10px 30px rgba(31,37,48,.1)!important;color:#101B2D!important}
+html.paper .ticket-guest-title{color:#070D18!important;font-weight:800}
+html.paper .ticket-val{color:#101B2D!important;font-weight:700}
+html.paper .ticket-label{color:#4B5973!important;font-weight:700}
+html.paper .ticket-sub{color:#64748B!important}
+html.paper .ticket-seal-text{color:#8F6B17!important;font-weight:700}
+html.paper .ticket-status-pill.is-review{background:#F7F3E8!important;border-color:#C9A24B!important;color:#8F6B17!important;font-weight:800}
+html.paper .ticket-status-pill.is-confirmed{background:#EAF4E4!important;border-color:#2E9B3A!important;color:#1F7A2B!important;font-weight:800}
+html.paper .ticket-perk-tag{background:#F5F0E4!important;border-color:#D8CDBA!important;color:#7A5B0B!important;font-weight:700}
+html.paper .ticket-attached-chip{background:#EDE8DC!important;border-color:#D8CDBA!important;color:#101B2D!important}
+html.paper .ticket-notes-text{color:#1E2633!important}
+html.paper .ticket-footer{color:#4B5973!important;border-top-color:#D8CDBA!important}
+html.paper .done-card{background:#FAF8F3!important;border-color:#D8CDBA!important}
+html.paper .done-summary-box{background:#fff!important;border-color:#D8CDBA!important}
+html.paper .done-detail span{color:#4B5973!important}
+html.paper .done-detail b{color:#101B2D!important;font-weight:700}
+html.paper .done-sub{color:#374151!important}
+html.paper .done-whatsapp-note{color:#4B5973!important}
+html.paper .canvas-submit-note{color:#4B5973!important}
+html.paper .dpl{box-shadow:0 8px 24px rgba(45,39,26,.18),0 0 0 3px #C9A24B!important}
+
 </style><style id="cart-order-lines-visible">.drawer .cart-order-details{flex:0 0 auto!important;min-height:min-content}</style><style id="mobile-ltr-layout-and-drawer-stability">
 /* Keep the page from drifting sideways when a full-screen drawer locks scrolling. */
 html,body{overscroll-behavior-x:none}
