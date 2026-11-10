@@ -1843,15 +1843,59 @@ function vCheckout(){
   <div class="tot"><span>${T.sub}</span><span>${money(cartTotal())}</span></div>${sv==='delivery'?`<div class="tot"><span>${T.delFee}</span><span>${T.feeNote}</span></div>`:''}
   <div class="tot big"><span>${T.total}</span><b>${money(cartTotal())}</b></div><div style="font-size:12.5px;color:var(--dim)">${taxTxt()}</div></aside></div></div>`;
 }
+const CELEBRATION_PERKS=[
+ {id:'cake',ar:'🎂 تورتة احتفال وشمع',en:'🎂 Celebration cake & candles',hintAr:'تورتة طازجة مع الشموع وترتيب التقديم',hintEn:'Fresh celebration cake & candles'},
+ {id:'decor',ar:'🎈 بالونات وتنسيق ديكور',en:'🎈 Balloons & custom decor',hintAr:'تزيين أنيق لطاولة المناسبة وأجواء مبهجة',hintEn:'Table styling & cheerful balloons'},
+ {id:'view',ar:'🌊 طاولة مميزة بفيو البحر',en:'🌊 Prime sea-view table',hintAr:'أجمل إطلالة مباشرة على كورنيش الإسكندرية',hintEn:'Direct front-row sea view'},
+ {id:'music',ar:'🎵 تشغيل أغنية وزفة خاصة',en:'🎵 Celebration song & fanfare',hintAr:'أغنيتكم المفضلة لحظة إحضار التورتة',hintEn:'Your song during cake moment'},
+ {id:'menu',ar:'🍽️ ترتيب منيو وبوفيه خاص',en:'🍽️ Custom menu & buffet',hintAr:'أطباق ومشروبات منسقة لعددكم على ذوقكم',hintEn:'Curated dishes & drinks for your party'},
+ {id:'photo',ar:'📸 ركن تصوير مميز (Photo Spot)',en:'📸 Photo spot & memories',hintAr:'زاوية لتوثيق صور تذكارية لا تُنسى',hintEn:'A picture-perfect spot for memories'}
+];
+function getPerkName(id,ar){const p=CELEBRATION_PERKS.find(x=>x.id===id);return p?(ar?p.ar:p.en):id}
+function eventsCartBanner(){
+ const ar=AR();
+ if(!S.cart.length)return '';
+ return `<div class="events-cart-badge" role="status">
+  <div class="events-cart-badge-body">
+   <span class="events-cart-badge-icon" aria-hidden="true">🛍️</span>
+   <div class="events-cart-badge-text">
+    <strong>${ar?`معاك ${num(cartCount())} أصناف محفوظة في السلة لأوردرات الأكل`:`You have ${num(cartCount())} items saved in your food cart`}</strong>
+    <p>${ar?'طلب المناسبة مخصص لحجز المكان وتنسيق الاحتفال مع الفرع؛ وأصناف سلتك محفوظة بأمان لأي أوردر.':'This request is for venue booking & celebration planning; your food cart is safely kept.'}</p>
+   </div>
+  </div>
+  <button type="button" class="btn gh sm" data-act="cart" style="font-size:12.5px;padding:6px 14px;min-height:34px;border-radius:99px;white-space:nowrap">${ar?'عرض السلة':'View cart'}</button>
+ </div>`;
+}
+function evPerks(){
+ const ar=AR();
+ const selected=Array.isArray(S.form.perks)?S.form.perks:[];
+ return `<div class="fld"><label style="display:flex;align-items:center;justify-content:space-between"><span>${ar?'تجهيزات ولمسات خاصة للمناسبة (اختياري)':'Celebration touches & perks (optional)'}</span><small style="color:var(--gold);font-weight:700">${ar?'اضغط للاختيار':'Tap to select'}</small></label>
+ <div class="ev-perks-grid" role="group" aria-label="${ar?'تجهيزات المناسبة':'Celebration perks'}">
+  ${CELEBRATION_PERKS.map(p=>{
+   const isOn=selected.includes(p.id);
+   return `<button type="button" class="ev-perk-card ${isOn?'on':''}" data-act="ev-perk" data-v="${p.id}" aria-pressed="${isOn}">
+    <span class="ev-perk-check" aria-hidden="true">${isOn?'✓':'+'}</span>
+    <div class="ev-perk-body">
+     <div class="ev-perk-title">${ar?p.ar:p.en}</div>
+     <div class="ev-perk-hint">${ar?p.hintAr:p.hintEn}</div>
+    </div>
+   </button>`;
+  }).join('')}
+ </div></div>`;
+}
 function eventsContextHTML(){
  const ar=AR(),T=t(),F=S.form;
- const evType=F.evType||(ar?'يُحدد في النموذج':'Chosen in form');
- const guests=F.guestsN?(num(F.guestsN)+' '+(ar?'أفراد':'guests')):(ar?'يُحدد في النموذج':'In form');
- const date=F.date||(ar?'يُحدد في النموذج':'In form');
- return `<div class="tot"><span>${T.branch}</span><b style="color:var(--ink)">${T.brs[S.branch]}</b></div>
-<div class="tot"><span>${ar?'نوع المناسبة':'Event type'}</span><b style="color:var(--ink)">${esc(evType)}</b></div>
-<div class="tot"><span>${ar?'عدد الأفراد':'Guests'}</span><b style="color:var(--ink)">${guests}</b></div>
-<div class="tot"><span>${T.date}</span><b style="color:var(--ink)">${date}</b></div>`;
+ const evType=F.evType||(ar?'نوع المناسبة لم يُحدد':'Event type unselected');
+ const guests=F.guestsN?(num(F.guestsN)+' '+(ar?'أفراد':'guests')):(ar?'الأفراد: لم يُحدد':'Guests: TBD');
+ const date=F.date?F.date:(ar?'التاريخ: لم يُحدد':'Date: TBD');
+ const perksCount=(Array.isArray(F.perks)&&F.perks.length)?(num(F.perks.length)+' '+(ar?'تجهيزات مختارة':'perks chosen')):(ar?'بدون تجهيزات إضافية':'No perks added');
+ return `<div class="events-live-strip">
+  <div class="events-live-pill"><span>📍</span> <b>${T.brs[S.branch]}</b></div>
+  <div class="events-live-pill ${F.evType?'active':''}"><span>🎉</span> <b>${esc(evType)}</b></div>
+  <div class="events-live-pill ${F.guestsN?'active':''}"><span>👥</span> <b>${esc(guests)}</b></div>
+  <div class="events-live-pill ${F.date?'active':''}"><span>📅</span> <b>${esc(date)}</b></div>
+  <div class="events-live-pill ${Array.isArray(F.perks)&&F.perks.length?'has-perks':''}"><span>✨</span> <b>${esc(perksCount)}</b></div>
+ </div>`;
 }
 function checkoutContextHTML(){
  const T=t(),sv=S.service,F=S.form,ar=AR();
@@ -1927,9 +1971,11 @@ function vDone(){
       ${dt.area?`<div class="done-detail"><span>${ar?'المنطقة':'Area'}</span><b>${esc(dt.area)}</b></div>`:''}
       ${dt.address?`<div class="done-detail"><span>${ar?'العنوان':'Address'}</span><b>${esc(dt.address)}</b></div>`:''}
       ${dt.type?`<div class="done-detail"><span>${ar?'نوع المناسبة':'Event type'}</span><b>${esc(dt.type)}</b></div>`:''}
+      ${dt.perks&&dt.perks.length?`<div class="done-detail wide"><span>${ar?'التجهيزات المقترحة المطلوبة':'Requested celebration perks'}</span><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px">${dt.perks.map(p=>`<span class="chip on" style="font-size:12.5px;padding:4px 10px">${esc(p)}</span>`).join('')}</div></div>`:''}
       ${dt.notes?`<div class="done-detail wide"><span>${ar?'ملاحظات':'Notes'}</span><i>${esc(dt.notes)}</i></div>`:''}
     </div>
-    ${S.cart.length?`<details class="done-review-items" open><summary><span><b>${kind==='res'?(ar?'أصناف مرفقة بالحجز (اختياري)':'Items attached to reservation (optional)'):kind==='ev'?(ar?'أصناف مرفقة بالاستفسار (اختياري)':'Items attached to inquiry (optional)'):(ar?'مراجعة أصناف الطلب والسلة':'Review order items & cart')}</b><small>${num(cartCount())} ${T.items} · ${money(cartTotal())}${kind==='res'||kind==='ev'?(ar?' · اختياري':' · optional'):''}</small></span><span class="done-review-chevron" aria-hidden="true">⌄</span></summary><div class="done-review-items-body">${summaryBlock()}<div class="tot big"><span>${kind==='res'||kind==='ev'?(ar?'إجمالي الأصناف المرفقة':'Attached items subtotal'):T.sub}</span><b>${money(cartTotal())}</b></div>${kind==='ord'&&S.service==='delivery'?`<p class="done-review-fee">${ar?'رسوم التوصيل يحددها الفرع':'Delivery fee is set by the branch'}</p>`:''}</div></details>`:''}
+    ${kind==='ev'&&S.cart.length?`<div class="events-cart-badge" style="margin-top:14px;text-align:start"><div class="events-cart-badge-body"><span class="events-cart-badge-icon">🛍️</span><div class="events-cart-badge-text"><strong>${ar?`معاك ${num(cartCount())} أصناف محفوظة في السلة لأوردرات الأكل`:`You have ${num(cartCount())} items saved in your cart`}</strong><p>${ar?'طلب المناسبة هنا مخصص للتنسيق مع الفرع، وسلتك جاهزة لأي طلب أكل لاحقاً.':'This event request is for celebration planning. Your food cart is saved for separate orders.'}</p></div></div><button type="button" class="btn gh sm" data-act="cart">${ar?'عرض السلة':'View cart'}</button></div>`:''}
+    ${kind!=='ev'&&S.cart.length?`<details class="done-review-items" open><summary><span><b>${kind==='res'?(ar?'أصناف مرفقة بالحجز (اختياري)':'Items attached to reservation (optional)'):(ar?'مراجعة أصناف الطلب والسلة':'Review order items & cart')}</b><small>${num(cartCount())} ${T.items} · ${money(cartTotal())}${kind==='res'||kind==='ev'?(ar?' · اختياري':' · optional'):''}</small></span><span class="done-review-chevron" aria-hidden="true">⌄</span></summary><div class="done-review-items-body">${summaryBlock()}<div class="tot big"><span>${kind==='res'||kind==='ev'?(ar?'إجمالي الأصناف المرفقة':'Attached items subtotal'):T.sub}</span><b>${money(cartTotal())}</b></div>${kind==='ord'&&S.service==='delivery'?`<p class="done-review-fee">${ar?'رسوم التوصيل يحددها الفرع':'Delivery fee is set by the branch'}</p>`:''}</div></details>`:''}
   </div>
 
   ${confirmed?`
@@ -2107,26 +2153,36 @@ function vEvents(){
    <div class="events-hero-shade" aria-hidden="true"></div>
    <div class="events-intro-copy"><p class="eyebrow">${ar?'مناسبات بورتوفينو':'PORTOFINO CELEBRATIONS'}</p><h1 class="disp">${ar?'مناسبتكم، على ذوقكم':'Your occasion, your way'}</h1><p class="lead">${ar?'عيد ميلاد رومانسي، لمّة عائلية، أو احتفال بطبقكم المفضل. نرتّب لكم قعدة تليق باللحظة في لوران أو كامب شيزار.':'Romantic birthdays, family gatherings, or a celebration built around your favorite food. Make the moment yours at Louran or Camp Caesar.'}</p><div class="events-intro-actions"><button class="btn g lg" type="button" data-act="jump" data-v="evf">${ar?'احكيلنا عن مناسبتك':'Plan your celebration'} ${ico.arr()}</button></div><p class="events-intro-note">${ar?'فريق الفرع يتواصل معاكم لتأكيد التفاصيل والتوافر.':'The branch team will follow up to confirm details and availability.'}</p></div>
   </header>
-   <aside class="events-kids-bridge"><div><p class="eyebrow">${ar?'وللصغيرين احتفالهم':'A little celebration for little guests'}</p><h2>${ar?'عيد ميلادهم له ركنه':'Their birthday has its own happy place'}</h2><p>${ar?'شوفوا أنشطة الأطفال وصور حفلاتهم، واطلبوا ترتيب احتفالهم في ركن الأطفال.':'Explore kids activities and party ideas, then request a celebration in the Kids Corner.'}</p></div><button class="btn g" type="button" data-go="kids">${ar?'اكتشف حفلات الأطفال':'Explore kids celebrations'} ${ico.arr()}</button></aside>
 
  ${steps(1,ar?['تفاصيل المناسبة','مراجعة','واتساب والتأكيد']:['Event details','Review','WhatsApp & Confirm'])}
- <div class="layout2" style="margin-top:28px">
+
+ <div class="events-form-wrapper" style="max-width:720px;margin:28px auto 0">
+  ${eventsCartBanner()}
   <form class="card form final-form" id="evf" novalidate>
    <div class="final-form-head"><span class="final-form-icon" aria-hidden="true">${ico.diamond}</span><div><p class="eyebrow">${ar?'تفاصيل الاحتفال':'CELEBRATION DETAILS'}</p><div class="disp final-form-title">${T.evForm}</div><p class="final-form-hint">${ar?'اكتب التفاصيل الأساسية، وفي الخطوة القادمة هتراجع كل شيء قبل التواصل مع الفرع.':'Share a few details. In the next step you will review everything before connecting with the branch.'}</p></div></div>
    <div class="fld"><label>${T.branch}</label><div class="seg" style="display:flex">${['cc','lo'].map(b=>`<button type="button" style="flex:1" data-act="branch" data-v="${b}" class="${S.branch===b?'on':''}">${T.brs[b]}</button>`).join('')}</div></div>
-   <div class="row2">${field('name',T.name)}${field('phone',T.phone,'tel','inputmode="tel"')}</div>${field('guestsN',T.guestsN,'number','min="1"')}${evTypes()}${field('date',T.date,'date')}${field('notes',T.details,'textarea')}
-   <div><button class="btn g lg" type="submit" style="width:100%;justify-content:center;font-size:16px;min-height:52px">${AR()?'متابعة لمراجعة تفاصيل المناسبة':'Continue to review celebration'} ${ico.arr()}</button>
-   <p class="calm" style="margin-top:10px">${AR()?'مفيش دفع ولا إرسال تلقائي. هتراجع كل تفاصيل مناسبتك وسلتك في الخطوة الجاية قبل فتح واتساب.':'No payment or auto-send. You will review all celebration details before opening WhatsApp.'}</p>
-   <p class="ds" style="margin-top:12px">${T.evNote}</p></div>
+   <div class="row2">${field('name',T.name)}${field('phone',T.phone,'tel','inputmode="tel"')}</div>
+   ${evTypes()}
+   <div class="row2">${field('guestsN',T.guestsN,'number','min="1"')}${field('date',T.date,'date')}</div>
+   ${evPerks()}
+   ${field('notes',ar?'احكيلنا عن فكرة احتفالك وأي تفاصيل خاصة تحبها':'Tell us about your celebration idea & special requests','textarea',`placeholder="${ar?'مثلاً: مفاجأة لصاحب المناسبة، توقيت إحضار التورتة، ترتيبات المقاعد، أو أي طلب يسعدكم...':'E.g., Surprise party timing, when to bring the cake, table arrangements, special requests...'}"`)}
+
+   <div class="events-summary-wrapper" style="margin-top:14px">
+    <div style="font-size:13px;font-weight:700;color:var(--gold);margin-bottom:8px;display:flex;align-items:center;gap:6px">${ico.diamond} ${ar?'ملخص تفاصيل المناسبة المباشر:':'Live celebration summary:'}</div>
+    <div id="events-context">${eventsContextHTML()}</div>
+   </div>
+
+   <div style="margin-top:20px">
+    <button class="btn g lg" type="submit" style="width:100%;justify-content:center;font-size:16px;min-height:54px">${ar?'متابعة لمراجعة تفاصيل المناسبة':'Continue to review celebration'} ${ico.arr()}</button>
+    <p class="calm" style="margin-top:10px;text-align:center">${ar?'✨ مفيش دفع أونلاين ولا إرسال تلقائي. هتراجع كل التفاصيل قبل فتح محادثة واتساب الرسمية مع الفرع.':'✨ No online payment or auto-send. You will review all details before opening WhatsApp.'}</p>
+    <p class="ds" style="margin-top:12px;text-align:center">${T.evNote}</p>
+   </div>
   </form>
-  <aside class="card sum evsum">
-   <div class="disp" style="font-size:24px">${ar?'ملخص المناسبة':'Celebration summary'}</div>
-   <div id="events-context">${eventsContextHTML()}</div>
-   <div style="height:1px;background:var(--line);margin:10px 0"></div>
-   ${S.cart.length?`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><div style="font-size:13px;letter-spacing:.05em;color:var(--gold);font-weight:700">${ar?'أصناف مقترحة للمناسبة (اختياري)':'Suggested items for celebration (optional)'}</div><button type="button" class="btn gh sm" data-act="cart" style="font-size:12px;padding:2px 8px;min-height:26px">${ar?'تعديل':'Edit'}</button></div>${summaryBlock()}<div class="tot big"><span>${ar?'إجمالي الأصناف المرفقة':'Attached items subtotal'}</span><b>${money(cartTotal())}</b></div>`:`<div class="ds" style="font-size:13px;color:var(--mist)">${ar?'مفيش أصناف مضافة من السلة. تقدروا تختاروا أصناف من المنيو لاحقاً أو الترتيب مع إدارة الفرع.':'No dishes attached from cart. You can select dishes later with the branch team.'}</div>`}
-   <div style="font-size:12px;color:var(--dim);margin-top:12px">${ar?'مفيش دفع أونلاين. تفاصيل الحجز وتوافر الصالة بيأكدها الفرع على واتساب.':'No payment now. Details & availability confirmed on WhatsApp.'}</div>
-  </aside>
- </div></div>`;
+ </div>
+
+ <aside class="events-kids-bridge" style="margin-top:40px"><div><p class="eyebrow">${ar?'وللصغيرين احتفالهم':'A little celebration for little guests'}</p><h2>${ar?'عيد ميلادهم له ركنه في بورتوفينو':'Their birthday has its own happy place'}</h2><p>${ar?'شوفوا أنشطة الأطفال وصور حفلاتهم، واطلبوا ترتيب احتفالهم في ركن الأطفال المخصص.':'Explore kids activities and party ideas, then request a celebration in the dedicated Kids Corner.'}</p></div><button class="btn g" type="button" data-go="kids">${ar?'اكتشف حفلات الأطفال':'Explore kids celebrations'} ${ico.arr()}</button></aside>
+
+</div>`;
 }
 const EVT=[['عيد ميلاد','Birthday'],['ذكرى سنوية','Anniversary'],['خطوبة / كتب كتاب','Engagement / wedding'],['عزومة عائلية','Family gathering'],['لمّة أصحاب','Friends get-together'],['حفلة أطفال','Kids party'],['تخرج / نجاح','Graduation / achievement'],['اجتماع عمل / شركة','Business / corporate'],['مناسبة أخرى','Other']];
 function localizeEventType(value,from,to){const i=EVT.findIndex(x=>x[from]===value);return i<0?value:EVT[i][to]}
@@ -2146,7 +2202,11 @@ function formWhatsAppMessage(kind){
   return `${T.waHello} - ${T.wTitleRes}\n\n${W.branch}: ${T.brs[S.branch]}\n${W.date}: ${F.date}\n${W.time}: ${formatDisplayTime(F.time)}\n${W.party}: ${S.party}\n${W.name}: ${F.name}\n${W.phone}: ${F.phone}`+(F.notes?`\n${W.notes}: ${F.notes}`:'')+(resCart.length?`\n\n${W.items}:\n${orderLines(true)}\n${W.total}: ${resTotal} ${T.currency}`:'');
  }
  const other=EVT[EVT.length-1][AR()?0:1],eventType=F.evType===other?(F.evOther||F.evType):localizeEventType(F.evType,S.lang==='ar'?0:1,S.lang==='ar'?0:1);
- return `${T.waHello} - ${T.wTitleEv}\n\n${W.branch}: ${T.brs[S.branch]}\n${W.name}: ${F.name}\n${W.phone}: ${F.phone}\n${W.party}: ${F.guestsN}\n${W.type}: ${eventType}`+(F.date?`\n${W.date}: ${F.date}`:'')+(F.notes?`\n${W.notes}: ${F.notes}`:'')+(S.cart.length?`\n\n${W.items}:\n${orderLines()}\n${W.total}: ${cartTotal()} ${T.currency}`:'');
+ const perksList=(Array.isArray(F.perks)&&F.perks.length)?F.perks.map(p=>getPerkName(p,AR())):[];
+ return `${T.waHello} - ${T.wTitleEv}\n\n${W.branch}: ${T.brs[S.branch]}\n${W.name}: ${F.name}\n${W.phone}: ${F.phone}\n${W.party}: ${F.guestsN}\n${W.type}: ${eventType}`
+  +(F.date?`\n${W.date}: ${F.date}`:'')
+  +(perksList.length?`\n\n${AR()?'✨ التجهيزات المقترحة المطلوبة:':'✨ Requested celebration touches:'}\n- ${perksList.join('\n- ')}`:'')
+  +(F.notes?`\n\n${W.notes}: ${F.notes}`:'');
 }
 function currentWhatsAppLink(kind){
  const msg=formWhatsAppMessage(kind);
@@ -2319,7 +2379,7 @@ document.addEventListener('click',e=>{
  }
  else if(act==='duel'){const w=el.closest('.duel');const v=el.dataset.v;w.dataset.pick=(w.dataset.pick===v)?'':v;w.querySelectorAll('.dpick').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===w.dataset.pick?'true':'false'));return}
   else if(act==='whatsapp-handoff'){if(S.done){S.done.handoff=true;saveState();setTimeout(()=>{render();window.scrollTo({top:0,behavior:'instant'})},400)}return}
-    else if(act==='lang'){const from=S.lang;S.lang=from==='ar'?'en':'ar';const to=S.lang==='ar'?0:1,fromIndex=from==='ar'?0:1;if(S.form.evType)S.form.evType=localizeEventType(S.form.evType,fromIndex,to);if(S.done){const d=S.done.details||{};d.branch=t().brs[S.branch];if(S.done.kind==='ord')d.service=t().svcName[S.service]||'';if(d.type)d.type=localizeEventType(d.type,fromIndex,to);S.done.link=waLink(formWhatsAppMessage(S.done.kind),S.done.kind==='ord'&&S.service==='delivery'?'lo':S.branch)}}
+    else if(act==='lang'){const from=S.lang;S.lang=from==='ar'?'en':'ar';const to=S.lang==='ar'?0:1,fromIndex=from==='ar'?0:1;if(S.form.evType)S.form.evType=localizeEventType(S.form.evType,fromIndex,to);if(S.done){const d=S.done.details||{};d.branch=t().brs[S.branch];if(S.done.kind==='ord')d.service=t().svcName[S.service]||'';if(d.type)d.type=localizeEventType(d.type,fromIndex,to);if(d.perks&&Array.isArray(S.form.perks))d.perks=S.form.perks.map(p=>getPerkName(p,S.lang==='ar'));S.done.link=waLink(formWhatsAppMessage(S.done.kind),S.done.kind==='ord'&&S.service==='delivery'?'lo':S.branch)}}
   else if(act==='theme'){THEME.set(THEME.get()==='dark'?'paper':'dark')}
  else if(act==='cart'){S.cartOpen=!S.cartOpen}
  else if(act==='menu'){S.menuOpen=!S.menuOpen}
@@ -2333,6 +2393,19 @@ document.addEventListener('click',e=>{
  else if(act==='shortcuts-toggle'){S.homeShortcutsOpen=!S.homeShortcutsOpen}
   else if(act==='jump'){const m=document.getElementById(el.dataset.v);if(m){const nav=document.querySelector('.menu-nav'),hh=(document.querySelector('.hdr')||{offsetHeight:76}).offsetHeight+(nav?nav.offsetHeight:0)+12;scrollTo({top:Math.max(0,m.getBoundingClientRect().top+scrollY-hh),behavior:'smooth'})}return}
  else if(act==='down'){const m=document.querySelector('.marq');m&&scrollTo({top:m.getBoundingClientRect().top+scrollY-70,behavior:'smooth'});return}
+ else if(act==='ev-perk'){
+  if(!Array.isArray(S.form.perks))S.form.perks=[];
+  const id=el.dataset.v;
+  const idx=S.form.perks.indexOf(id);
+  if(idx>-1)S.form.perks.splice(idx,1);
+  else S.form.perks.push(id);
+  el.classList.toggle('on',idx===-1);
+  const chk=el.querySelector('.ev-perk-check');
+  if(chk)chk.textContent=idx===-1?'✓':'+';
+  el.setAttribute('aria-pressed',idx===-1?'true':'false');
+  const ectx=document.getElementById('events-context');
+  if(ectx)ectx.innerHTML=eventsContextHTML();
+ }
  else if(act==='evt'){S.form.evType=el.dataset.v;S.errors.evType='';el.parentElement.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.v===el.dataset.v));const ectx=document.getElementById('events-context');if(ectx)ectx.innerHTML=eventsContextHTML()}
  else if(act==='ph'){toast(AR()?'رابط الحساب هيتضاف بعد التأكيد':'Account link will be added once confirmed');return}
  else if(act==='snd'){const v=el.parentElement.querySelector('video');if(v){v.muted=!v.muted;el.textContent=v.muted?'🔇':'🔊'}return}
@@ -2464,7 +2537,7 @@ document.addEventListener('submit',e=>{
   need('guestsN',T.eReq);need('evType',T.eReq);if(F.evType===EVT[EVT.length-1][AR()?0:1])need('evOther',T.eReq);kind='ev';
  }
  if(!Object.keys(S.errors).length)msg=formWhatsAppMessage(kind);
- if(msg){const det={service:f.id==='chk'?T.svcName[S.service]:'',branch:T.brs[S.branch],date:F.date||'',time:F.time||'',pick:F.pick||'',table:F.table||'',party:(kind==='res'?S.party:F.guestsN)||'',name:F.name||'',phone:F.phone||'',notes:F.notes||'',area:F.area||'',address:F.address||'',type:F.evOther&&F.evType===EVT[EVT.length-1][AR()?0:1]?F.evOther:(F.evType||'')};S.done={link:waLink(msg,kind==='ord'&&S.service==='delivery'?'lo':S.branch),kind,details:det}}
+ if(msg){const det={service:f.id==='chk'?T.svcName[S.service]:'',branch:T.brs[S.branch],date:F.date||'',time:F.time||'',pick:F.pick||'',table:F.table||'',party:(kind==='res'?S.party:F.guestsN)||'',name:F.name||'',phone:F.phone||'',notes:F.notes||'',area:F.area||'',address:F.address||'',type:F.evOther&&F.evType===EVT[EVT.length-1][AR()?0:1]?F.evOther:(F.evType||''),perks:(Array.isArray(F.perks)&&F.perks.length)?F.perks.map(p=>getPerkName(p,AR())):[]};S.done={link:waLink(msg,kind==='ord'&&S.service==='delivery'?'lo':S.branch),kind,details:det}}
  render();window.scrollTo({top:0,behavior:'instant'});
 });
 window.addEventListener('hashchange',()=>{try{const h=location.hash.replace('#','');if(h&&h!==S.view&&['home','kids','menu','delivery','checkout','branches','sofia','tahia','cafe','events','services','contact','privacy','reserve'].includes(h)){if(ROUTE_HISTORY.length){const last=ROUTE_HISTORY[ROUTE_HISTORY.length-1];if(last===h)ROUTE_HISTORY.pop();else ROUTE_HISTORY.push(S.view)}else ROUTE_HISTORY.push(S.view);S.view=h;activateForm(h);S.cartOpen=false;S.menuOpen=false;render();window.scrollTo({top:0,behavior:'instant'})}}catch(e){}});
@@ -3281,6 +3354,42 @@ html[dir="rtl"] #services-home .svcc-arrow{animation-name:service-arrow-nudge-rt
 @media(max-width:700px){#kids-home .kids-home-feature{grid-template-columns:1fr!important;border-radius:23px!important}#kids-home .kids-home-feature .kidsmedia{aspect-ratio:2.16/1!important}#kids-home .kids-home-feature .kidsmedia .kids-home-link{aspect-ratio:2.16/1!important}#kids-home .kids-home-feature .kidsbody,html:not(.paper) #kids-home .kids-home-feature .kidsbody{align-items:flex-start!important;justify-content:flex-start!important;padding:20px 19px 22px!important;border-inline-start:0!important;border-top:1px solid var(--line)!important;text-align:start!important}#kids-home .kids-home-feature .kidsbody h3,html:not(.paper) #kids-home .kids-home-feature .kidsbody h3{font-size:24px!important}#kids-home .kids-home-feature .kidsmedia .kids-cta{inset-inline:12px!important;bottom:12px!important;min-height:44px!important;font-size:14px!important}}
 @media(prefers-reduced-motion:reduce){#kids-home .kids-home-feature .kidsmedia .kids-home-link img.kids-home-poster{transition:none!important}}
 </style><style id="events-kids-journey-polish">
+.events-form-wrapper{max-width:720px;margin:28px auto 0}
+.events-cart-badge{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 18px;margin-bottom:20px;border:1px solid color-mix(in srgb,var(--gold) 38%,var(--line));border-radius:18px;background:linear-gradient(135deg,color-mix(in srgb,var(--gold) 10%,var(--card)),var(--card));box-shadow:0 8px 24px rgba(0,0,0,.06)}
+.events-cart-badge-body{display:flex;align-items:center;gap:12px;min-width:0}
+.events-cart-badge-icon{font-size:24px;flex-shrink:0;line-height:1}
+.events-cart-badge-text strong{display:block;font-size:13.5px;color:var(--gold);margin-bottom:2px}
+.events-cart-badge-text p{margin:0;font-size:12.5px;color:var(--mist);line-height:1.55}
+@media(max-width:640px){.events-cart-badge{flex-direction:column;align-items:stretch;gap:12px}.events-cart-badge .btn{align-self:flex-end}}
+
+.ev-perks-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:6px}
+.ev-perk-card{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border:1px solid var(--line);border-radius:15px;background:var(--card2);color:var(--ink);cursor:pointer;text-align:start;transition:border-color .2s ease,background-color .2s ease,transform .18s ease;font-family:inherit;width:100%}
+.ev-perk-card:hover{border-color:color-mix(in srgb,var(--gold) 50%,var(--line));background:color-mix(in srgb,var(--gold) 6%,var(--card2));transform:translateY(-1px)}
+.ev-perk-card.on{border-color:var(--gold);background:linear-gradient(135deg,color-mix(in srgb,var(--gold) 15%,var(--card2)),var(--card2));box-shadow:0 6px 18px rgba(217,174,72,.12)}
+.ev-perk-check{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:color-mix(in srgb,var(--ink) 8%,transparent);color:var(--mist);font-size:13px;font-weight:700;flex-shrink:0;margin-top:1px;transition:background-color .2s ease,color .2s ease}
+.ev-perk-card.on .ev-perk-check{background:var(--gold);color:#121811}
+.ev-perk-body{min-width:0;flex:1}
+.ev-perk-title{font-size:13.5px;font-weight:700;line-height:1.35;color:var(--ink)}
+.ev-perk-card.on .ev-perk-title{color:var(--gold)}
+.ev-perk-hint{font-size:11.5px;color:var(--mist);margin-top:2px;line-height:1.4}
+
+.events-summary-wrapper{padding:14px;border-radius:16px;background:color-mix(in srgb,var(--gold) 4%,var(--card2));border:1px dashed color-mix(in srgb,var(--gold) 35%,var(--line))}
+.events-live-strip{display:flex;flex-wrap:wrap;gap:8px}
+.events-live-pill{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;padding:5px 11px;border-radius:99px;background:color-mix(in srgb,var(--ink) 6%,transparent);color:var(--mist);border:1px solid transparent;transition:all .2s ease}
+.events-live-pill.active{color:var(--ink);background:color-mix(in srgb,var(--leaf-l) 14%,transparent);border-color:color-mix(in srgb,var(--leaf-l) 32%,transparent)}
+.events-live-pill.has-perks{color:var(--gold);background:color-mix(in srgb,var(--gold) 14%,transparent);border-color:color-mix(in srgb,var(--gold) 38%,transparent)}
+.events-live-pill b{font-weight:700}
+
+html.paper .ev-perk-card{background:#fff;border-color:#d5d0c2;color:#25271f}
+html.paper .ev-perk-card.on{background:#fdf9ed;border-color:#b98d24}
+html.paper .ev-perk-title{color:#25271f}
+html.paper .ev-perk-card.on .ev-perk-title{color:#9c6e08}
+html.paper .events-cart-badge{background:#fefbf4;border-color:#e4c77c}
+html.paper .events-summary-wrapper{background:#faf8f2;border-color:#dcd2be}
+html.paper .events-live-pill{background:#eae6da;color:#55594d}
+html.paper .events-live-pill.active{background:#e3f0e5;border-color:#82be88;color:#1d5823}
+html.paper .events-live-pill.has-perks{background:#fdf5de;border-color:#d9b85c;color:#7d5904}
+
 .events-kids-bridge{display:flex;align-items:center;justify-content:space-between;gap:22px;margin:clamp(22px,4vw,38px) auto 0;padding:clamp(18px,3vw,27px);border:1px solid color-mix(in srgb,var(--gold) 40%,var(--line));border-radius:22px;background:linear-gradient(115deg,color-mix(in srgb,var(--gold) 12%,var(--card)),var(--card) 68%);box-shadow:0 10px 26px rgba(0,0,0,.08)}
 .events-kids-bridge>div{min-width:0}.events-kids-bridge .eyebrow{margin:0 0 6px;color:var(--gold);font-weight:800}.events-kids-bridge h2{margin:0 0 6px;font-size:clamp(20px,2.6vw,28px);color:var(--ink)}.events-kids-bridge p:last-child{margin:0;max-width:66ch;color:var(--mist);line-height:1.7}.events-kids-bridge .btn{flex:none;min-height:46px;border-radius:999px;transition:transform .22s ease,box-shadow .22s ease}.events-kids-bridge .btn:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(31,105,43,.2)}
 .kids-celebrations-intro{max-width:700px;margin:8px 0 20px;color:var(--mist);line-height:1.75}
