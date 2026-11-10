@@ -2723,15 +2723,22 @@ document.addEventListener('click',e=>{
   else{const i=S.cart.findIndex(c=>c.id===id&&c.o===+el.dataset.o);if(i>=0){S.cart[i].q+=(+el.dataset.v);if(S.cart[i].q<=0)S.cart.splice(i,1)}}
   soft();return;
  }
- if(act==='branch'){S.branch=el.dataset.v;el.parentElement.querySelectorAll('button').forEach(b=>{b.classList.toggle('on',b.dataset.v===S.branch);const chk=b.querySelector('.venue-card-check');if(chk)chk.textContent=b.dataset.v===S.branch?'✓':'';b.setAttribute('aria-checked',b.dataset.v===S.branch?'true':'false');});const cctx=document.getElementById('checkout-context');if(cctx)cctx.innerHTML=checkoutContextHTML();const ectx=document.getElementById('events-context');if(ectx)ectx.innerHTML=eventsContextHTML();
-  const trigText=document.getElementById('perks-trigger-text');
-  if(trigText){
-   const sel=Array.isArray(S.form.perks)?S.form.perks:[];
-   const cnt=sel.length;
-   trigText.textContent=cnt===0?(AR()?'اختر التجهيزات واللمسات الخاصة (تورتة، فيو بحر، بالونات...) ▾':'Select celebration touches (cake, sea view, decor...) ▾'):(AR()?`تم اختيار ${num(cnt)} تجهيزات: `+sel.map(id=>getPerkName(id,true).split(' ')[1]||getPerkName(id,true)).slice(0,2).join('، ')+(cnt>2?` (+${num(cnt-2)})`:''):`${num(cnt)} perks chosen: `+sel.map(id=>getPerkName(id,false).split(' ')[1]||getPerkName(id,false)).slice(0,2).join(', ')+(cnt>2?` (+${num(cnt-2)})`:''));
-   const trigBtn=trigText.closest('.perks-dropdown-trigger');
-   if(trigBtn)trigBtn.classList.toggle('has-selection',cnt>0);
-  }const rctx=document.querySelector('.rsum .tot b');if(rctx)rctx.textContent=t().brs[S.branch]}
+ if(act==='branch'){
+  S.branch=el.dataset.v;
+  el.parentElement.querySelectorAll('button').forEach(b=>{
+    b.classList.toggle('on',b.dataset.v===S.branch);
+    const chk=b.querySelector('.venue-card-check');
+    if(chk)chk.textContent=b.dataset.v===S.branch?'✓':'';
+    b.setAttribute('aria-checked',b.dataset.v===S.branch?'true':'false');
+  });
+  const cctx=document.getElementById('checkout-context');
+  if(cctx)cctx.innerHTML=checkoutContextHTML();
+  const ectx=document.getElementById('events-context');
+  if(ectx)ectx.innerHTML=eventsContextHTML();
+  const rctx=document.querySelector('.rsum .tot b');
+  if(rctx)rctx.textContent=t().brs[S.branch];
+  if(S.view==='events'||S.view==='checkout') return;
+ }
  if(el.dataset.go&&cartCount()>0&&el.matches('.branch-actions .order')){S.cartOpen=true;S.menuOpen=false;S.done=null;saveState();render();return} if(el.dataset.go){ if(el.closest('#home-shortcuts-panel'))S.homeShortcutsOpen=false;if(el.dataset.eventType){activateForm('events');S.form.evType=el.dataset.eventType} if(el.dataset.service){
   if(cartHasShisha()&&el.dataset.service!=='table'){
    S.service='table';
@@ -2787,9 +2794,11 @@ document.addEventListener('click',e=>{
     if(arr)arr.textContent=S.perksOpen?'▴':'▾';
    }
   } else render();
+  return;
  }
  else if(act==='download-ticket'){
   downloadGoldenTicket();
+  return;
  }
  else if(act==='ev-perk'){
   if(!Array.isArray(S.form.perks))S.form.perks=[];
@@ -2798,13 +2807,35 @@ document.addEventListener('click',e=>{
   if(idx>-1)S.form.perks.splice(idx,1);
   else S.form.perks.push(id);
   el.classList.toggle('on',idx===-1);
-  const chk=el.querySelector('.ev-perk-check');
+  const chk=el.querySelector('.perks-dd-check');
   if(chk)chk.textContent=idx===-1?'✓':'+';
-  el.setAttribute('aria-pressed',idx===-1?'true':'false');
+  el.setAttribute('aria-checked',idx===-1?'true':'false');
   const ectx=document.getElementById('events-context');
   if(ectx)ectx.innerHTML=eventsContextHTML();
+  const trigText=document.getElementById('perks-trigger-text');
+  if(trigText){
+   const sel=Array.isArray(S.form.perks)?S.form.perks:[];
+   const cnt=sel.length;
+   trigText.textContent=cnt===0?(AR()?'اختر التجهيزات واللمسات الخاصة (تورتة، فيو بحر، بالونات...) ▾':'Select celebration touches (cake, sea view, decor...) ▾'):(AR()?`تم اختيار ${num(cnt)} تجهيزات: `+sel.map(id=>getPerkName(id,true).split(' ')[1]||getPerkName(id,true)).slice(0,2).join('، ')+(cnt>2?` (+${num(cnt-2)})`:''):`${num(cnt)} perks chosen: `+sel.map(id=>getPerkName(id,false).split(' ')[1]||getPerkName(id,false)).slice(0,2).join(', ')+(cnt>2?` (+${num(cnt-2)})`:''));
+   const trigBtn=trigText.closest('.perks-dropdown-trigger');
+   if(trigBtn)trigBtn.classList.toggle('has-selection',cnt>0);
+  }
+  return;
  }
- else if(act==='evt'){S.form.evType=el.dataset.v;S.errors.evType='';el.parentElement.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.v===el.dataset.v));const ectx=document.getElementById('events-context');if(ectx)ectx.innerHTML=eventsContextHTML()}
+ else if(act==='evt'){
+  S.form.evType=el.dataset.v;
+  S.errors.evType='';
+  el.parentElement.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.v===el.dataset.v));
+  const otherInput=document.getElementById('f_evOther');
+  const otherLabel=EVT[EVT.length-1][AR()?0:1];
+  if(el.dataset.v===otherLabel && !otherInput){
+   render();
+   return;
+  }
+  const ectx=document.getElementById('events-context');
+  if(ectx)ectx.innerHTML=eventsContextHTML();
+  return;
+ }
  else if(act==='ph'){toast(AR()?'رابط الحساب هيتضاف بعد التأكيد':'Account link will be added once confirmed');return}
  else if(act==='snd'){const v=el.parentElement.querySelector('video');if(v){v.muted=!v.muted;el.textContent=v.muted?'🔇':'🔊'}return}
  else if(act==='kids-audio'){const v=document.getElementById('kids-video');if(v){v.muted=!v.muted;if(!v.muted&&v.paused)v.play().catch(()=>{});el.setAttribute('aria-pressed',String(!v.muted));el.textContent=v.muted?(AR()?'🔇 تشغيل الصوت':'🔇 Enable sound'):(AR()?'🔊 كتم الصوت':'🔊 Mute sound')}return}
