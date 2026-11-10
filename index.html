@@ -1869,19 +1869,43 @@ function eventsCartBanner(){
 function evPerks(){
  const ar=AR();
  const selected=Array.isArray(S.form.perks)?S.form.perks:[];
- return `<div class="fld"><label style="display:flex;align-items:center;justify-content:space-between"><span>${ar?'تجهيزات ولمسات خاصة للمناسبة (اختياري)':'Celebration touches & perks (optional)'}</span><small style="color:var(--gold);font-weight:700">${ar?'اضغط للاختيار':'Tap to select'}</small></label>
- <div class="ev-perks-grid" role="group" aria-label="${ar?'تجهيزات المناسبة':'Celebration perks'}">
-  ${CELEBRATION_PERKS.map(p=>{
-   const isOn=selected.includes(p.id);
-   return `<button type="button" class="ev-perk-card ${isOn?'on':''}" data-act="ev-perk" data-v="${p.id}" aria-pressed="${isOn}">
-    <span class="ev-perk-check" aria-hidden="true">${isOn?'✓':'+'}</span>
-    <div class="ev-perk-body">
-     <div class="ev-perk-title">${ar?p.ar:p.en}</div>
-     <div class="ev-perk-hint">${ar?p.hintAr:p.hintEn}</div>
+ const count=selected.length;
+ const triggerLabel=count===0
+   ?(ar?'اختر التجهيزات واللمسات الخاصة (تورتة، فيو بحر، بالونات...) ▾':'Select celebration touches (cake, sea view, decor...) ▾')
+   :(ar?`تم اختيار ${num(count)} تجهيزات ملكية: `+selected.map(id=>getPerkName(id,true).split(' ')[1]||getPerkName(id,true)).slice(0,2).join('، ')+(count>2?` (+${num(count-2)})`:'')
+       :`${num(count)} perks chosen: `+selected.map(id=>getPerkName(id,false).split(' ')[1]||getPerkName(id,false)).slice(0,2).join(', ')+(count>2?` (+${num(count-2)})`:''));
+
+ return `<div class="fld perks-dropdown-fld" style="margin-bottom:16px">
+  <label style="display:flex;align-items:center;justify-content:space-between">
+   <span>${ar?'التجهيزات واللمسات الخاصة (اختياري)':'VIP celebration touches (optional)'}</span>
+   <small style="color:var(--gold);font-weight:700">${count>0?(ar?`${num(count)} مختارة ✓`:`${num(count)} selected ✓`):(ar?'اضغط للاختيار ⌄':'Tap to select ⌄')}</small>
+  </label>
+  
+  <div class="perks-dropdown-wrapper">
+   <button type="button" class="perks-dropdown-trigger ${count>0?'has-selection':''}" data-act="toggle-perks-dd" aria-expanded="${!!S.perksOpen}" aria-controls="perks-dd-menu">
+    <div class="perks-trigger-info">
+     <span class="perks-trigger-sparkle" aria-hidden="true">✨</span>
+     <span class="perks-trigger-label" id="perks-trigger-text">${esc(triggerLabel)}</span>
     </div>
-   </button>`;
-  }).join('')}
- </div></div>`;
+    <span class="perks-trigger-arrow" aria-hidden="true">${S.perksOpen?'▴':'▾'}</span>
+   </button>
+
+   <div class="perks-dropdown-menu ${S.perksOpen?'open':''}" id="perks-dd-menu" role="group" aria-label="${ar?'قائمة التجهيزات':'Perks list'}">
+    <div class="perks-dd-grid">
+     ${CELEBRATION_PERKS.map(p=>{
+      const isOn=selected.includes(p.id);
+      return `<button type="button" class="perks-dd-item ${isOn?'on':''}" data-act="ev-perk" data-v="${p.id}" role="checkbox" aria-checked="${isOn}">
+       <span class="perks-dd-check" aria-hidden="true">${isOn?'✓':'+'}</span>
+       <div class="perks-dd-text">
+        <strong class="perks-dd-name">${ar?p.ar:p.en}</strong>
+        <span class="perks-dd-hint">${ar?p.hintAr:p.hintEn}</span>
+       </div>
+      </button>`;
+     }).join('')}
+    </div>
+   </div>
+  </div>
+ </div>`;
 }
 function eventsContextHTML(){
  const ar=AR(),T=t(),F=S.form;
@@ -1902,7 +1926,13 @@ function eventsContextHTML(){
      <h3 class="ticket-guest-title">${esc(guestName)}</h3>
     </div>
    </div>
-   <div class="ticket-status-pill">${ar?'✨ معاينة حية للمناسبة':'✨ Live Ticket Preview'}</div>
+   <div style="display:flex;align-items:center;gap:8px">
+    <button type="button" class="btn gh sm ticket-download-btn" data-act="download-ticket" title="${ar?'تحميل البوليصة كصورة تذكارية':'Download ticket as image'}">
+     <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="margin-inline-end:4px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+     <span>${ar?'تحميل كصورة 📥':'Save Image 📥'}</span>
+    </button>
+    <div class="ticket-status-pill">${ar?'✨ معاينة حية':'✨ Live Preview'}</div>
+   </div>
   </div>
 
   <div class="ticket-divider" aria-hidden="true"><span class="ticket-notch left"></span><span class="ticket-dash"></span><span class="ticket-notch right"></span></div>
@@ -1929,13 +1959,13 @@ function eventsContextHTML(){
   <div class="ticket-perks-section">
    <span class="ticket-label">${ar?'التجهيزات واللمسات الملكية المختارة:':'VIP Touches Selected:'}</span>
    <div class="ticket-perks-tags">
-    ${perksList.length?perksList.map(p=>`<span class="ticket-perk-tag">${esc(p)}</span>`).join(''):`<span class="ticket-no-perks">${ar?'لم يتم اختيار تجهيزات إضافية (اضغط على أي كارت بالأعلى لإضافته للبوليصة)':'No extra perks selected yet (tap any perk card above to add)'}</span>`}
+    ${perksList.length?perksList.map(p=>`<span class="ticket-perk-tag">${esc(p)}</span>`).join(''):`<span class="ticket-no-perks">${ar?'لم يتم اختيار تجهيزات إضافية (اختر من القائمة المنسدلة بالأعلى)':'No extra perks selected yet (choose from dropdown above)'}</span>`}
    </div>
   </div>
 
   <div class="ticket-footer">
-   <span>${ico.diamond}</span>
-   <p>${ar?'تُرسل هذه البوليصة مباشرة لإدارة الفرع على واتساب لتأكيد التوافر وتجهيز اليوم المميز.':'This ticket will be sent directly to branch management via WhatsApp to confirm availability and arrangements.'}</p>
+   <div style="display:flex;align-items:center;gap:6px"><span>${ico.diamond}</span><p style="margin:0">${ar?'تُرسل هذه البوليصة مباشرة لإدارة الفرع على واتساب لتأكيد التوافر.':'Sent directly to branch management on WhatsApp for confirmation.'}</p></div>
+   <button type="button" class="ticket-download-link" data-act="download-ticket">${ar?'حفظ كصورة للذكرى 📥':'Save as image keepsake 📥'}</button>
   </div>
  </div>`;
 }
@@ -2204,7 +2234,7 @@ function vEvents(){
      <figcaption>${ar?'🎂 تورتة وشمع':'🎂 Cake & Candles'}</figcaption>
     </figure>
     <figure class="soft-vignette">
-     <img src="صور الموقع - من فيسبوك/821671069_18381679276235193_7947468395627931213_n.jpg" alt="${ar?'إطلالة البحر في بورتوفينو':'Direct sea view'}" loading="lazy">
+     <img src="صور-الأطباق والمشروبات/hero_corniche_portofino_1790452514651.jpg" alt="${ar?'إطلالة بحر الإسكندرية المباشرة':'Direct Mediterranean sea view'}" loading="lazy">
      <figcaption>${ar?'🌊 فيو البحر':'🌊 Sea View'}</figcaption>
     </figure>
     <figure class="soft-vignette">
@@ -2212,8 +2242,8 @@ function vEvents(){
      <figcaption>${ar?'🎈 بالونات وديكور':'🎈 Custom Decor'}</figcaption>
     </figure>
     <figure class="soft-vignette">
-     <img src="صور الموقع - من فيسبوك/720074169_18327709627281920_7554333111960165508_n.jpg" alt="${ar?'حلويات وتقديمات المناسبات':'Celebration sweets'}" loading="lazy">
-     <figcaption>${ar?'✨ تقديمات خاصة':'✨ Special Treats'}</figcaption>
+     <img src="صور-الفروع والمكان من الداخل/467402392_8870377472985182_4426002986526151743_n.jpg" alt="${ar?'جلسات السرايا بلوران':'Saraya Beach branch vibes'}" loading="lazy">
+     <figcaption>${ar?'🏛️ جلسات السرايا':'🏛️ Saraya Beach'}</figcaption>
     </figure>
    </div>
   </header>
@@ -2470,7 +2500,15 @@ document.addEventListener('click',e=>{
   else{const i=S.cart.findIndex(c=>c.id===id&&c.o===+el.dataset.o);if(i>=0){S.cart[i].q+=(+el.dataset.v);if(S.cart[i].q<=0)S.cart.splice(i,1)}}
   soft();return;
  }
- if(act==='branch'){S.branch=el.dataset.v;el.parentElement.querySelectorAll('button').forEach(b=>{b.classList.toggle('on',b.dataset.v===S.branch);const chk=b.querySelector('.venue-card-check');if(chk)chk.textContent=b.dataset.v===S.branch?'✓':'';b.setAttribute('aria-checked',b.dataset.v===S.branch?'true':'false');});const cctx=document.getElementById('checkout-context');if(cctx)cctx.innerHTML=checkoutContextHTML();const ectx=document.getElementById('events-context');if(ectx)ectx.innerHTML=eventsContextHTML();const rctx=document.querySelector('.rsum .tot b');if(rctx)rctx.textContent=t().brs[S.branch]}
+ if(act==='branch'){S.branch=el.dataset.v;el.parentElement.querySelectorAll('button').forEach(b=>{b.classList.toggle('on',b.dataset.v===S.branch);const chk=b.querySelector('.venue-card-check');if(chk)chk.textContent=b.dataset.v===S.branch?'✓':'';b.setAttribute('aria-checked',b.dataset.v===S.branch?'true':'false');});const cctx=document.getElementById('checkout-context');if(cctx)cctx.innerHTML=checkoutContextHTML();const ectx=document.getElementById('events-context');if(ectx)ectx.innerHTML=eventsContextHTML();
+  const trigText=document.getElementById('perks-trigger-text');
+  if(trigText){
+   const sel=Array.isArray(S.form.perks)?S.form.perks:[];
+   const cnt=sel.length;
+   trigText.textContent=cnt===0?(AR()?'اختر التجهيزات واللمسات الخاصة (تورتة، فيو بحر، بالونات...) ▾':'Select celebration touches (cake, sea view, decor...) ▾'):(AR()?`تم اختيار ${num(cnt)} تجهيزات: `+sel.map(id=>getPerkName(id,true).split(' ')[1]||getPerkName(id,true)).slice(0,2).join('، ')+(cnt>2?` (+${num(cnt-2)})`:''):`${num(cnt)} perks chosen: `+sel.map(id=>getPerkName(id,false).split(' ')[1]||getPerkName(id,false)).slice(0,2).join(', ')+(cnt>2?` (+${num(cnt-2)})`:''));
+   const trigBtn=trigText.closest('.perks-dropdown-trigger');
+   if(trigBtn)trigBtn.classList.toggle('has-selection',cnt>0);
+  }const rctx=document.querySelector('.rsum .tot b');if(rctx)rctx.textContent=t().brs[S.branch]}
  if(el.dataset.go&&cartCount()>0&&el.matches('.branch-actions .order')){S.cartOpen=true;S.menuOpen=false;S.done=null;saveState();render();return} if(el.dataset.go){ if(el.closest('#home-shortcuts-panel'))S.homeShortcutsOpen=false;if(el.dataset.eventType){activateForm('events');S.form.evType=el.dataset.eventType} if(el.dataset.service){
   if(cartHasShisha()&&el.dataset.service!=='table'){
    S.service='table';
@@ -2514,6 +2552,22 @@ document.addEventListener('click',e=>{
  else if(act==='shortcuts-toggle'){S.homeShortcutsOpen=!S.homeShortcutsOpen}
   else if(act==='jump'){const m=document.getElementById(el.dataset.v);if(m){const nav=document.querySelector('.menu-nav'),hh=(document.querySelector('.hdr')||{offsetHeight:76}).offsetHeight+(nav?nav.offsetHeight:0)+12;scrollTo({top:Math.max(0,m.getBoundingClientRect().top+scrollY-hh),behavior:'smooth'})}return}
  else if(act==='down'){const m=document.querySelector('.marq');m&&scrollTo({top:m.getBoundingClientRect().top+scrollY-70,behavior:'smooth'});return}
+ else if(act==='toggle-perks-dd'){
+  S.perksOpen=!S.perksOpen;
+  const menu=document.getElementById('perks-dd-menu');
+  const trigger=document.querySelector('.perks-dropdown-trigger');
+  if(menu){
+   menu.classList.toggle('open',S.perksOpen);
+   if(trigger){
+    trigger.setAttribute('aria-expanded',S.perksOpen?'true':'false');
+    const arr=trigger.querySelector('.perks-trigger-arrow');
+    if(arr)arr.textContent=S.perksOpen?'▴':'▾';
+   }
+  } else render();
+ }
+ else if(act==='download-ticket'){
+  downloadGoldenTicket();
+ }
  else if(act==='ev-perk'){
   if(!Array.isArray(S.form.perks))S.form.perks=[];
   const id=el.dataset.v;
@@ -3476,21 +3530,21 @@ html[dir="rtl"] #services-home .svcc-arrow{animation-name:service-arrow-nudge-rt
 @media(prefers-reduced-motion:reduce){#kids-home .kids-home-feature .kidsmedia .kids-home-link img.kids-home-poster{transition:none!important}}
 </style><style id="events-kids-journey-polish">
 /* Soft & Lean Luxury Events Experience */
-.events-lean-hero{text-align:center;padding:clamp(22px,4vw,36px) clamp(16px,3vw,28px);margin-bottom:20px;border-radius:26px;background:linear-gradient(135deg,color-mix(in srgb,var(--gold) 8%,var(--card)),var(--card));border:1px solid color-mix(in srgb,var(--gold) 28%,var(--line));box-shadow:0 12px 36px rgba(0,0,0,.07)}
-.events-lean-hero-content{max-width:580px;margin:0 auto 20px}
-.events-lean-hero-content .eyebrow{margin:0 0 6px;color:var(--gold);font-weight:800;letter-spacing:.08em;font-size:11.5px}
-.events-hero-title{margin:0 0 10px;font-size:clamp(24px,3.8vw,36px);line-height:1.2;color:var(--ink)}
-.events-hero-sub{margin:0;font-size:14px;color:var(--mist);line-height:1.65}
+.events-lean-hero{text-align:center;padding:clamp(20px,3.5vw,32px) clamp(16px,3vw,26px);margin-bottom:18px;border-radius:24px;background:linear-gradient(135deg,color-mix(in srgb,var(--gold) 8%,var(--card)),var(--card));border:1px solid color-mix(in srgb,var(--gold) 28%,var(--line));box-shadow:0 12px 36px rgba(0,0,0,.07)}
+.events-lean-hero-content{max-width:580px;margin:0 auto 16px}
+.events-lean-hero-content .eyebrow{margin:0 0 4px;color:var(--gold);font-weight:800;letter-spacing:.08em;font-size:11.5px}
+.events-hero-title{margin:0 0 8px;font-size:clamp(23px,3.6vw,34px);line-height:1.2;color:var(--ink)}
+.events-hero-sub{margin:0;font-size:13.5px;color:var(--mist);line-height:1.6}
 
 /* Soft Micro-Photo Ribbon */
-.events-soft-ribbon{display:flex;align-items:center;justify-content:center;gap:clamp(10px,2.5vw,18px);flex-wrap:wrap;padding-top:14px;border-top:1px dashed color-mix(in srgb,var(--gold) 25%,var(--line))}
+.events-soft-ribbon{display:flex;align-items:center;justify-content:center;gap:clamp(10px,2vw,16px);flex-wrap:wrap;padding-top:14px;border-top:1px dashed color-mix(in srgb,var(--gold) 25%,var(--line))}
 .soft-vignette{margin:0;display:flex;flex-direction:column;align-items:center;gap:6px;transition:transform .2s ease}
 .soft-vignette:hover{transform:translateY(-2px)}
 .soft-vignette img{display:block;width:clamp(68px,17vw,86px);height:clamp(56px,13vw,68px);object-fit:cover;border-radius:14px;border:1.5px solid color-mix(in srgb,var(--gold) 40%,var(--line));box-shadow:0 4px 14px rgba(0,0,0,.1)}
 .soft-vignette figcaption{font-size:11px;font-weight:700;color:var(--ink);letter-spacing:.02em}
 
 /* Lean Form Styles */
-.events-lean-form{border-radius:26px!important;padding:clamp(18px,3.5vw,34px)!important;background:linear-gradient(180deg,color-mix(in srgb,var(--gold) 5%,var(--card)),var(--card) 25%)!important;border:1px solid color-mix(in srgb,var(--gold) 32%,var(--line))!important;box-shadow:0 16px 44px rgba(0,0,0,.1)}
+.events-lean-form{border-radius:24px!important;padding:clamp(18px,3.5vw,32px)!important;background:linear-gradient(180deg,color-mix(in srgb,var(--gold) 5%,var(--card)),var(--card) 25%)!important;border:1px solid color-mix(in srgb,var(--gold) 32%,var(--line))!important;box-shadow:0 16px 44px rgba(0,0,0,.1)}
 .venue-cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
 @media(max-width:580px){.venue-cards-grid{grid-template-columns:1fr}}
 .venue-card{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:15px;background:var(--card2);border:1px solid var(--line);color:var(--ink);cursor:pointer;text-align:start;transition:all .2s ease;font-family:inherit;width:100%}
@@ -3504,13 +3558,40 @@ html[dir="rtl"] #services-home .svcc-arrow{animation-name:service-arrow-nudge-rt
 .venue-card-check{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:color-mix(in srgb,var(--ink) 8%,transparent);color:var(--mist);font-size:11px;font-weight:700;flex-shrink:0}
 .venue-card.on .venue-card-check{background:var(--gold);color:#121811}
 
+/* Luxury Perks Dropdown */
+.perks-dropdown-wrapper{position:relative;width:100%}
+.perks-dropdown-trigger{display:flex;align-items:center;justify-content:space-between;width:100%;padding:13px 16px;border-radius:14px;border:1px solid var(--line);background:var(--card2);color:var(--ink);cursor:pointer;font-family:inherit;transition:all .2s ease;text-align:start}
+.perks-dropdown-trigger:hover{border-color:color-mix(in srgb,var(--gold) 45%,var(--line));background:color-mix(in srgb,var(--gold) 5%,var(--card2))}
+.perks-dropdown-trigger.has-selection{border-color:var(--gold);background:linear-gradient(135deg,color-mix(in srgb,var(--gold) 12%,var(--card2)),var(--card2))}
+.perks-trigger-info{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+.perks-trigger-sparkle{font-size:16px;color:var(--gold);flex-shrink:0}
+.perks-trigger-label{font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.perks-dropdown-trigger.has-selection .perks-trigger-label{color:var(--gold)}
+.perks-trigger-arrow{font-size:14px;color:var(--mist);flex-shrink:0;margin-inline-start:8px;transition:transform .2s ease}
+
+.perks-dropdown-menu{display:none;margin-top:8px;padding:12px;border-radius:16px;border:1px solid color-mix(in srgb,var(--gold) 35%,var(--line));background:var(--card2);box-shadow:0 10px 28px rgba(0,0,0,.15);animation:ddSlide .2s ease-out}
+.perks-dropdown-menu.open{display:block}
+@keyframes ddSlide{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.perks-dd-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
+.perks-dd-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;text-align:start;transition:all .18s ease;font-family:inherit;width:100%}
+.perks-dd-item:hover{border-color:color-mix(in srgb,var(--gold) 50%,var(--line));background:color-mix(in srgb,var(--gold) 6%,var(--card))}
+.perks-dd-item.on{border-color:var(--gold);background:linear-gradient(135deg,color-mix(in srgb,var(--gold) 14%,var(--card)),var(--card));box-shadow:0 4px 12px rgba(217,174,72,.12)}
+.perks-dd-check{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:color-mix(in srgb,var(--ink) 8%,transparent);color:var(--mist);font-size:12px;font-weight:700;flex-shrink:0}
+.perks-dd-item.on .perks-dd-check{background:var(--gold);color:#121811}
+.perks-dd-text{flex:1;min-width:0}
+.perks-dd-name{display:block;font-size:13px;font-weight:700;color:var(--ink);line-height:1.3}
+.perks-dd-item.on .perks-dd-name{color:var(--gold)}
+.perks-dd-hint{display:block;font-size:11px;color:var(--mist);margin-top:2px;line-height:1.3}
+
 /* Live Golden Invitation Ticket */
 .events-invitation-ticket{position:relative;background:linear-gradient(145deg,#0d1510,#141e17);border:1.5px solid color-mix(in srgb,var(--gold) 55%,transparent);border-radius:18px;padding:20px 22px;color:#fff;box-shadow:0 12px 32px rgba(0,0,0,.28);margin-top:8px}
-.ticket-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.ticket-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap}
 .ticket-brand{display:flex;align-items:center;gap:10px}
 .ticket-diamond{color:var(--gold);font-size:20px;display:flex;align-items:center}
 .ticket-seal-text{display:block;font-size:10px;letter-spacing:.08em;color:var(--gold);font-weight:800}
 .ticket-guest-title{margin:2px 0 0;font-size:16px;font-weight:800;color:#fff}
+.ticket-download-btn{transition:all .2s ease}
+.ticket-download-btn:hover{background:var(--gold)!important;color:#121811!important;transform:translateY(-1px)}
 .ticket-status-pill{font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;background:rgba(217,174,72,.15);border:1px solid rgba(217,174,72,.4);color:var(--gold);white-space:nowrap}
 .ticket-divider{position:relative;height:12px;display:flex;align-items:center;margin:2px -22px 14px}
 .ticket-notch{width:14px;height:14px;border-radius:50%;background:var(--card);position:absolute;top:50%;transform:translateY(-50%)}
@@ -3528,12 +3609,13 @@ html[dir="rtl"] #services-home .svcc-arrow{animation-name:service-arrow-nudge-rt
 .ticket-perks-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px}
 .ticket-perk-tag{display:inline-flex;align-items:center;font-size:11px;padding:3px 8px;border-radius:6px;background:rgba(217,174,72,.18);border:1px solid rgba(217,174,72,.45);color:#f7df96;font-weight:600}
 .ticket-no-perks{font-size:11px;color:rgba(255,255,255,.45);font-style:italic}
-.ticket-footer{display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,.08);font-size:11px;color:rgba(255,255,255,.65)}
+.ticket-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,.08);font-size:11px;color:rgba(255,255,255,.65);flex-wrap:wrap}
 .ticket-footer span{color:var(--gold);font-size:13px;flex-shrink:0}
-.ticket-footer p{margin:0;line-height:1.4}
+.ticket-download-link{background:none;border:none;color:var(--gold);font-size:11.5px;font-weight:700;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px}
+.ticket-download-link:hover{color:#fff}
 
 /* Minimal Bottom Bridge for Kids Corner */
-.events-kids-soft-pill{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:720px;margin:28px auto 0;padding:12px 18px;border-radius:16px;background:var(--card2);border:1px solid var(--line);font-size:13px;color:var(--mist)}
+.events-kids-soft-pill{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:720px;margin:24px auto 0;padding:12px 18px;border-radius:16px;background:var(--card2);border:1px solid var(--line);font-size:13px;color:var(--mist)}
 @media(max-width:580px){.events-kids-soft-pill{flex-direction:column;align-items:center;text-align:center}}
 .events-kids-soft-pill .btn{flex-shrink:0}
 
@@ -3546,6 +3628,13 @@ html.paper .venue-card{background:#fff;border-color:#d5d0c2;color:#25271f}
 html.paper .venue-card.on{background:#fefbf2;border-color:#b98d24}
 html.paper .venue-card-name{color:#25271f}
 html.paper .venue-card.on .venue-card-name{color:#9c6e08}
+html.paper .perks-dropdown-trigger{background:#fff;border-color:#d5d0c2;color:#25271f}
+html.paper .perks-dropdown-trigger.has-selection{background:#fefbf2;border-color:#b98d24}
+html.paper .perks-dropdown-menu{background:#fff;border-color:#d5d0c2;box-shadow:0 10px 28px rgba(0,0,0,.08)}
+html.paper .perks-dd-item{background:#fcfbf8;border-color:#e0d9cb;color:#25271f}
+html.paper .perks-dd-item.on{background:#fdf9ed;border-color:#b98d24}
+html.paper .perks-dd-name{color:#25271f}
+html.paper .perks-dd-item.on .perks-dd-name{color:#9c6e08}
 html.paper .events-invitation-ticket{background:linear-gradient(145deg,#232b24,#1a201b);border-color:#b98d24;box-shadow:0 12px 32px rgba(0,0,0,.15)}
 html.paper .ticket-notch{background:#fff}
 html.paper .events-kids-soft-pill{background:#fff;border-color:#d5d0c2;color:#55594d}
