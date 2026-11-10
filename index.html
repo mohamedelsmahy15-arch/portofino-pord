@@ -1401,6 +1401,202 @@ function formatDisplayDate(value){
  }
  return `${enDays[dt.getDay()]}, ${enMonths[mo]} ${d}, ${y}`;
 }
+
+let DT_STATE = {
+ picker: null,
+ fieldId: null,
+ hour12: 8,
+ min: '00',
+ isPM: true,
+ year: 2026,
+ month: 10,
+ dateStr: ''
+};
+
+function parseTimeParts(val){
+ const m=String(val||'').match(/^(\d{1,2}):(\d{2})$/);
+ if(!m)return {hour12:8, min:'00', isPM:true};
+ const h24=+m[1], min=m[2], isPM=h24>=12, hour12=h24%12||12;
+ return {hour12, min, isPM};
+}
+
+function to24hStr(hour12, min, isPM){
+ let h=hour12%12;
+ if(isPM) h+=12;
+ return String(h).padStart(2,'0') + ':' + min;
+}
+
+function openPortofinoTimePicker(fieldId){
+ const raw=S.form[fieldId]||'';
+ const p=parseTimeParts(raw);
+ DT_STATE.picker='time';
+ DT_STATE.fieldId=fieldId;
+ DT_STATE.hour12=p.hour12;
+ DT_STATE.min=p.min;
+ DT_STATE.isPM=p.isPM;
+ renderPortofinoPickerModal();
+}
+
+function openPortofinoDatePicker(fieldId){
+ const raw=S.form[fieldId]||'';
+ const now=new Date();
+ let y=now.getFullYear(), mo=now.getMonth(), dStr=raw;
+ const m=String(raw).match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+ if(m){
+  y=+m[1];
+  mo=+m[2]-1;
+ }else{
+  dStr=y + '-' + String(mo+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
+ }
+ DT_STATE.picker='date';
+ DT_STATE.fieldId=fieldId;
+ DT_STATE.year=y;
+ DT_STATE.month=mo;
+ DT_STATE.dateStr=dStr;
+ renderPortofinoPickerModal();
+}
+
+function closePortofinoPicker(){
+ DT_STATE.picker=null;
+ DT_STATE.fieldId=null;
+ const root=document.getElementById('dt-picker-root');
+ if(root) root.innerHTML='';
+}
+
+function renderPortofinoPickerModal(){
+ let root=document.getElementById('dt-picker-root');
+ if(!root){
+  root=document.createElement('div');
+  root.id='dt-picker-root';
+  document.body.appendChild(root);
+ }
+ if(!DT_STATE.picker){
+  root.innerHTML='';
+  return;
+ }
+ const ar=AR();
+ const arMonths=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+ const enMonths=['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+ if(DT_STATE.picker==='time'){
+  const time24=to24hStr(DT_STATE.hour12, DT_STATE.min, DT_STATE.isPM);
+  const liveDisplay=formatDisplayTime(time24);
+  const subLabel=ar?(DT_STATE.isPM?'الفترة المسائية (الليل)':'الفترة الصباحية (الصبح)'):(DT_STATE.isPM?'Evening / Night':'Morning');
+
+  root.innerHTML=`<div class="dt-modal-backdrop" role="dialog" aria-modal="true" aria-label="${ar?'اختيار ميعاد الحضور':'Select Time'}">
+   <div class="dt-modal-sheet">
+    <div class="dt-modal-head">
+     <div class="dt-modal-title"><span class="dt-modal-icon">🕒</span><b>${ar?'اختيار ميعاد الحضور':'Select Arrival Time'}</b></div>
+     <button type="button" class="dt-modal-close" data-dt-act="close" aria-label="${ar?'إغلاق':'Close'}">✕</button>
+    </div>
+
+    <div class="dt-time-live-box">
+     <span class="dt-time-digits">${esc(liveDisplay)}</span>
+     <span class="dt-time-sub">${esc(subLabel)}</span>
+    </div>
+
+    <div class="dt-period-row">
+     <button type="button" class="dt-period-btn ${!DT_STATE.isPM?'on':''}" data-dt-set-period="AM">
+      <span class="period-emoji">☀️</span>
+      <span class="period-label">${ar?'ص (الصبح)':'AM (Morning)'}</span>
+     </button>
+     <button type="button" class="dt-period-btn ${DT_STATE.isPM?'on':''}" data-dt-set-period="PM">
+      <span class="period-emoji">🌙</span>
+      <span class="period-label">${ar?'م (الليل)':'PM (Night)'}</span>
+     </button>
+    </div>
+
+    <div class="dt-section-label">${ar?'الساعة:':'Hour:'}</div>
+    <div class="dt-hours-grid">
+     ${[1,2,3,4,5,6,7,8,9,10,11,12].map(h=>`
+      <button type="button" class="dt-bubble dt-hour-bubble ${DT_STATE.hour12===h?'on':''}" data-dt-set-hour="${h}">
+       ${ar?num(h):h}
+      </button>
+     `).join('')}
+    </div>
+
+    <div class="dt-section-label">${ar?'الدقائق:':'Minutes:'}</div>
+    <div class="dt-mins-grid">
+     ${['00','15','30','45'].map(m=>`
+      <button type="button" class="dt-bubble dt-min-bubble ${DT_STATE.min===m?'on':''}" data-dt-set-min="${m}">
+       ${ar?(':'+num(m)):(':'+m)}
+      </button>
+     `).join('')}
+    </div>
+
+    <div class="dt-modal-foot">
+     <button type="button" class="btn g lg dt-confirm-btn" data-dt-confirm="time">${ar?'تأكيد الميعاد ✓':'Confirm Time ✓'}</button>
+    </div>
+   </div>
+  </div>`;
+ }else if(DT_STATE.picker==='date'){
+  const y=DT_STATE.year, mo=DT_STATE.month;
+  const firstDay=new Date(y, mo, 1).getDay();
+  const startOffset=(firstDay + 1) % 7;
+  const daysInMonth=new Date(y, mo + 1, 0).getDate();
+  const prevMonthDays=new Date(y, mo, 0).getDate();
+  const todayStr=new Date().toISOString().slice(0, 10);
+
+  const days=[];
+  for(let i=startOffset-1; i>=0; i--){
+   const d=prevMonthDays-i;
+   const pMo=mo===0?11:mo-1;
+   const pYr=mo===0?y-1:y;
+   const dateStr=pYr + '-' + String(pMo+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+   days.push({day:d, isCurrent:false, dateStr, isPast:dateStr<todayStr, isSelected:dateStr===DT_STATE.dateStr});
+  }
+  for(let d=1; d<=daysInMonth; d++){
+   const dateStr=y + '-' + String(mo+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+   days.push({day:d, isCurrent:true, dateStr, isPast:dateStr<todayStr, isSelected:dateStr===DT_STATE.dateStr});
+  }
+  const remaining=(7-(days.length%7))%7;
+  for(let i=1; i<=remaining; i++){
+   const nMo=mo===11?0:mo+1;
+   const nYr=mo===11?y+1:y;
+   const dateStr=nYr + '-' + String(nMo+1).padStart(2,'0') + '-' + String(i).padStart(2,'0');
+   days.push({day:i, isCurrent:false, dateStr, isPast:dateStr<todayStr, isSelected:dateStr===DT_STATE.dateStr});
+  }
+
+  const weekdays=ar?['سبت','أحد','اثنين','ثلاثاء','أربعاء','خميس','جمعة']:['Sat','Sun','Mon','Tue','Wed','Thu','Fri'];
+  const monthTitle=ar?(arMonths[mo]+' '+num(y)):(enMonths[mo]+' '+y);
+  const liveDateDisplay=DT_STATE.dateStr?formatDisplayDate(DT_STATE.dateStr):(ar?'اختار يوماً':'Select a day');
+
+  root.innerHTML=`<div class="dt-modal-backdrop" role="dialog" aria-modal="true" aria-label="${ar?'اختيار التاريخ':'Select Date'}">
+   <div class="dt-modal-sheet">
+    <div class="dt-modal-head">
+     <div class="dt-modal-title"><span class="dt-modal-icon">📅</span><b>${ar?'اختيار التاريخ':'Select Date'}</b></div>
+     <button type="button" class="dt-modal-close" data-dt-act="close" aria-label="${ar?'إغلاق':'Close'}">✕</button>
+    </div>
+
+    <div class="dt-time-live-box" style="padding:8px 12px">
+     <span class="dt-time-digits" style="font-size:18px">${esc(liveDateDisplay)}</span>
+    </div>
+
+    <div class="dt-cal-nav">
+     <button type="button" class="dt-cal-arrow" data-dt-nav-mo="-1" aria-label="${ar?'الشهر السابق':'Previous month'}">‹</button>
+     <b class="dt-cal-month-title">${esc(monthTitle)}</b>
+     <button type="button" class="dt-cal-arrow" data-dt-nav-mo="1" aria-label="${ar?'الشهر التالي':'Next month'}">›</button>
+    </div>
+
+    <div class="dt-cal-weekdays">
+     ${weekdays.map(w=>`<span>${w}</span>`).join('')}
+    </div>
+
+    <div class="dt-cal-days-grid">
+     ${days.map(d=>`
+      <button type="button" class="dt-day-btn ${!d.isCurrent?'other-month':''} ${d.isSelected?'on':''} ${d.isPast?'disabled':''}" ${d.isPast?'disabled':''} data-dt-set-day="${d.dateStr}">
+       ${ar?num(d.day):d.day}
+      </button>
+     `).join('')}
+    </div>
+
+    <div class="dt-modal-foot">
+     <button type="button" class="btn g lg dt-confirm-btn" data-dt-confirm="date">${ar?'تأكيد التاريخ ✓':'Confirm Date ✓'}</button>
+    </div>
+   </div>
+  </div>`;
+ }
+}
 const _sv=p=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
 const MOODI={bf:_sv('<path d="M3 18h18M6.5 18a5.5 5.5 0 0 1 11 0M12 6v3M5.2 9.6l1.9 1.9M18.8 9.6l-1.9 1.9"/>'),lunch:_sv('<circle cx="12" cy="13" r="6"/><circle cx="12" cy="13" r="2.4"/><path d="M3.5 4.5v5M5.5 4.5v5M4.5 9.5V20M20.5 4.5c-1.6 1-2.2 3-2.2 5.2h2.2V20"/>'),menu:_sv('<path d="M4 6.5c5-3 11-3 16 0L12 21z"/><circle cx="10" cy="9.5" r="1"/><circle cx="14" cy="11" r="1"/><circle cx="12" cy="15" r="1"/>'),drinks:_sv('<path d="M5 10h11v4a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5zM16 11.5h1.8a2.4 2.4 0 0 1 0 4.8H16M8 3.5c-1 1.2 1 2 0 3.2M12 3.5c-1 1.2 1 2 0 3.2"/>'),sofia:_sv('<path d="M5 12v3c0 2.5 3 4.5 7 4.5s7-2 7-4.5v-3"/><ellipse cx="12" cy="12" rx="7" ry="4.5"/><ellipse cx="12" cy="12" rx="2.6" ry="1.6"/>'),tahia:_sv('<path d="M3.5 20.5h17M6 20.5l1.2-6h9.6l1.2 6M7.6 14.5c0-3 2.2-5 4.4-8 2.2 3 4.4 5 4.4 8M12 6.5V4"/>'),kids:_sv('<ellipse cx="12" cy="9" rx="5" ry="6"/><path d="M12 15l-1.3 2.4h2.6zM12 17.4c0 1.6 1.6 2 1.6 3.6"/>'),services:_sv('<path d="M3 7h11v10H3zM14 10h4l3 3v4h-7z"/><circle cx="7" cy="19" r="1.5"/><circle cx="17" cy="19" r="1.5"/>'),branches:_sv('<path d="M12 21s7-6.2 7-11a7 7 0 0 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>')};
 const ico={
@@ -1756,43 +1952,44 @@ function summaryBlock(){
  return S.cart.map(c=>{const it=ITEMS.find(i=>i.id===c.id);const o=optLabel(c);const photo=READY_OFFER_IMAGES[it.id]||it.readyImg||(it.brand==='sofia'?SOFIA_CATEGORY_IMAGES[it.sc&&it.sc.ar]:it.brand==='cafe'?CAFE_CARD_IMAGES[it.g]:it.img?IMG[it.img]:null);return `<div class="line">${photo?`<img src="${photo}" alt="${esc(lg(it.n))}" loading="lazy">`:`<div style="width:64px;height:64px;border-radius:14px;background:var(--card2);flex:none"></div>`}<div class="mid"><div class="t">${lg(it.n)}</div><div class="s">${o?o+' · ':''}${num(c.q)} × ${money(unit(it,c.o))} ${AR()?'للوحدة':'each'}</div></div><b style="color:var(--leaf-l)">${money(unit(it,c.o)*c.q)}</b></div>`}).join('');
 }
 function field(id,label,type='text',extra=''){
- const e=S.errors[id];const v=esc(S.form[id]||'');
- let preview='';
+ const e=S.errors[id];
+ const raw=S.form[id]||'';
+ const ar=AR();
  if(type==='time'){
-  const formatted=S.form[id]?formatDisplayTime(S.form[id]):'';
-  preview=`<small class="datetime-preview time-format-preview ${formatted?'has-val':''}" id="time-preview-${id}" aria-live="polite"><span class="preview-icon">🕒</span><span class="preview-text">${formatted||(AR()?'الوقت بتوقيت ١٢ ساعة (مثال: ٧:٣٠ م)':'12-hour format (e.g. 7:30 PM)')}</span></small>`;
+  const displayVal=raw?formatDisplayTime(raw):'';
+  const ph=ar?'اختار الوقت':'Select time';
+  return `<div class="fld ${e?'bad':''} fld-datetime" data-fld-type="time">
+   <label for="f_${id}">${label}</label>
+   <div class="dt-input-box" data-dt-picker="time" data-f="${id}" role="button" tabindex="0" aria-label="${label}">
+    <input id="f_${id}" data-f="${id}" data-dt-type="time" type="text" readonly class="dt-display-input" value="${esc(displayVal)}" placeholder="${ph}" dir="${ar?'rtl':'ltr'}">
+    <span class="dt-picker-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+   </div>
+   ${e?`<div class="er">● ${e}</div>`:''}
+  </div>`;
  }else if(type==='date'){
-  const formatted=S.form[id]?formatDisplayDate(S.form[id]):'';
-  preview=`<small class="datetime-preview date-format-preview ${formatted?'has-val':''}" id="date-preview-${id}" aria-live="polite"><span class="preview-icon">📅</span><span class="preview-text">${formatted||(AR()?'سيظهر اليوم والتاريخ بالكامل بعد الاختيار':'Full day & date will appear upon selection')}</span></small>`;
+  const displayVal=raw?formatDisplayDate(raw):'';
+  const ph=ar?'اختار التاريخ':'Select date';
+  return `<div class="fld ${e?'bad':''} fld-datetime" data-fld-type="date">
+   <label for="f_${id}">${label}</label>
+   <div class="dt-input-box" data-dt-picker="date" data-f="${id}" role="button" tabindex="0" aria-label="${label}">
+    <input id="f_${id}" data-f="${id}" data-dt-type="date" type="text" readonly class="dt-display-input" value="${esc(displayVal)}" placeholder="${ph}" dir="${ar?'rtl':'ltr'}">
+    <span class="dt-picker-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+   </div>
+   ${e?`<div class="er">● ${e}</div>`:''}
+  </div>`;
  }
- return `<div class="fld ${e?'bad':''} ${type==='date'||type==='time'?'fld-datetime':''}"><label for="f_${id}">${label}</label>${type==='textarea'?`<textarea id="f_${id}" data-f="${id}">${v}</textarea>`:`<input id="f_${id}" data-f="${id}" type="${type}" value="${v}" ${(type==='time'||type==='date')?'aria-describedby="'+type+'-preview-'+id+'"':''} ${extra}>`}${preview}${e?'<div class="er">● '+e+'</div>':''}</div>`;
+ const v=esc(raw);
+ return `<div class="fld ${e?'bad':''}"><label for="f_${id}">${label}</label>${type==='textarea'?`<textarea id="f_${id}" data-f="${id}">${v}</textarea>`:`<input id="f_${id}" data-f="${id}" type="${type}" value="${v}" ${extra}>`}${e?'<div class="er">● '+e+'</div>':''}</div>`;
 }
 function syncDateTimePreviews(input){
  if(!input)return;
- if(input.type==='time'){
-  const p=input.parentElement?.querySelector('.time-format-preview');
-  if(p){
-   const txt=p.querySelector('.preview-text')||p;
-   if(input.value){
-    txt.textContent=formatDisplayTime(input.value);
-    p.classList.add('has-val');
-   }else{
-    txt.textContent=AR()?'الوقت بتوقيت ١٢ ساعة (مثال: ٧:٣٠ م)':'12-hour format (e.g. 7:30 PM)';
-    p.classList.remove('has-val');
-   }
-  }
- }else if(input.type==='date'){
-  const p=input.parentElement?.querySelector('.date-format-preview');
-  if(p){
-   const txt=p.querySelector('.preview-text')||p;
-   if(input.value){
-    txt.textContent=formatDisplayDate(input.value);
-    p.classList.add('has-val');
-   }else{
-    txt.textContent=AR()?'سيظهر اليوم والتاريخ بالكامل بعد الاختيار':'Full day & date will appear upon selection';
-    p.classList.remove('has-val');
-   }
-  }
+ const fid=input.dataset.f;
+ if(!fid)return;
+ const raw=S.form[fid]||'';
+ const displayInput=document.getElementById('f_'+fid);
+ if(displayInput&&displayInput.classList.contains('dt-display-input')){
+  if(displayInput.dataset.dtType==='time') displayInput.value=raw?formatDisplayTime(raw):'';
+  else if(displayInput.dataset.dtType==='date') displayInput.value=raw?formatDisplayDate(raw):'';
  }
 }
 const syncTimePreview=syncDateTimePreviews;
@@ -3007,6 +3204,87 @@ function soft(){
  S.bump=false;FX.dirty=true;saveState();
 }
 document.addEventListener('click',e=>{
+ const dtBox=e.target.closest('[data-dt-picker]');
+ if(dtBox){
+  const type=dtBox.dataset.dtPicker, fId=dtBox.dataset.f;
+  if(type==='time')openPortofinoTimePicker(fId);
+  else if(type==='date')openPortofinoDatePicker(fId);
+  return;
+ }
+ if(e.target.matches('.dt-modal-backdrop')||e.target.closest('[data-dt-act="close"]')){
+  closePortofinoPicker();
+  return;
+ }
+ const periodBtn=e.target.closest('[data-dt-set-period]');
+ if(periodBtn){
+  DT_STATE.isPM=periodBtn.dataset.dtSetPeriod==='PM';
+  renderPortofinoPickerModal();
+  return;
+ }
+ const hourBtn=e.target.closest('[data-dt-set-hour]');
+ if(hourBtn){
+  DT_STATE.hour12=+hourBtn.dataset.dtSetHour;
+  renderPortofinoPickerModal();
+  return;
+ }
+ const minBtn=e.target.closest('[data-dt-set-min]');
+ if(minBtn){
+  DT_STATE.min=minBtn.dataset.dtSetMin;
+  renderPortofinoPickerModal();
+  return;
+ }
+ const navBtn=e.target.closest('[data-dt-nav-mo]');
+ if(navBtn){
+  DT_STATE.month+=+navBtn.dataset.dtNavMo;
+  if(DT_STATE.month<0){DT_STATE.month=11;DT_STATE.year--;}
+  else if(DT_STATE.month>11){DT_STATE.month=0;DT_STATE.year++;}
+  renderPortofinoPickerModal();
+  return;
+ }
+ const dayBtn=e.target.closest('[data-dt-set-day]');
+ if(dayBtn&&!dayBtn.disabled){
+  DT_STATE.dateStr=dayBtn.dataset.dtSetDay;
+  S.form[DT_STATE.fieldId]=DT_STATE.dateStr;
+  delete S.errors[DT_STATE.fieldId];
+  const inp=document.getElementById('f_'+DT_STATE.fieldId);
+  if(inp){
+   inp.value=formatDisplayDate(DT_STATE.dateStr);
+   const fldBox=inp.closest('.fld');
+   if(fldBox){fldBox.classList.remove('bad');const er=fldBox.querySelector('.er');if(er)er.remove();}
+  }
+  closePortofinoPicker();
+  const ctx=document.getElementById('checkout-context');if(ctx)ctx.innerHTML=checkoutContextHTML();
+  const ectx=document.getElementById('events-context');if(ectx)ectx.innerHTML=eventsContextHTML();
+  return;
+ }
+ const confirmBtn=e.target.closest('[data-dt-confirm]');
+ if(confirmBtn){
+  const kind=confirmBtn.dataset.dtConfirm;
+  delete S.errors[DT_STATE.fieldId];
+  if(kind==='time'){
+   const val24=to24hStr(DT_STATE.hour12, DT_STATE.min, DT_STATE.isPM);
+   S.form[DT_STATE.fieldId]=val24;
+   const inp=document.getElementById('f_'+DT_STATE.fieldId);
+   if(inp){
+    inp.value=formatDisplayTime(val24);
+    const fldBox=inp.closest('.fld');
+    if(fldBox){fldBox.classList.remove('bad');const er=fldBox.querySelector('.er');if(er)er.remove();}
+   }
+  }else if(kind==='date'){
+   S.form[DT_STATE.fieldId]=DT_STATE.dateStr;
+   const inp=document.getElementById('f_'+DT_STATE.fieldId);
+   if(inp){
+    inp.value=formatDisplayDate(DT_STATE.dateStr);
+    const fldBox=inp.closest('.fld');
+    if(fldBox){fldBox.classList.remove('bad');const er=fldBox.querySelector('.er');if(er)er.remove();}
+   }
+  }
+  closePortofinoPicker();
+  const ctx=document.getElementById('checkout-context');if(ctx)ctx.innerHTML=checkoutContextHTML();
+  const ectx=document.getElementById('events-context');if(ectx)ectx.innerHTML=eventsContextHTML();
+  return;
+ }
+
  const el=e.target.closest('[data-go],[data-act]');if(!el)return;
  const act=el.dataset.act;
  if(!el.dataset.go&&!S.cartOpen&&el.closest('.cslot')&&(act==='opt'||act==='add'||act==='cq')){
@@ -3254,7 +3532,19 @@ document.addEventListener('click',e=>{
  const y=window.scrollY;const q=document.activeElement&&document.activeElement.id==='q';
  render();window.scrollTo({top:y,behavior:'instant'});S.bump=false;
 });
-document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.matches('.logo[data-go]')){go('home')}});
+document.addEventListener('keydown',e=>{
+ if((e.key==='Enter'||e.key===' ')&&e.target.closest('[data-dt-picker]')){
+  e.preventDefault();
+  const box=e.target.closest('[data-dt-picker]');
+  if(box.dataset.dtPicker==='time')openPortofinoTimePicker(box.dataset.f);
+  else if(box.dataset.dtPicker==='date')openPortofinoDatePicker(box.dataset.f);
+  return;
+ }
+ if(e.key==='Escape'&&DT_STATE.picker){
+  closePortofinoPicker();
+  return;
+ }
+if(e.key==='Enter'&&e.target.matches('.logo[data-go]')){go('home')}});
 document.addEventListener('input',e=>{
  const el=e.target;
  if(el.id==='q'){S.q=el.value;refreshMenu()}
@@ -4194,11 +4484,80 @@ html.paper .kids-showcase-desc{color:#55594d}
 .guest-quick-pill:hover{background:rgba(201,162,75,.15);border-color:rgba(201,162,75,.4);color:#F7E7A9}
 .guest-quick-pill.on{background:var(--gold);border-color:var(--gold);color:#070D18;font-weight:800}
 
-/* Universal DateTime Live Formatting Chips */
-.datetime-preview{display:inline-flex;align-items:center;gap:6px;font-size:12px;margin-top:7px;padding:5px 11px;border-radius:9px;background:rgba(201,162,75,.07);border:1px solid rgba(201,162,75,.2);color:var(--mist);transition:all .22s ease}
-.datetime-preview.has-val{background:rgba(201,162,75,.14);border-color:color-mix(in srgb,var(--gold) 50%,transparent);color:#F7E7A9;font-weight:700}
-.datetime-preview .preview-icon{font-size:13px;line-height:1}
-.datetime-preview .preview-text{line-height:1.3}
+/* Portofino Luxury Bilingual Clock & Date Picker Inputs */
+.dt-input-box{position:relative;display:flex;align-items:center;width:100%;cursor:pointer}
+.dt-display-input{width:100%!important;cursor:pointer!important;padding-inline-end:42px!important;user-select:none;font-weight:700}
+.dt-picker-icon{position:absolute;inset-inline-end:14px;display:flex;align-items:center;justify-content:center;color:var(--gold);pointer-events:none;transition:transform .2s ease}
+.dt-input-box:hover .dt-picker-icon{transform:scale(1.15)}
+.dt-input-box:focus-within{border-radius:14px;box-shadow:0 0 0 3px rgba(201,162,75,.2)}
+
+/* Bilingual Modal Backdrop & Bottom Sheet */
+.dt-modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:999999;display:flex;align-items:flex-end;justify-content:center;padding:0;animation:dt-fade-in .22s cubic-bezier(.16,1,.3,1)}
+@media(min-width:641px){
+  .dt-modal-backdrop{align-items:center;padding:20px}
+}
+.dt-modal-sheet{position:relative;width:100%;max-width:440px;background:linear-gradient(155deg,#0E1828 0%,#080E18 100%);border:1.5px solid rgba(201,162,75,.4);border-radius:24px 24px 0 0;padding:22px 20px 24px;box-shadow:0 -12px 48px rgba(0,0,0,.7), 0 0 0 1px rgba(201,162,75,.2);color:#F5EFE0;animation:dt-slide-up .26s cubic-bezier(.16,1,.3,1);max-height:90vh;overflow-y:auto}
+@media(min-width:641px){
+  .dt-modal-sheet{border-radius:22px;animation:dt-modal-pop .24s cubic-bezier(.16,1,.3,1)}
+}
+
+.dt-modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid rgba(201,162,75,.2)}
+.dt-modal-title{display:flex;align-items:center;gap:8px;font-size:16px;color:#F7E7A9;font-weight:800}
+.dt-modal-icon{font-size:18px}
+.dt-modal-close{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.07);border:1px solid rgba(201,162,75,.25);color:var(--mist);font-size:16px;cursor:pointer;transition:all .2s ease}
+.dt-modal-close:hover{background:rgba(201,162,75,.2);color:#fff}
+
+.dt-time-live-box{text-align:center;padding:10px 14px;background:rgba(201,162,75,.08);border:1.5px solid rgba(201,162,75,.35);border-radius:14px;margin-bottom:14px}
+.dt-time-digits{display:block;font-size:27px;font-weight:800;color:#F7E7A9;letter-spacing:.02em}
+.dt-time-sub{display:block;font-size:11.5px;color:var(--mist);margin-top:2px}
+
+.dt-period-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.dt-period-btn{display:flex;align-items:center;justify-content:center;gap:7px;padding:10px 12px;border-radius:12px;background:rgba(16,27,45,.8);border:1.5px solid rgba(201,162,75,.25);color:var(--mist);font-size:13px;font-weight:700;cursor:pointer;transition:all .2s ease}
+.dt-period-btn:hover{border-color:var(--gold);color:#F5EFE0}
+.dt-period-btn.on{background:linear-gradient(135deg,rgba(201,162,75,.25),rgba(201,162,75,.1));border-color:var(--gold);color:var(--gold);box-shadow:0 0 16px rgba(201,162,75,.25)}
+
+.dt-section-label{font-size:11.5px;font-weight:700;color:var(--mist);margin:8px 0 6px;text-align:start}
+.dt-hours-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:10px}
+.dt-mins-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px}
+
+.dt-bubble{display:flex;align-items:center;justify-content:center;min-height:38px;border-radius:10px;background:rgba(16,27,45,.7);border:1px solid rgba(201,162,75,.2);color:#F5EFE0;font-size:14px;font-weight:700;cursor:pointer;transition:all .18s ease}
+.dt-bubble:hover{border-color:var(--gold);background:rgba(201,162,75,.15);transform:scale(1.04)}
+.dt-bubble.on{background:var(--gold);border-color:var(--gold);color:#070D18;font-weight:800;box-shadow:0 4px 14px rgba(201,162,75,.4)}
+
+.dt-modal-foot{margin-top:14px}
+.dt-confirm-btn{width:100%;min-height:46px!important;justify-content:center;font-size:15px!important}
+
+/* Calendar Styles */
+.dt-cal-nav{display:flex;align-items:center;justify-content:space-between;padding:8px 4px 12px;margin-bottom:8px;border-bottom:1px dashed rgba(201,162,75,.25)}
+.dt-cal-arrow{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:rgba(16,27,45,.8);border:1px solid rgba(201,162,75,.3);color:var(--gold);font-size:18px;cursor:pointer;transition:all .18s ease}
+.dt-cal-arrow:hover{background:var(--gold);color:#070D18}
+.dt-cal-month-title{font-size:15px;color:#F7E7A9;font-weight:800}
+
+.dt-cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-size:10.5px;color:var(--mist);font-weight:700;margin-bottom:8px}
+.dt-cal-days-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:12px}
+
+.dt-day-btn{display:flex;align-items:center;justify-content:center;aspect-ratio:1;border-radius:10px;background:rgba(16,27,45,.5);border:1px solid transparent;color:#F5EFE0;font-size:12.5px;font-weight:600;cursor:pointer;transition:all .18s ease}
+.dt-day-btn:hover:not([disabled]){border-color:var(--gold);background:rgba(201,162,75,.15)}
+.dt-day-btn.on{background:var(--gold)!important;border-color:var(--gold)!important;color:#070D18!important;font-weight:800;box-shadow:0 4px 12px rgba(201,162,75,.35)}
+.dt-day-btn.other-month{opacity:.35}
+.dt-day-btn[disabled]{opacity:.2;cursor:not-allowed;background:transparent!important;border-color:transparent!important}
+
+/* Paper Theme Overrides */
+html.paper .dt-modal-sheet{background:linear-gradient(155deg,#FAF8F3 0%,#F3EFE6 100%);border-color:#C9A24B;color:#101B2D;box-shadow:0 -10px 40px rgba(0,0,0,.2)}
+html.paper .dt-time-live-box{background:rgba(201,162,75,.12);border-color:#B98D24}
+html.paper .dt-time-digits{color:#8F6B17}
+html.paper .dt-period-btn{background:#fff;border-color:#D8CDBA;color:#3F4756}
+html.paper .dt-period-btn.on{background:rgba(201,162,75,.18);border-color:#B98D24;color:#8F6B17}
+html.paper .dt-bubble{background:#fff;border-color:#D8CDBA;color:#101B2D}
+html.paper .dt-bubble.on{background:#C9A24B;color:#fff}
+html.paper .dt-day-btn{background:#fff;color:#101B2D}
+html.paper .dt-day-btn.on{background:#C9A24B!important;color:#fff!important}
+html.paper .dt-cal-arrow{background:#fff;border-color:#D8CDBA;color:#8F6B17}
+html.paper .dt-cal-month-title{color:#8F6B17}
+
+@keyframes dt-fade-in{from{opacity:0}to{opacity:1}}
+@keyframes dt-slide-up{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes dt-modal-pop{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
 
 .ev-datetime-row{margin-bottom:4px}
 @media(max-width:600px){
@@ -4332,8 +4691,6 @@ html.paper .guest-counter-input{color:#9c6e08}
 html.paper .guest-counter-unit{color:#25271f}
 html.paper .guest-quick-pill{background:#fdfcf9;border-color:#ded7c8;color:#55594d}
 html.paper .guest-quick-pill.on{background:var(--gold);border-color:var(--gold);color:#fff}
-html.paper .datetime-preview{background:#F7F4EB;border-color:#DDD4C0;color:#55594D}
-html.paper .datetime-preview.has-val{background:rgba(201,162,75,.16);border-color:#C9A24B;color:#8F6B17}
 html.paper .events-lean-form{background:#fff!important;border-color:#d5d0c2!important;box-shadow:0 12px 36px rgba(0,0,0,.06)!important}
 html.paper .venue-card{background:#fff;border-color:#d5d0c2;color:#25271f}
 html.paper .venue-card.on{background:#fefbf2;border-color:#b98d24}
