@@ -1907,6 +1907,221 @@ function evPerks(){
   </div>
  </div>`;
 }
+function downloadGoldenTicket(){
+ const ar=AR(),T=t(),F=S.form;
+ const branchName=T.brs[S.branch]||(ar?'كامب شيزار':'Camp Caesar');
+ const branchSub=S.branch==='cc'?(ar?'فيو بانورامي على البحر والكورنيش':'Front-row Mediterranean sea view'):(ar?'أجواء شاطئ السرايا العريقة':'Saraya Beach heritage vibes');
+ const guestName=(F.name||'').trim()||(ar?'ضيف بورتوفينو العزيز':'Our Distinguished Guest');
+ const evType=F.evType||(ar?'احتفال خاص':'Special Celebration');
+ const guests=F.guestsN?(num(F.guestsN)+' '+(ar?'أفراد':'guests')):(ar?'لم يُحدد':'TBD');
+ const date=F.date?F.date:(ar?'لم يُحدد':'TBD');
+ const perksList=(Array.isArray(F.perks)&&F.perks.length)?F.perks.map(p=>getPerkName(p,ar)):[];
+
+ const canvas=document.createElement('canvas');
+ const W=900,H=1180;
+ canvas.width=W;canvas.height=H;
+ const ctx=canvas.getContext('2d');
+ if(!ctx){toast(ar?'تعذر إنشاء الصورة':'Cannot create image');return}
+
+ // Deep luxury background
+ const bg=ctx.createLinearGradient(0,0,W,H);
+ bg.addColorStop(0,'#0a110d');
+ bg.addColorStop(0.5,'#121b14');
+ bg.addColorStop(1,'#080d0a');
+ ctx.fillStyle=bg;
+ ctx.fillRect(0,0,W,H);
+
+ // Subtle radial gold glow in center
+ const glow=ctx.createRadialGradient(W/2,H/2,50,W/2,H/2,520);
+ glow.addColorStop(0,'rgba(217,174,72,0.16)');
+ glow.addColorStop(1,'rgba(0,0,0,0)');
+ ctx.fillStyle=glow;
+ ctx.fillRect(0,0,W,H);
+
+ // Golden decorative outer border
+ ctx.strokeStyle='rgba(217,174,72,0.7)';
+ ctx.lineWidth=3;
+ ctx.strokeRect(36,36,W-72,H-72);
+
+ // Golden inner thin border
+ ctx.strokeStyle='rgba(217,174,72,0.28)';
+ ctx.lineWidth=1;
+ ctx.strokeRect(46,46,W-92,H-92);
+
+ // Corner diamond flourishes
+ const drawFlourish=(x,y)=>{
+  ctx.fillStyle='#d9ae48';
+  ctx.beginPath();
+  ctx.arc(x,y,4.5,0,Math.PI*2);
+  ctx.fill();
+ };
+ drawFlourish(46,46);drawFlourish(W-46,46);drawFlourish(46,H-46);drawFlourish(W-46,H-46);
+
+ // Header: Brand and emblem
+ ctx.textAlign='center';
+ ctx.fillStyle='#d9ae48';
+ ctx.font='bold 21px "Cinzel", "Cairo", serif, sans-serif';
+ ctx.fillText('PORTOFINO · ALEXANDRIA', W/2, 96);
+
+ ctx.fillStyle='#ffffff';
+ ctx.font='bold 34px "Cinzel", "Cairo", serif, sans-serif';
+ ctx.fillText(ar?'بوليصة دعوة واحتفال ملكية':'VIP CELEBRATION INVITATION', W/2, 146);
+
+ ctx.fillStyle='rgba(217,174,72,0.88)';
+ ctx.font='16px "Cairo", sans-serif';
+ ctx.fillText(ar?'كورنيش الإسكندرية · أرقى أجواء المناسبات':'Alexandria Coastline · Bespoke Hospitality', W/2, 182);
+
+ // Dashed separator
+ ctx.beginPath();
+ ctx.strokeStyle='rgba(217,174,72,0.42)';
+ ctx.setLineDash([8,8]);
+ ctx.moveTo(70,215);
+ ctx.lineTo(W-70,215);
+ ctx.stroke();
+ ctx.setLineDash([]);
+
+ // Guest Card
+ ctx.fillStyle='rgba(217,174,72,0.1)';
+ if(typeof ctx.roundRect==='function'){
+  ctx.beginPath();ctx.roundRect(70, 245, W-140, 115, 16);ctx.fill();
+  ctx.strokeStyle='rgba(217,174,72,0.38)';ctx.stroke();
+ } else {
+  ctx.fillRect(70, 245, W-140, 115);
+ }
+
+ ctx.fillStyle='rgba(255,255,255,0.7)';
+ ctx.font='15px "Cairo", sans-serif';
+ ctx.fillText(ar?'الضيف الكريم':'HONORED GUEST', W/2, 280);
+
+ ctx.fillStyle='#ffffff';
+ ctx.font='bold 32px "Cairo", sans-serif';
+ ctx.fillText(guestName, W/2, 328);
+
+ // Details Grid (2 columns)
+ const drawBox=(x,y,w,h,label,val,subVal,isGold)=>{
+  ctx.fillStyle='rgba(255,255,255,0.04)';
+  if(typeof ctx.roundRect==='function'){
+   ctx.beginPath();ctx.roundRect(x,y,w,h,12);ctx.fill();
+   ctx.strokeStyle='rgba(255,255,255,0.09)';ctx.stroke();
+  } else ctx.fillRect(x,y,w,h);
+
+  ctx.textAlign=ar?'right':'left';
+  const tx=ar?x+w-20:x+20;
+  ctx.fillStyle='rgba(255,255,255,0.6)';
+  ctx.font='14px "Cairo", sans-serif';
+  ctx.fillText(label, tx, y+30);
+
+  ctx.fillStyle=isGold?'#d9ae48':'#ffffff';
+  ctx.font='bold 21px "Cairo", sans-serif';
+  ctx.fillText(val, tx, y+64);
+
+  if(subVal){
+   ctx.fillStyle='rgba(255,255,255,0.5)';
+   ctx.font='12.5px "Cairo", sans-serif';
+   ctx.fillText(subVal, tx, y+86);
+  }
+ };
+
+ const boxW=(W-160)/2;
+ drawBox(70, 385, boxW, 100, ar?'المناسبة السعيدة':'Occasion', evType, null, true);
+ drawBox(W/2+10, 385, boxW, 100, ar?'المقر المحجوز':'Venue', branchName, branchSub, false);
+ drawBox(70, 505, boxW, 95, ar?'تاريخ الحضور':'Date', date, null, false);
+ drawBox(W/2+10, 505, boxW, 95, ar?'عدد المدعوين':'Guests', guests, null, false);
+
+ // Perks Section
+ const py=625;
+ ctx.fillStyle='rgba(217,174,72,0.08)';
+ if(typeof ctx.roundRect==='function'){
+  ctx.beginPath();ctx.roundRect(70, py, W-140, 240, 16);ctx.fill();
+  ctx.strokeStyle='rgba(217,174,72,0.3)';ctx.stroke();
+ } else ctx.fillRect(70, py, W-140, 240);
+
+ ctx.textAlign=ar?'right':'left';
+ const ptx=ar?W-100:100;
+ ctx.fillStyle='#d9ae48';
+ ctx.font='bold 18px "Cairo", sans-serif';
+ ctx.fillText(ar?'✨ التجهيزات واللمسات الملكية المطلوبة:':'✨ VIP BESPOKE TOUCHES REQUESTED:', ptx, py+38);
+
+ ctx.fillStyle='#ffffff';
+ ctx.font='18px "Cairo", sans-serif';
+ if(perksList.length){
+  perksList.slice(0,5).forEach((p,i)=>{
+   ctx.fillText('•  '+p, ptx, py+82+(i*32));
+  });
+  if(perksList.length>5){
+   ctx.fillStyle='rgba(217,174,72,0.85)';
+   ctx.fillText('+ '+(perksList.length-5)+(ar?' تجهيزات أخرى':' more touches'), ptx, py+82+(5*32));
+  }
+ } else {
+  ctx.fillStyle='rgba(255,255,255,0.55)';
+  ctx.font='italic 17px "Cairo", sans-serif';
+  ctx.fillText(ar?'حجز القعدة وتنسيق اليوم مع إدارة الفرع':'Table reservation and direct event arrangement', ptx, py+95);
+ }
+
+ // Seal & Footer
+ const fy=900;
+ ctx.textAlign='center';
+ ctx.beginPath();
+ ctx.strokeStyle='rgba(217,174,72,0.4)';
+ ctx.setLineDash([8,8]);
+ ctx.moveTo(70,fy);
+ ctx.lineTo(W-70,fy);
+ ctx.stroke();
+ ctx.setLineDash([]);
+
+ ctx.fillStyle='#d9ae48';
+ ctx.font='bold 18px "Cairo", sans-serif';
+ ctx.fillText('✦ PORTOFINO VIP GUARANTEE ✦', W/2, fy+50);
+
+ ctx.fillStyle='rgba(255,255,255,0.68)';
+ ctx.font='15px "Cairo", sans-serif';
+ ctx.fillText(ar?'هذه البوليصة الرسمية تؤكد تفاصيل طلبكم وتصل مباشرة لمدير الفرع عبر واتساب.':'Official digital ticket for coordination with the branch manager on WhatsApp.', W/2, fy+85);
+
+ ctx.fillStyle='rgba(217,174,72,0.75)';
+ ctx.font='13px "Cairo", sans-serif';
+ ctx.fillText('portofino-restaurant.com · Alexandria', W/2, fy+120);
+
+ // Execute download or mobile share
+ const fileName=`Portofino-VIP-Ticket-${Date.now()}.png`;
+ function triggerDirectDownload(url){
+  const link=document.createElement('a');
+  link.download=fileName;
+  link.href=url;
+  document.body.appendChild(link);
+  link.click();
+  setTimeout(()=>{document.body.removeChild(link);},1500);
+  toast(ar?'تم تنزيل بوليصة احتفالك كصورة بنجاح 🎉':'VIP Ticket saved as image 🎉');
+ }
+
+ if(canvas.toBlob){
+  canvas.toBlob(blob=>{
+   if(!blob){
+    triggerDirectDownload(canvas.toDataURL('image/png'));
+    return;
+   }
+   const blobUrl=URL.createObjectURL(blob);
+   try{
+    const file=new File([blob],fileName,{type:'image/png'});
+    if(navigator.canShare&&navigator.canShare({files:[file]})){
+     navigator.share({
+      title:ar?'بوليصة دعوة واحتفال بورتوفينو':'Portofino VIP Invitation',
+      text:ar?`بوليصة احتفال ${guestName} في بورتوفينو`:`Portofino celebration ticket for ${guestName}`,
+      files:[file]
+     }).then(()=>{
+      toast(ar?'تمت المشاركة بنجاح 🎉':'Shared successfully 🎉');
+     }).catch(()=>{
+      triggerDirectDownload(blobUrl);
+     });
+     return;
+    }
+   }catch(e){}
+   triggerDirectDownload(blobUrl);
+  },'image/png');
+ } else {
+  triggerDirectDownload(canvas.toDataURL('image/png'));
+ }
+}
+
 function eventsContextHTML(){
  const ar=AR(),T=t(),F=S.form;
  const branchName=T.brs[S.branch]||(ar?'كامب شيزار':'Camp Caesar');
@@ -2326,10 +2541,18 @@ function vEvents(){
   </div>
 
   <!-- MINIMAL BOTTOM BRIDGE FOR KIDS CORNER -->
-  <div class="events-kids-soft-pill">
-   <span>🎈 ${ar?'بترتّبوا لعيد ميلاد طفل؟ شوفوا صور وأنشطة ركن أطفال بورتوفينو':'Planning a kids birthday? Explore Portofino Kids Corner'}</span>
-   <button class="btn gh sm" type="button" data-go="kids">${ar?'ركن الأطفال':'Kids Corner'} ›</button>
-  </div>
+  <aside class="events-kids-showcase-card">
+   <div class="kids-showcase-content">
+    <div class="kids-showcase-badge">🎈 ${ar?'للصغار احتفالهم الخاص':'For Little Celebrants'}</div>
+    <h3 class="kids-showcase-title">${ar?'بترتّبوا لعيد ميلاد طفل في بورتوفينو؟':'Planning a kids birthday celebration?'}</h3>
+    <p class="kids-showcase-desc">${ar?'ركن مجهز بالكامل بالألعاب، الأنشطة المبهجة، وتنسيق ثيمات الحفلات المخصصة لصغيركم.':'Fun play areas, joyful activities, and customized kids party themes.'}</p>
+   </div>
+   <div class="kids-showcase-action">
+    <button class="btn g sm kids-showcase-btn" type="button" data-go="kids">
+     <span>${ar?'اكتشف ركن الأطفال وحفلاتهم':'Explore Kids Corner & Parties'}</span> ${ico.arr()}
+    </button>
+   </div>
+  </aside>
 
  </div>`;
 }
@@ -3529,6 +3752,21 @@ html[dir="rtl"] #services-home .svcc-arrow{animation-name:service-arrow-nudge-rt
 @media(max-width:700px){#kids-home .kids-home-feature{grid-template-columns:1fr!important;border-radius:23px!important}#kids-home .kids-home-feature .kidsmedia{aspect-ratio:2.16/1!important}#kids-home .kids-home-feature .kidsmedia .kids-home-link{aspect-ratio:2.16/1!important}#kids-home .kids-home-feature .kidsbody,html:not(.paper) #kids-home .kids-home-feature .kidsbody{align-items:flex-start!important;justify-content:flex-start!important;padding:20px 19px 22px!important;border-inline-start:0!important;border-top:1px solid var(--line)!important;text-align:start!important}#kids-home .kids-home-feature .kidsbody h3,html:not(.paper) #kids-home .kids-home-feature .kidsbody h3{font-size:24px!important}#kids-home .kids-home-feature .kidsmedia .kids-cta{inset-inline:12px!important;bottom:12px!important;min-height:44px!important;font-size:14px!important}}
 @media(prefers-reduced-motion:reduce){#kids-home .kids-home-feature .kidsmedia .kids-home-link img.kids-home-poster{transition:none!important}}
 </style><style id="events-kids-journey-polish">
+/* Kids Showcase Card (Visible but Non-Distracting) */
+.events-kids-showcase-card{display:flex;align-items:center;justify-content:space-between;gap:20px;max-width:720px;margin:28px auto 0;padding:18px 22px;border-radius:20px;background:linear-gradient(135deg,color-mix(in srgb,var(--gold) 12%,var(--card)),var(--card) 65%);border:1px solid color-mix(in srgb,var(--gold) 35%,var(--line));box-shadow:0 8px 24px rgba(0,0,0,.08);transition:border-color .2s ease}
+.events-kids-showcase-card:hover{border-color:color-mix(in srgb,var(--gold) 55%,var(--line))}
+.kids-showcase-content{min-width:0;flex:1}
+.kids-showcase-badge{display:inline-block;font-size:11px;font-weight:800;color:var(--gold);letter-spacing:.06em;margin-bottom:4px}
+.kids-showcase-title{margin:0 0 4px;font-size:15px;font-weight:750;color:var(--ink);line-height:1.35}
+.kids-showcase-desc{margin:0;font-size:12.5px;color:var(--mist);line-height:1.5}
+.kids-showcase-action{flex-shrink:0}
+.kids-showcase-btn{min-height:42px;border-radius:99px;padding:8px 18px;font-size:13.5px;white-space:nowrap}
+@media(max-width:640px){.events-kids-showcase-card{flex-direction:column;align-items:stretch;gap:14px;padding:16px}.kids-showcase-btn{width:100%;justify-content:center}}
+
+html.paper .events-kids-showcase-card{background:linear-gradient(135deg,#fcf8ec,#fff 70%);border-color:#e4c77c;box-shadow:0 8px 24px rgba(0,0,0,.04)}
+html.paper .kids-showcase-title{color:#25271f}
+html.paper .kids-showcase-desc{color:#55594d}
+
 /* Soft & Lean Luxury Events Experience */
 .events-lean-hero{text-align:center;padding:clamp(20px,3.5vw,32px) clamp(16px,3vw,26px);margin-bottom:18px;border-radius:24px;background:linear-gradient(135deg,color-mix(in srgb,var(--gold) 8%,var(--card)),var(--card));border:1px solid color-mix(in srgb,var(--gold) 28%,var(--line));box-shadow:0 12px 36px rgba(0,0,0,.07)}
 .events-lean-hero-content{max-width:580px;margin:0 auto 16px}
