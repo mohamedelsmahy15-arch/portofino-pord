@@ -1885,16 +1885,58 @@ function evPerks(){
 }
 function eventsContextHTML(){
  const ar=AR(),T=t(),F=S.form;
- const evType=F.evType||(ar?'نوع المناسبة لم يُحدد':'Event type unselected');
- const guests=F.guestsN?(num(F.guestsN)+' '+(ar?'أفراد':'guests')):(ar?'الأفراد: لم يُحدد':'Guests: TBD');
- const date=F.date?F.date:(ar?'التاريخ: لم يُحدد':'Date: TBD');
- const perksCount=(Array.isArray(F.perks)&&F.perks.length)?(num(F.perks.length)+' '+(ar?'تجهيزات مختارة':'perks chosen')):(ar?'بدون تجهيزات إضافية':'No perks added');
- return `<div class="events-live-strip">
-  <div class="events-live-pill"><span>📍</span> <b>${T.brs[S.branch]}</b></div>
-  <div class="events-live-pill ${F.evType?'active':''}"><span>🎉</span> <b>${esc(evType)}</b></div>
-  <div class="events-live-pill ${F.guestsN?'active':''}"><span>👥</span> <b>${esc(guests)}</b></div>
-  <div class="events-live-pill ${F.date?'active':''}"><span>📅</span> <b>${esc(date)}</b></div>
-  <div class="events-live-pill ${Array.isArray(F.perks)&&F.perks.length?'has-perks':''}"><span>✨</span> <b>${esc(perksCount)}</b></div>
+ const branchName=T.brs[S.branch]||(ar?'كامب شيزار':'Camp Caesar');
+ const branchSub=S.branch==='cc'?(ar?'فيو بانورامي على البحر والكورنيش':'Front-row Mediterranean sea view'):(ar?'أجواء شاطئ السرايا العريقة':'Saraya Beach heritage vibes');
+ const guestName=(F.name||'').trim()||(ar?'ضيف بورتوفينو العزيز':'Our Distinguished Guest');
+ const evType=F.evType||(ar?'نوع المناسبة (يُحدد أعلاه)':'Occasion (select above)');
+ const guests=F.guestsN?(num(F.guestsN)+' '+(ar?'أفراد':'guests')):(ar?'لم يُحدد بعد':'TBD');
+ const date=F.date?F.date:(ar?'لم يُحدد بعد':'TBD');
+ const perksList=(Array.isArray(F.perks)&&F.perks.length)?F.perks.map(p=>getPerkName(p,ar)):[];
+
+ return `<div class="events-invitation-ticket" role="region" aria-label="${ar?'بوليصة دعوة واحتفال بورتوفينو':'Portofino VIP Invitation'}">
+  <div class="ticket-header">
+   <div class="ticket-brand">
+    <span class="ticket-diamond" aria-hidden="true">${ico.diamond}</span>
+    <div>
+     <span class="ticket-seal-text">${ar?'بورتوفينو · بوليصة الاحتفال الرسمية':'PORTOFINO · VIP CELEBRATION TICKET'}</span>
+     <h3 class="ticket-guest-title">${esc(guestName)}</h3>
+    </div>
+   </div>
+   <div class="ticket-status-pill">${ar?'✨ معاينة حية للمناسبة':'✨ Live Ticket Preview'}</div>
+  </div>
+
+  <div class="ticket-divider" aria-hidden="true"><span class="ticket-notch left"></span><span class="ticket-dash"></span><span class="ticket-notch right"></span></div>
+
+  <div class="ticket-grid">
+   <div class="ticket-col">
+    <span class="ticket-label">${ar?'المناسبة السعيدة':'Occasion'}</span>
+    <b class="ticket-val gold">${esc(evType)}</b>
+   </div>
+   <div class="ticket-col">
+    <span class="ticket-label">${ar?'المقر المحجوز':'Venue & Location'}</span>
+    <b class="ticket-val">${esc(branchName)} <small class="ticket-sub">${esc(branchSub)}</small></b>
+   </div>
+   <div class="ticket-col">
+    <span class="ticket-label">${ar?'تاريخ الحضور':'Date'}</span>
+    <b class="ticket-val" dir="ltr">${esc(date)}</b>
+   </div>
+   <div class="ticket-col">
+    <span class="ticket-label">${ar?'الصحبة الكريمة':'Guests'}</span>
+    <b class="ticket-val">${esc(guests)}</b>
+   </div>
+  </div>
+
+  <div class="ticket-perks-section">
+   <span class="ticket-label">${ar?'التجهيزات واللمسات الملكية المختارة:':'VIP Touches Selected:'}</span>
+   <div class="ticket-perks-tags">
+    ${perksList.length?perksList.map(p=>`<span class="ticket-perk-tag">${esc(p)}</span>`).join(''):`<span class="ticket-no-perks">${ar?'لم يتم اختيار تجهيزات إضافية (اضغط على أي كارت بالأعلى لإضافته للبوليصة)':'No extra perks selected yet (tap any perk card above to add)'}</span>`}
+   </div>
+  </div>
+
+  <div class="ticket-footer">
+   <span>${ico.diamond}</span>
+   <p>${ar?'تُرسل هذه البوليصة مباشرة لإدارة الفرع على واتساب لتأكيد التوافر وتجهيز اليوم المميز.':'This ticket will be sent directly to branch management via WhatsApp to confirm availability and arrangements.'}</p>
+  </div>
  </div>`;
 }
 function checkoutContextHTML(){
@@ -2151,44 +2193,167 @@ function vEvents(){
   <header class="events-intro events-hero-backdrop">
    <img class="events-hero-background-media" src="صور الموقع - من فيسبوك/57313542_2242592202430442_7974727088588455936_n.jpg" alt="${ar?'تورتة عيد ميلاد في أجواء بورتوفينو':'Birthday cake at Portofino'}" fetchpriority="high">
    <div class="events-hero-shade" aria-hidden="true"></div>
-   <div class="events-intro-copy"><p class="eyebrow">${ar?'مناسبات بورتوفينو':'PORTOFINO CELEBRATIONS'}</p><h1 class="disp">${ar?'مناسبتكم، على ذوقكم':'Your occasion, your way'}</h1><p class="lead">${ar?'عيد ميلاد رومانسي، لمّة عائلية، أو احتفال بطبقكم المفضل. نرتّب لكم قعدة تليق باللحظة في لوران أو كامب شيزار.':'Romantic birthdays, family gatherings, or a celebration built around your favorite food. Make the moment yours at Louran or Camp Caesar.'}</p><div class="events-intro-actions"><button class="btn g lg" type="button" data-act="jump" data-v="evf">${ar?'احكيلنا عن مناسبتك':'Plan your celebration'} ${ico.arr()}</button></div><p class="events-intro-note">${ar?'فريق الفرع يتواصل معاكم لتأكيد التفاصيل والتوافر.':'The branch team will follow up to confirm details and availability.'}</p></div>
+   <div class="events-intro-copy">
+    <p class="eyebrow">${ar?'مناسبات بورتوفينو الفاخرة':'PORTOFINO LUXURY CELEBRATIONS'}</p>
+    <h1 class="disp">${ar?'مناسبتكم، على ذوقكم':'Your occasion, your way'}</h1>
+    <p class="lead">${ar?'عيد ميلاد استثنائي، ذكرى سنوية، أو لمّة عائلية دافئة. نرتّب لكم قعدة تليق باللحظة على بحر الإسكندرية في لوران أو كامب شيزار.':'Romantic birthdays, family gatherings, or milestone moments. Let us curate an unforgettable experience on the Alexandria coast.'}</p>
+    <div class="events-intro-actions">
+     <button class="btn g lg" type="button" data-act="jump" data-v="evf">${ar?'ابدأ ترتيب مناسبتك الآن':'Design your celebration'} ${ico.arr()}</button>
+    </div>
+    <p class="events-intro-note">${ar?'فريق إدارة الفرع يتابع معكم فوراً لتأكيد التفاصيل والتوافر.':'Branch management follows up directly to confirm all details & availability.'}</p>
+   </div>
   </header>
 
- ${steps(1,ar?['تفاصيل المناسبة','مراجعة','واتساب والتأكيد']:['Event details','Review','WhatsApp & Confirm'])}
-
- <div class="events-form-wrapper" style="max-width:720px;margin:28px auto 0">
-  ${eventsCartBanner()}
-  <form class="card form final-form" id="evf" novalidate>
-   <div class="final-form-head"><span class="final-form-icon" aria-hidden="true">${ico.diamond}</span><div><p class="eyebrow">${ar?'تفاصيل الاحتفال':'CELEBRATION DETAILS'}</p><div class="disp final-form-title">${T.evForm}</div><p class="final-form-hint">${ar?'اكتب التفاصيل الأساسية، وفي الخطوة القادمة هتراجع كل شيء قبل التواصل مع الفرع.':'Share a few details. In the next step you will review everything before connecting with the branch.'}</p></div></div>
-   <div class="fld"><label>${T.branch}</label><div class="seg" style="display:flex">${['cc','lo'].map(b=>`<button type="button" style="flex:1" data-act="branch" data-v="${b}" class="${S.branch===b?'on':''}">${T.brs[b]}</button>`).join('')}</div></div>
-   <div class="row2">${field('name',T.name)}${field('phone',T.phone,'tel','inputmode="tel"')}</div>
-   ${evTypes()}
-   <div class="row2">${field('guestsN',T.guestsN,'number','min="1"')}${field('date',T.date,'date')}</div>
-   ${evPerks()}
-   ${field('notes',ar?'احكيلنا عن فكرة احتفالك وأي تفاصيل خاصة تحبها':'Tell us about your celebration idea & special requests','textarea',`placeholder="${ar?'مثلاً: مفاجأة لصاحب المناسبة، توقيت إحضار التورتة، ترتيبات المقاعد، أو أي طلب يسعدكم...':'E.g., Surprise party timing, when to bring the cake, table arrangements, special requests...'}"`)}
-
-   <div class="events-summary-wrapper" style="margin-top:14px">
-    <div style="font-size:13px;font-weight:700;color:var(--gold);margin-bottom:8px;display:flex;align-items:center;gap:6px">${ico.diamond} ${ar?'ملخص تفاصيل المناسبة المباشر:':'Live celebration summary:'}</div>
-    <div id="events-context">${eventsContextHTML()}</div>
+  <div class="events-moments-reel" aria-label="${ar?'معرض لحظات بورتوفينو الملهمة':'Portofino Moments Reel'}">
+   <div class="moments-reel-header">
+    <span class="eyebrow">${ar?'أجواء لا تُنسى في بورتوفينو':'MOMENTS OF JOY AT PORTOFINO'}</span>
+    <h3 class="disp moments-reel-title">${ar?'لحظات محفورة في الذاكرة على كورنيش الإسكندرية':'Celebrations curated with care'}</h3>
    </div>
-
-   <div style="margin-top:20px">
-    <button class="btn g lg" type="submit" style="width:100%;justify-content:center;font-size:16px;min-height:54px">${ar?'متابعة لمراجعة تفاصيل المناسبة':'Continue to review celebration'} ${ico.arr()}</button>
-    <p class="calm" style="margin-top:10px;text-align:center">${ar?'✨ مفيش دفع أونلاين ولا إرسال تلقائي. هتراجع كل التفاصيل قبل فتح محادثة واتساب الرسمية مع الفرع.':'✨ No online payment or auto-send. You will review all details before opening WhatsApp.'}</p>
-    <p class="ds" style="margin-top:12px;text-align:center">${T.evNote}</p>
+   <div class="moments-reel-track">
+    <div class="moment-card">
+     <div class="moment-card-icon">🎂</div>
+     <strong>${ar?'أعياد ميلاد استثنائية':'Signature Birthdays'}</strong>
+     <p>${ar?'تورتة طازجة، شموع، واحتفال مميز مع صوت الأمواج':'Fresh cakes, candles & joy by the Mediterranean'}</p>
+    </div>
+    <div class="moment-card">
+     <div class="moment-card-icon">🌊</div>
+     <strong>${ar?'طاولات فيو البحر الملكية':'Front-Row Sea Tables'}</strong>
+     <p>${ar?'أجمل إطلالة مباشرة على كورنيش كامب شيزار وشاطئ السرايا':'Panoramic sunset skies and front-row coastal views'}</p>
+    </div>
+    <div class="moment-card">
+     <div class="moment-card-icon">✨</div>
+     <strong>${ar?'تنسيق شخصي متكامل':'Bespoke Coordination'}</strong>
+     <p>${ar?'فريق الفرع يجهز الديكور والأغاني والمنيو حسب رغبتكم':'Personalized decor, music & custom menu arrangements'}</p>
+    </div>
    </div>
-  </form>
- </div>
+  </div>
 
- <aside class="events-kids-bridge" style="margin-top:40px"><div><p class="eyebrow">${ar?'وللصغيرين احتفالهم':'A little celebration for little guests'}</p><h2>${ar?'عيد ميلادهم له ركنه في بورتوفينو':'Their birthday has its own happy place'}</h2><p>${ar?'شوفوا أنشطة الأطفال وصور حفلاتهم، واطلبوا ترتيب احتفالهم في ركن الأطفال المخصص.':'Explore kids activities and party ideas, then request a celebration in the dedicated Kids Corner.'}</p></div><button class="btn g" type="button" data-go="kids">${ar?'اكتشف حفلات الأطفال':'Explore kids celebrations'} ${ico.arr()}</button></aside>
+  ${steps(1,ar?['تفاصيل المناسبة','مراجعة البوليصة','واتساب والتأكيد']:['Event details','Review ticket','WhatsApp & Confirm'])}
 
-</div>`;
+  <div class="events-form-wrapper" style="max-width:760px;margin:28px auto 0">
+   ${eventsCartBanner()}
+
+   <form class="card form final-form events-canvas-form" id="evf" novalidate>
+    <div class="final-form-head">
+     <span class="final-form-icon" aria-hidden="true">${ico.diamond}</span>
+     <div>
+      <p class="eyebrow">${ar?'بوابة المناسبات الخاصة':'PRIVATE CELEBRATIONS CANVAS'}</p>
+      <div class="disp final-form-title">${T.evForm}</div>
+      <p class="final-form-hint">${ar?'رتّب فصول مناسبتك في 3 خطوات بسيطة، والبوليصة ستتحدث أمامك لحظياً قبل التأكيد مع الفرع.':'Curate your celebration across 3 intuitive chapters. Your VIP ticket updates live below.'}</p>
+     </div>
+    </div>
+
+    <!-- CHAPTER 1: المقر والمناسبة -->
+    <div class="canvas-chapter">
+     <div class="canvas-chapter-head">
+      <span class="canvas-chapter-num">01</span>
+      <div>
+       <p class="eyebrow">${ar?'المحطة الأولى':'CHAPTER 01'}</p>
+       <h2 class="canvas-chapter-title">${ar?'أين وكيف ستحتفلون؟':'Where & What are you celebrating?'}</h2>
+       <p class="canvas-chapter-hint">${ar?'اختر الفرع المناسب لكم ونوع اللحظة التي تجمعكم':'Select your preferred venue and occasion'}</p>
+      </div>
+     </div>
+
+     <div class="fld">
+      <label>${T.branch}</label>
+      <div class="venue-cards-grid" role="radiogroup" aria-label="${T.branch}">
+       <button type="button" class="venue-card ${S.branch==='cc'?'on':''}" data-act="branch" data-v="cc" role="radio" aria-checked="${S.branch==='cc'}">
+        <div class="venue-card-icon">🌊</div>
+        <div class="venue-card-info">
+         <strong class="venue-card-name">${T.brs.cc}</strong>
+         <p class="venue-card-desc">${ar?'إطلالة بانورامية مباشرة على البحر وأمواج الكورنيش':'Panoramic front-row Mediterranean view'}</p>
+        </div>
+        <span class="venue-card-check" aria-hidden="true">${S.branch==='cc'?'✓':''}</span>
+       </button>
+       <button type="button" class="venue-card ${S.branch==='lo'?'on':''}" data-act="branch" data-v="lo" role="radio" aria-checked="${S.branch==='lo'}">
+        <div class="venue-card-icon">🏛️</div>
+        <div class="venue-card-info">
+         <strong class="venue-card-name">${T.brs.lo}</strong>
+         <p class="venue-card-desc">${ar?'أجواء السرايا العريقة وجلسات العائلات الهادئة':'Saraya Beach heritage vibes & family serenity'}</p>
+        </div>
+        <span class="venue-card-check" aria-hidden="true">${S.branch==='lo'?'✓':''}</span>
+       </button>
+      </div>
+     </div>
+
+     ${evTypes()}
+    </div>
+
+    <!-- CHAPTER 2: لمسات الدلال والـ VIP -->
+    <div class="canvas-chapter">
+     <div class="canvas-chapter-head">
+      <span class="canvas-chapter-num">02</span>
+      <div>
+       <p class="eyebrow">${ar?'المحطة الثانية':'CHAPTER 02'}</p>
+       <h2 class="canvas-chapter-title">${ar?'لمسات الدلال والتجهيزات الملكية':'VIP Touches & Bespoke Perks'}</h2>
+       <p class="canvas-chapter-hint">${ar?'خيارات إضافية لتنسيق أجواء تليق بلحظتكم السعيدة (اضغط على أي كارت لاختياره):':'Tailored touches to make your day unforgettable (tap any card to select):'}</p>
+      </div>
+     </div>
+
+     ${evPerks()}
+    </div>
+
+    <!-- CHAPTER 3: تفاصيل الموعد والمدعوين -->
+    <div class="canvas-chapter">
+     <div class="canvas-chapter-head">
+      <span class="canvas-chapter-num">03</span>
+      <div>
+       <p class="eyebrow">${ar?'المحطة الثالثة':'CHAPTER 03'}</p>
+       <h2 class="canvas-chapter-title">${ar?'بيانات الحضور والمفاجأة':'Date, Guests & Celebration Notes'}</h2>
+       <p class="canvas-chapter-hint">${ar?'حدد تاريخ الحضور والعدد واكتب أي فكرة أو ترتيب مفاجأة في بالك':'Set the date, guest count, and share any surprise plans'}</p>
+      </div>
+     </div>
+
+     <div class="row2">
+      ${field('guestsN',T.guestsN,'number','min="1"')}
+      ${field('date',T.date,'date')}
+     </div>
+
+     <div class="row2">
+      ${field('name',T.name)}
+      ${field('phone',T.phone,'tel','inputmode="tel"')}
+     </div>
+
+     ${field('notes',ar?'احكيلنا عن فكرة احتفالك وأي تفاصيل خاصة تحبها':'Tell us your celebration idea & special requests','textarea',`placeholder="${ar?'مثلاً: مفاجأة لصاحب المناسبة، توقيت إحضار التورتة، ترتيبات المقاعد، أو أي تفاصيل تسعدكم... وسيب الباقي علينا ✨':'E.g., Surprise party timing, when to bring the cake, table arrangements, special requests...'}"`)}
+    </div>
+
+    <!-- LIVE GOLDEN INVITATION TICKET -->
+    <div class="canvas-ticket-section" style="margin-top:20px">
+     <div style="font-size:13.5px;font-weight:700;color:var(--gold);margin-bottom:8px;display:flex;align-items:center;gap:6px">
+      ${ico.diamond} ${ar?'بوليصة المناسبة الحية (تتحدّث تلقائياً مع اختياراتك):':'Live VIP Ticket (updates dynamically as you type):'}
+     </div>
+     <div id="events-context">${eventsContextHTML()}</div>
+    </div>
+
+    <!-- ACTION BUTTON & REASSURANCE -->
+    <div class="canvas-submit-box" style="margin-top:24px">
+     <button class="btn g lg canvas-submit-btn" type="submit" style="width:100%;justify-content:center;font-size:16.5px;min-height:56px">
+      <span>${ar?'متابعة لمراجعة بوليصة المناسبة':'Continue to review celebration ticket'}</span> ${ico.arr()}
+     </button>
+     <p class="calm canvas-submit-note" style="margin-top:12px;text-align:center">${ar?'✨ مفيش دفع أونلاين ولا إرسال تلقائي. هتراجع كل تفاصيل بوليصتك قبل فتح محادثة واتساب الرسمية مع إدارة الفرع.':'✨ No online payment or auto-send. You will review all details before opening WhatsApp.'}</p>
+     <p class="ds" style="margin-top:10px;text-align:center">${T.evNote}</p>
+    </div>
+   </form>
+  </div>
+
+  <aside class="events-kids-bridge" style="margin-top:44px">
+   <div>
+    <p class="eyebrow">${ar?'وللصغيرين احتفالهم':'A little celebration for little guests'}</p>
+    <h2>${ar?'عيد ميلادهم له ركنه في بورتوفينو':'Their birthday has its own happy place'}</h2>
+    <p>${ar?'شوفوا أنشطة الأطفال وصور حفلاتهم، واطلبوا ترتيب احتفالهم في ركن الأطفال المخصص.':'Explore kids activities and party ideas, then request a celebration in the dedicated Kids Corner.'}</p>
+   </div>
+   <button class="btn g" type="button" data-go="kids">${ar?'اكتشف حفلات الأطفال':'Explore kids celebrations'} ${ico.arr()}</button>
+  </aside>
+
+ </div>`;
 }
+
 const EVT=[['عيد ميلاد','Birthday'],['ذكرى سنوية','Anniversary'],['خطوبة / كتب كتاب','Engagement / wedding'],['عزومة عائلية','Family gathering'],['لمّة أصحاب','Friends get-together'],['حفلة أطفال','Kids party'],['تخرج / نجاح','Graduation / achievement'],['اجتماع عمل / شركة','Business / corporate'],['مناسبة أخرى','Other']];
 function localizeEventType(value,from,to){const i=EVT.findIndex(x=>x[from]===value);return i<0?value:EVT[i][to]}
 function evTypes(){
  const T=t();const e=S.errors.evType;const cur=S.form.evType||'';const other=EVT[EVT.length-1][AR()?0:1];
- return `<div class="fld ${e?'bad':''}"><label>${T.evType}</label><div class="opts" role="group" aria-label="${T.evType}">${EVT.map(x=>{const v=x[AR()?0:1];return `<button type="button" class="chip ${cur===v?'on':''}" data-act="evt" data-v="${esc(v)}">${cur===v?'✓ ':''}${v}</button>`}).join('')}</div>${cur===other?field('evOther',AR()?'اكتب نوع المناسبة':'Describe the event'):''}${e?`<div class="er">● ${e}</div>`:''}</div>`;
+ const EVT_ICONS={'عيد ميلاد':'🎂','Birthday':'🎂','ذكرى سنوية':'🥂','Anniversary':'🥂','خطوبة / كتب كتاب':'💍','Engagement / wedding':'💍','عزومة عائلية':'👨‍👩‍👧‍👦','Family gathering':'👨‍👩‍👧‍👦','لمّة أصحاب':'✨','Friends get-together':'✨','حفلة أطفال':'🎈','Kids party':'🎈','تخرج / نجاح':'🎓','Graduation / achievement':'🎓','اجتماع عمل / شركة':'💼','Business / corporate':'💼','مناسبة أخرى':'🌟','Other':'🌟'};
+ return `<div class="fld ${e?'bad':''}"><label>${T.evType}</label><div class="opts" role="group" aria-label="${T.evType}">${EVT.map(x=>{const v=x[AR()?0:1];const icon=EVT_ICONS[v]||'✨';return `<button type="button" class="chip ${cur===v?'on':''}" data-act="evt" data-v="${esc(v)}">${cur===v?'✓ ':icon+' '}${v}</button>`}).join('')}</div>${cur===other?field('evOther',AR()?'اكتب نوع المناسبة':'Describe the event'):''}${e?`<div class="er">● ${e}</div>`:''}</div>`;
 }
 function calm(){return `<p class="calm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>${AR()?'مفيش دفع دلوقتي. الفرع هيراجع طلبك ويأكد معاك على واتساب.':'Nothing to pay now. The branch will review your order and confirm with you on WhatsApp.'}</p>`}
 function formWhatsAppMessage(kind){
@@ -2349,7 +2514,7 @@ document.addEventListener('click',e=>{
   else{const i=S.cart.findIndex(c=>c.id===id&&c.o===+el.dataset.o);if(i>=0){S.cart[i].q+=(+el.dataset.v);if(S.cart[i].q<=0)S.cart.splice(i,1)}}
   soft();return;
  }
- if(act==='branch'){S.branch=el.dataset.v;el.parentElement.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.v===S.branch));const cctx=document.getElementById('checkout-context');if(cctx)cctx.innerHTML=checkoutContextHTML();const ectx=document.getElementById('events-context');if(ectx)ectx.innerHTML=eventsContextHTML();const rctx=document.querySelector('.rsum .tot b');if(rctx)rctx.textContent=t().brs[S.branch]}
+ if(act==='branch'){S.branch=el.dataset.v;el.parentElement.querySelectorAll('button').forEach(b=>{b.classList.toggle('on',b.dataset.v===S.branch);const chk=b.querySelector('.venue-card-check');if(chk)chk.textContent=b.dataset.v===S.branch?'✓':'';b.setAttribute('aria-checked',b.dataset.v===S.branch?'true':'false');});const cctx=document.getElementById('checkout-context');if(cctx)cctx.innerHTML=checkoutContextHTML();const ectx=document.getElementById('events-context');if(ectx)ectx.innerHTML=eventsContextHTML();const rctx=document.querySelector('.rsum .tot b');if(rctx)rctx.textContent=t().brs[S.branch]}
  if(el.dataset.go&&cartCount()>0&&el.matches('.branch-actions .order')){S.cartOpen=true;S.menuOpen=false;S.done=null;saveState();render();return} if(el.dataset.go){ if(el.closest('#home-shortcuts-panel'))S.homeShortcutsOpen=false;if(el.dataset.eventType){activateForm('events');S.form.evType=el.dataset.eventType} if(el.dataset.service){
   if(cartHasShisha()&&el.dataset.service!=='table'){
    S.service='table';
@@ -3354,6 +3519,80 @@ html[dir="rtl"] #services-home .svcc-arrow{animation-name:service-arrow-nudge-rt
 @media(max-width:700px){#kids-home .kids-home-feature{grid-template-columns:1fr!important;border-radius:23px!important}#kids-home .kids-home-feature .kidsmedia{aspect-ratio:2.16/1!important}#kids-home .kids-home-feature .kidsmedia .kids-home-link{aspect-ratio:2.16/1!important}#kids-home .kids-home-feature .kidsbody,html:not(.paper) #kids-home .kids-home-feature .kidsbody{align-items:flex-start!important;justify-content:flex-start!important;padding:20px 19px 22px!important;border-inline-start:0!important;border-top:1px solid var(--line)!important;text-align:start!important}#kids-home .kids-home-feature .kidsbody h3,html:not(.paper) #kids-home .kids-home-feature .kidsbody h3{font-size:24px!important}#kids-home .kids-home-feature .kidsmedia .kids-cta{inset-inline:12px!important;bottom:12px!important;min-height:44px!important;font-size:14px!important}}
 @media(prefers-reduced-motion:reduce){#kids-home .kids-home-feature .kidsmedia .kids-home-link img.kids-home-poster{transition:none!important}}
 </style><style id="events-kids-journey-polish">
+/* Luxury Single Canvas for Events */
+.events-moments-reel{margin:24px 0 26px;padding:22px 24px;border-radius:24px;background:linear-gradient(135deg,color-mix(in srgb,var(--gold) 9%,var(--card)),var(--card));border:1px solid color-mix(in srgb,var(--gold) 32%,var(--line));box-shadow:0 12px 36px rgba(0,0,0,.08)}
+.moments-reel-header{text-align:center;margin-bottom:16px}
+.moments-reel-header .eyebrow{margin:0 0 4px;font-size:11px;color:var(--gold);font-weight:800;letter-spacing:.08em}
+.moments-reel-title{font-size:clamp(17px,2.4vw,22px);margin:0;color:var(--ink);line-height:1.3}
+.moments-reel-track{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.moment-card{display:flex;flex-direction:column;align-items:center;text-align:center;padding:16px 14px;border-radius:16px;background:var(--card2);border:1px solid var(--line);transition:transform .22s ease,border-color .22s ease}
+.moment-card:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--gold) 45%,var(--line))}
+.moment-card-icon{font-size:26px;margin-bottom:8px;line-height:1}
+.moment-card strong{font-size:13.5px;color:var(--ink);display:block;margin-bottom:4px}
+.moment-card p{margin:0;font-size:12px;color:var(--mist);line-height:1.45}
+
+.events-canvas-form{border-radius:28px!important;padding:clamp(20px,4vw,38px)!important;background:linear-gradient(180deg,color-mix(in srgb,var(--gold) 6%,var(--card)),var(--card) 26%)!important;border:1px solid color-mix(in srgb,var(--gold) 35%,var(--line))!important;box-shadow:0 18px 48px rgba(0,0,0,.12)}
+.canvas-chapter{padding-bottom:28px;margin-bottom:28px;border-bottom:1px dashed color-mix(in srgb,var(--gold) 32%,var(--line))}
+.canvas-chapter:last-of-type{border-bottom:none;padding-bottom:12px;margin-bottom:16px}
+.canvas-chapter-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px}
+.canvas-chapter-num{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;background:color-mix(in srgb,var(--gold) 15%,transparent);color:var(--gold);font-weight:800;font-size:14px;border:1px solid color-mix(in srgb,var(--gold) 35%,transparent);flex-shrink:0;margin-top:2px}
+.canvas-chapter-head .eyebrow{margin:0 0 2px;font-size:11px;color:var(--gold);font-weight:800;letter-spacing:.08em}
+.canvas-chapter-title{margin:0;font-size:clamp(17px,2.2vw,21px);color:var(--ink);line-height:1.25}
+.canvas-chapter-hint{margin:4px 0 0;font-size:12.5px;color:var(--mist);line-height:1.5}
+
+.venue-cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
+@media(max-width:580px){.venue-cards-grid{grid-template-columns:1fr}}
+.venue-card{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:16px;background:var(--card2);border:1px solid var(--line);color:var(--ink);cursor:pointer;text-align:start;transition:all .22s ease;font-family:inherit;width:100%}
+.venue-card:hover{border-color:color-mix(in srgb,var(--gold) 50%,var(--line));background:color-mix(in srgb,var(--gold) 6%,var(--card2));transform:translateY(-1px)}
+.venue-card.on{border-color:var(--gold);background:linear-gradient(135deg,color-mix(in srgb,var(--gold) 16%,var(--card2)),var(--card2));box-shadow:0 6px 20px rgba(217,174,72,.14)}
+.venue-card-icon{font-size:24px;flex-shrink:0;line-height:1}
+.venue-card-info{flex:1;min-width:0}
+.venue-card-name{display:block;font-size:14px;font-weight:700;color:var(--ink);line-height:1.3}
+.venue-card.on .venue-card-name{color:var(--gold)}
+.venue-card-desc{margin:3px 0 0;font-size:11.5px;color:var(--mist);line-height:1.4}
+.venue-card-check{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:color-mix(in srgb,var(--ink) 8%,transparent);color:var(--mist);font-size:12px;font-weight:700;flex-shrink:0}
+.venue-card.on .venue-card-check{background:var(--gold);color:#121811}
+
+/* Live Golden Invitation Ticket */
+.events-invitation-ticket{position:relative;background:linear-gradient(145deg,#0d1510,#141e17);border:1.5px solid color-mix(in srgb,var(--gold) 55%,transparent);border-radius:20px;padding:22px 24px;color:#fff;box-shadow:0 12px 32px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.08);margin-top:10px}
+.ticket-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.ticket-brand{display:flex;align-items:center;gap:10px}
+.ticket-diamond{color:var(--gold);font-size:20px;display:flex;align-items:center}
+.ticket-seal-text{display:block;font-size:10.5px;letter-spacing:.08em;color:var(--gold);font-weight:800}
+.ticket-guest-title{margin:2px 0 0;font-size:17px;font-weight:800;color:#fff}
+.ticket-status-pill{font-size:11px;font-weight:700;padding:4px 10px;border-radius:99px;background:rgba(217,174,72,.15);border:1px solid rgba(217,174,72,.4);color:var(--gold);white-space:nowrap}
+.ticket-divider{position:relative;height:14px;display:flex;align-items:center;margin:4px -24px 16px}
+.ticket-notch{width:16px;height:16px;border-radius:50%;background:var(--card);position:absolute;top:50%;transform:translateY(-50%)}
+.ticket-notch.left{right:-8px}
+.ticket-notch.right{left:-8px}
+.ticket-dash{flex:1;height:1px;border-top:1px dashed rgba(217,174,72,.35);margin:0 14px}
+.ticket-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px 16px;margin-bottom:16px}
+@media(max-width:540px){.ticket-grid{grid-template-columns:1fr}}
+.ticket-col{display:flex;flex-direction:column;gap:3px}
+.ticket-label{font-size:11px;color:rgba(255,255,255,.6);letter-spacing:.04em}
+.ticket-val{font-size:14px;color:#fff;font-weight:700}
+.ticket-val.gold{color:var(--gold)}
+.ticket-sub{display:block;font-size:11px;color:rgba(255,255,255,.55);font-weight:normal;margin-top:2px}
+.ticket-perks-section{padding-top:12px;border-top:1px dashed rgba(255,255,255,.1);margin-top:6px}
+.ticket-perks-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.ticket-perk-tag{display:inline-flex;align-items:center;font-size:11.5px;padding:3px 9px;border-radius:6px;background:rgba(217,174,72,.18);border:1px solid rgba(217,174,72,.45);color:#f7df96;font-weight:600}
+.ticket-no-perks{font-size:11.5px;color:rgba(255,255,255,.45);font-style:italic}
+.ticket-footer{display:flex;align-items:center;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.08);font-size:11.5px;color:rgba(255,255,255,.65)}
+.ticket-footer span{color:var(--gold);font-size:14px;flex-shrink:0}
+.ticket-footer p{margin:0;line-height:1.4}
+
+/* Paper Theme Overrides */
+html.paper .events-canvas-form{background:#fff!important;border-color:#d5d0c2!important;box-shadow:0 12px 36px rgba(0,0,0,.06)!important}
+html.paper .events-moments-reel{background:#fdfbf7;border-color:#e4dcce}
+html.paper .moment-card{background:#fff;border-color:#e0d9cb}
+html.paper .venue-card{background:#fff;border-color:#d5d0c2;color:#25271f}
+html.paper .venue-card.on{background:#fefbf2;border-color:#b98d24}
+html.paper .venue-card-name{color:#25271f}
+html.paper .venue-card.on .venue-card-name{color:#9c6e08}
+html.paper .canvas-chapter-num{background:#f8eed4;border-color:#d9b85c;color:#7d5904}
+html.paper .events-invitation-ticket{background:linear-gradient(145deg,#232b24,#1a201b);border-color:#b98d24;box-shadow:0 12px 32px rgba(0,0,0,.15)}
+html.paper .ticket-notch{background:#fff}
+
 .events-form-wrapper{max-width:720px;margin:28px auto 0}
 .events-cart-badge{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 18px;margin-bottom:20px;border:1px solid color-mix(in srgb,var(--gold) 38%,var(--line));border-radius:18px;background:linear-gradient(135deg,color-mix(in srgb,var(--gold) 10%,var(--card)),var(--card));box-shadow:0 8px 24px rgba(0,0,0,.06)}
 .events-cart-badge-body{display:flex;align-items:center;gap:12px;min-width:0}
