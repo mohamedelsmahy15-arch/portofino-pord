@@ -14,3 +14,8 @@ Desktop.ini
 scratch/
 _media_backup/
 *.backup-*
+
+# Test files and reports
+TEST-*
+*اختبار*
+*.pdf
