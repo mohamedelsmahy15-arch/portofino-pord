@@ -2816,7 +2816,11 @@ function vReserve(){
  <div class="layout2" style="margin-top:28px"><form class="card form final-form" id="resf" novalidate onsubmit="event.preventDefault();">
   <div class="fld"><label>${T.branch}</label><div class="seg" style="display:flex">${['cc','lo'].map(b=>`<button type="button" style="flex:1" data-act="branch" data-v="${b}" class="${S.branch===b?'on':''}">${T.brs[b]}</button>`).join('')}</div></div>
   <div class="row2">${field('date',T.date,'date',`min="${today}"`)}${field('time',T.time,'time')}</div>
-  <div class="fld"><label>${T.party}</label><div class="stp" style="display:flex;justify-content:space-between;min-height:56px;border-radius:12px"><button type="button" data-act="party" data-v="-1" aria-label="-">−</button><span style="align-self:center;font-size:17px">${num(S.party)} ${T.guests}</span><button type="button" data-act="party" data-v="1" aria-label="+">+</button></div></div>
+  <div class="fld"><label>${T.party}</label><div class="stp" style="display:flex;justify-content:space-between;min-height:56px;border-radius:12px"><button type="button" data-act="party" data-v="-1" aria-label="${AR()?'تقليل عدد الأفراد':'Decrease guests'}">−</button><span id="res-party-display" style="align-self:center;font-size:17px;font-weight:700">${num(S.party)} ${T.guests}</span><button type="button" data-act="party" data-v="1" aria-label="${AR()?'زيادة عدد الأفراد':'Increase guests'}">+</button></div>
+  <div class="guest-quick-pills" role="toolbar" aria-label="${AR()?'خيارات سريعة لعدد الأفراد':'Quick party sizes'}">
+   <span class="quick-pill-label">${AR()?'أو اختر سعة الطاولة:':'Popular sizes:'}</span>
+   ${[2,4,6,8,10,12].map(n=>`<button type="button" class="guest-quick-pill res-party-pill ${S.party===n?'on':''}" data-act="party-set" data-v="${n}">${num(n)}</button>`).join('')}
+  </div></div>
   <div class="row2">${field('name',T.name)}${field('phone',T.phone,'tel','inputmode="tel" autocomplete="tel"')}</div>
   ${field('notes',T.notes,'textarea')}
   <div class="note">${ico.warn}<div>${AR()?'للمجموعات الكبيرة: الحجز بيتم قبلها بـ ٢٤ ساعة على الأقل. للمناسبات والحفلات كلمنا من صفحة':'Large groups: please request at least 24 hours ahead. For events and celebrations, use the'} <button type="button" class="lnkb" data-go="events">${T.nav.events}</button></div></div>
@@ -2825,7 +2829,7 @@ function vReserve(){
    <p class="calm" style="margin-top:10px">${AR()?'الحجز لا يُعتمد إلا بعد المراجعة وتأكيد مدير الصالة بالفرع عبر واتساب.':'The booking is confirmed only after review and confirmation by the branch manager on WhatsApp.'}</p>
    </div></form>
  <aside class="card sum rsum"><div class="disp" style="font-size:24px">${T.resT}</div>
-  <div class="tot"><span>${T.branch}</span><b style="color:var(--ink)">${T.brs[S.branch]}</b></div><div class="tot"><span>${T.party}</span><b style="color:var(--ink)">${num(S.party)}</b></div>
+  <div class="tot"><span>${T.branch}</span><b style="color:var(--ink)" id="rsum-branch-val">${T.brs[S.branch]}</b></div><div class="tot"><span>${T.party}</span><b style="color:var(--ink)" id="rsum-party-val">${num(S.party)}</b></div>
   <div style="height:1px;background:var(--line)"></div>
   ${S.cart.length?`<div style="font-size:13px;letter-spacing:.1em;color:var(--gold);font-weight:600">${T.attached}</div>${summaryBlock()}<div class="tot big"><span>${T.total}</span><b>${money(cartTotal())}</b></div>`:`<div class="ds">${T.statusW}</div>`}</aside></div></div>`;
 }
@@ -2945,7 +2949,7 @@ function evGuestsCounter(){
   </div>
   <div class="guest-quick-pills" role="toolbar" aria-label="${ar?'خيارات سريعة لعدد الأفراد':'Quick party sizes'}">
    <span class="quick-pill-label">${ar?'أو اختر سعة الحضور:':'Popular sizes:'}</span>
-   ${[5,10,15,20,30,50].map(n=>`<button type="button" class="guest-quick-pill ${current===n?'on':''}" data-act="ev-guests-set" data-v="${n}">${num(n)}</button>`).join('')}
+   ${[5,10,15,20,30,50].map(n=>`<button type="button" class="guest-quick-pill ev-party-pill ${current===n?'on':''}" data-act="ev-guests-set" data-v="${n}">${num(n)}</button>`).join('')}
   </div>
   ${e?`<div class="er">● ${e}</div>`:''}
  </div>`;
@@ -3355,9 +3359,9 @@ document.addEventListener('click',e=>{
   if(cctx)cctx.innerHTML=checkoutContextHTML();
   const ectx=document.getElementById('events-context');
   if(ectx)ectx.innerHTML=eventsContextHTML();
-  const rctx=document.querySelector('.rsum .tot b');
+  const rctx=document.getElementById('rsum-branch-val')||document.querySelector('.rsum .tot b');
   if(rctx)rctx.textContent=t().brs[S.branch];
-  if(S.view==='events'||S.view==='checkout') return;
+  if(S.view==='events'||S.view==='checkout'||S.view==='reserve'){saveState();return;}
  }
  if(el.dataset.go&&cartCount()>0&&el.matches('.branch-actions .order')){S.cartOpen=true;S.menuOpen=false;S.done=null;saveState();render();return} if(el.dataset.go){ if(el.closest('#home-shortcuts-panel'))S.homeShortcutsOpen=false;if(el.dataset.eventType){activateForm('events');S.form.evType=el.dataset.eventType} if(el.dataset.service){
   if(cartHasShisha()&&el.dataset.service!=='table'){
@@ -3481,23 +3485,44 @@ document.addEventListener('click',e=>{
  else if(act==='cat'){S.cat=el.dataset.v;if(S.view==='menu'){refreshMenu();return}}
  else if(act==='opt'){S.opt[el.dataset.id]=+el.dataset.v}
  else if(act==='clearq'){S.q='';if(S.view==='menu'){refreshMenu();return}}
- else if(act==='party'){S.party=Math.max(1,Math.min(30,S.party+(+el.dataset.v)))}
+ else if(act==='party'||act==='party-set'){
+  if(act==='party-set'){
+   S.party=Math.max(1,Math.min(30,+el.dataset.v));
+  }else{
+   S.party=Math.max(1,Math.min(30,S.party+(+el.dataset.v)));
+  }
+  const disp=document.getElementById('res-party-display');
+  if(disp)disp.textContent=`${num(S.party)} ${t().guests}`;
+  const asideParty=document.getElementById('rsum-party-val')||document.querySelector('.rsum .tot:nth-of-type(2) b');
+  if(asideParty)asideParty.textContent=num(S.party);
+  document.querySelectorAll('.res-party-pill').forEach(btn=>{btn.classList.toggle('on',+btn.dataset.v===S.party)});
+  saveState();
+  return;
+ }
  else if(act==='ev-guests'){
   let cur=parseInt(S.form.guestsN||'10',10);
   if(isNaN(cur)||cur<1)cur=10;
   cur=Math.max(1,Math.min(300,cur+(+el.dataset.v)));
   S.form.guestsN=String(cur);
   const inp=document.getElementById('f_guestsN');
-  if(inp){inp.value=cur;inp.dispatchEvent(new Event('input',{bubbles:true}))}
-  document.querySelectorAll('.guest-quick-pill').forEach(btn=>{btn.classList.toggle('on',+btn.dataset.v===cur)});
+  if(inp){inp.value=cur;}
+  document.querySelectorAll('.ev-party-pill').forEach(btn=>{btn.classList.toggle('on',+btn.dataset.v===cur)});
+  const ectx=document.getElementById('events-context');
+  if(ectx)ectx.innerHTML=eventsContextHTML();
+  saveState();
+  return;
  }
  else if(act==='ev-guests-set'){
   const val=+el.dataset.v;
   if(val>=1){
    S.form.guestsN=String(val);
    const inp=document.getElementById('f_guestsN');
-   if(inp){inp.value=val;inp.dispatchEvent(new Event('input',{bubbles:true}))}
-   document.querySelectorAll('.guest-quick-pill').forEach(btn=>{btn.classList.toggle('on',+btn.dataset.v===val)});
+   if(inp){inp.value=val;}
+   document.querySelectorAll('.ev-party-pill').forEach(btn=>{btn.classList.toggle('on',+btn.dataset.v===val)});
+   const ectx=document.getElementById('events-context');
+   if(ectx)ectx.innerHTML=eventsContextHTML();
+   saveState();
+   return;
   }
  }
  else if(act==='kids-qty'){S.upsellAccepted=false;const i=S.cart.findIndex(c=>c.id===el.dataset.id&&c.o===0);if(i>=0){S.cart[i].q+=+el.dataset.v;if(S.cart[i].q<=0)S.cart.splice(i,1)}}
@@ -3586,6 +3611,11 @@ document.addEventListener('keydown',e=>{
   else if(box.dataset.dtPicker==='date')openPortofinoDatePicker(box.dataset.f);
   return;
  }
+ if(e.key==='Enter'&&e.target&&e.target.id==='f_guestsN'){
+  e.preventDefault();
+  e.target.blur();
+  return;
+ }
  if(e.key==='Escape'&&DT_STATE.picker){
   closePortofinoPicker();
   return;
@@ -3602,7 +3632,7 @@ document.addEventListener('input',e=>{
   syncDateTimePreviews(el);
   if(el.dataset.f==='guestsN'){
    const val=+el.value;
-   document.querySelectorAll('.guest-quick-pill').forEach(btn=>{btn.classList.toggle('on',+btn.dataset.v===val)});
+   document.querySelectorAll('.ev-party-pill').forEach(btn=>{btn.classList.toggle('on',+btn.dataset.v===val)});
   }
   const ctx=document.getElementById('checkout-context');if(ctx)ctx.innerHTML=checkoutContextHTML();
   const ectx=document.getElementById('events-context');if(ectx)ectx.innerHTML=eventsContextHTML();
@@ -3612,7 +3642,7 @@ document.addEventListener('change',e=>{if(e.target.id==='brsel'){S.branch=e.targ
   syncDateTimePreviews(e.target);
   if(e.target.dataset.f==='guestsN'){
    const val=+e.target.value;
-   document.querySelectorAll('.guest-quick-pill').forEach(btn=>{btn.classList.toggle('on',+btn.dataset.v===val)});
+   document.querySelectorAll('.ev-party-pill').forEach(btn=>{btn.classList.toggle('on',+btn.dataset.v===val)});
   }
   const ctx=document.getElementById('checkout-context');if(ctx)ctx.innerHTML=checkoutContextHTML();
   const ectx=document.getElementById('events-context');if(ectx)ectx.innerHTML=eventsContextHTML();

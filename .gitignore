@@ -9,3 +9,8 @@ Desktop.ini
 # Backups & Archives
 *.bak
 *.zip
+
+# Local backups & scratch
+scratch/
+_media_backup/
+*.backup-*
