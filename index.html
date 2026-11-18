@@ -3005,10 +3005,8 @@ function vEvents(){
     </figcaption>
    </figure>
   </div>
-
-  ${steps(1,ar?['تفاصيل المناسبة','مراجعة الحجز','تأكيد واتساب']:['Event details','Review booking','WhatsApp confirmation'])}
-
   <div class="events-form-wrapper">
+   ${steps(1,ar?['تفاصيل المناسبة','مراجعة الحجز','تأكيد واتساب']:['Event details','Review booking','WhatsApp confirmation'])}
    ${eventsCartBanner()}
 
    <form class="card form final-form events-lean-form" id="evf" novalidate onsubmit="event.preventDefault();">
@@ -3705,7 +3703,7 @@ function syncHomeNav(){
    if(shortcuts)shortcuts.classList.toggle('is-visible',y>HOME_NAV.start+nav.offsetHeight+120);
   }else if(y>HOME_NAV.start+nav.offsetHeight){
    const dy=y-HOME_NAV.y;
-   if(dy>2)nav.classList.remove('is-hidden');else if(dy< -2)nav.classList.add('is-hidden');
+   nav.classList.remove('is-hidden');
   }else nav.classList.remove('is-hidden');
   HOME_NAV.y=y;
   const offers=document.getElementById('offers'),tabs=offers&&offers.querySelector('.dtabs');
@@ -4797,7 +4795,7 @@ html.paper .events-kids-soft-pill{background:#fff;border-color:#d5d0c2;color:#55
 .form-page-head{max-width:760px;margin-top:10px}
 .form-page-head .h2{font-size:clamp(32px,5vw,54px);margin-bottom:8px}
 .form-page-intro{max-width:62ch;margin:0;color:var(--mist);font-size:15px;line-height:1.75}
-.form-steps{position:relative;display:flex;align-items:center;width:min(100%,680px);gap:0;margin:20px 0 22px;padding:0;list-style:none;isolation:isolate}
+.form-steps{position:relative;display:flex;align-items:center;width:min(100%,680px);gap:0;margin:20px auto 22px!important;padding:0;list-style:none;isolation:isolate}html.paper .form-steps:before{background:#d5cebc!important}html.paper .form-steps li span{background:#fff!important;border-color:#d5cebc!important;color:#55594c!important}html.paper .form-steps li.done span{background:#e8f4e6!important;border-color:#2E9B3A!important;color:#1F7A2B!important}html.paper .form-steps li.cur span{background:#2E9B3A!important;border-color:#2E9B3A!important;color:#fff!important;box-shadow:0 0 0 5px rgba(46,155,58,.18)!important}html.paper .form-steps li.cur{color:#1b1d14!important}html.paper .form-steps li:not(.cur){color:#55594c!important}
 .form-steps:before{content:"";position:absolute;inset-inline:9%;top:19px;height:2px;background:var(--line);z-index:-1}
 .form-steps li{display:flex;flex:1;min-width:0;flex-direction:column;align-items:center;gap:7px;padding:0;border:0;border-radius:0;color:var(--mist);font-size:12px;text-align:center}
 .form-steps li span{display:grid;place-items:center;width:38px;height:38px;border:1px solid var(--line);border-radius:50%;background:var(--bg);color:var(--mist);font-size:14px;font-weight:750;transition:transform .3s cubic-bezier(.2,.7,.2,1),background .3s ease,border-color .3s ease,color .3s ease,box-shadow .3s ease}
@@ -4989,7 +4987,7 @@ html.paper .ks.t .kb .btn{border:1px solid #c8d69b!important;background:#edf3dc!
   .dl{min-height:190px!important;flex:none!important;padding:clamp(14px,4vw,22px)!important;grid-template-columns:1fr auto!important;grid-template-rows:auto 1fr!important;gap:10px!important}
   .dl.b{padding-top:20px!important}
   .dpl{
-    width:clamp(95px,25vw,130px)!important;
+    width:clamp(68px,18vw,88px)!important;
     height:auto!important;
     max-width:none!important;
     grid-column:2!important;
@@ -5010,7 +5008,7 @@ html.paper .ks.t .kb .btn{border:1px solid #c8d69b!important;background:#edf3dc!
   .dor{width:54px!important;height:54px!important;font-size:18px!important}
 }
 @media(min-width:761px){
-  .dpl{width:clamp(120px,15vw,190px)!important;max-width:none!important}
+  .dpl{width:clamp(85px,10vw,125px)!important;max-width:none!important}
   .dl.a .dpl{aspect-ratio:3/4!important;border-radius:999px 999px 26px 26px!important}
   .dl.b .dpl{aspect-ratio:1/1!important;border-radius:50%!important}
 }
