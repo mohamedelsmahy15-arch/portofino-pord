@@ -602,6 +602,19 @@ html:not(.atop) .cue,html.lock .cue,html.intro .cue{opacity:0;pointer-events:non
 #intro .demo-en{display:none}
 @media(min-width:601px){#intro .pn{font-size:clamp(54px,11.5vw,144px)}#intro .ln{margin:12px auto}#intro .demo-mark{margin-bottom:10px}#intro .enter-world{min-height:52px;margin-top:10px}}
 @media(max-height:980px){#intro .ic{padding-block:10px}#intro .pn{font-size:clamp(54px,10.5vw,132px)}#intro .wt{margin-bottom:8px}#intro .ln{margin:9px auto}#intro .ar{font-size:clamp(20px,3.5vw,32px)}#intro .sub{margin-top:5px}#intro .kit{margin-top:5px}#intro .enter-world{min-height:48px;margin-top:8px}}
+/* Center the whole welcome composition as one balanced block in the viewport. */
+#intro .ic{display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box;width:min(94vw,900px);height:100vh;height:100dvh;max-height:100dvh;overflow-x:hidden;overflow-y:auto;padding:clamp(12px,2.8vh,24px) clamp(16px,4vw,32px)}
+#intro .ring{pointer-events:none}
+#intro .demo-mark{margin:0 auto 12px}
+#intro .wt{margin:0 auto 8px}
+#intro .pn{font-size:clamp(54px,11vw,144px)}
+#intro .ln{margin:12px auto}
+#intro .ar{max-width:100%;white-space:normal}
+#intro .sub{margin:4px auto 0}
+#intro .kit{max-width:100%;white-space:normal;line-height:1.45;margin:4px auto 0}
+#intro .enter-world{flex:none;margin:12px auto 0}
+@media(max-width:600px){#intro .ic{width:100%;padding-inline:18px}#intro .pn{font-size:clamp(54px,14vw,110px)}#intro .kit{max-width:34ch}#intro .enter-world{margin-top:10px}}
+@media(max-height:600px){#intro .ic{padding-block:8px}#intro .demo-mark{margin-bottom:7px}#intro .wt{margin-bottom:5px}#intro .pn{font-size:clamp(48px,9vw,94px)}#intro .ln{margin:7px auto}#intro .enter-world{min-height:44px;margin-top:7px}}
 
 .was{text-decoration:line-through;color:var(--mist);font-size:14px;font-weight:500;margin-inline-end:8px}
 .fmsec{margin-top:64px;scroll-margin-top:96px}
